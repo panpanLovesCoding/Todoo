@@ -11,6 +11,9 @@ struct SettingsView: View {
     @AppStorage("musicEnabled") var musicEnabled: Bool = true
     @AppStorage("notificationsEnabled") var notificationsEnabled: Bool = true
     
+    // 🆕 新增：控制删除确认弹窗
+    @State private var showResetAlert = false
+    
     // 获取 App 版本号
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
     
@@ -35,7 +38,6 @@ struct SettingsView: View {
                     .renderingMode(.template)
                     .foregroundColor(GameTheme.yellow)
                     .frame(width: 200, height: 60)
-                    // Banner 保持底部阴影
                     .shadow(color: GameTheme.brown.opacity(0.3), radius: 0, x: 0, y: 3)
                     .overlay(
                         Text(lang.localized("SETTINGS"))
@@ -51,7 +53,7 @@ struct SettingsView: View {
             // 2. 木板内容区域
             VStack(spacing: 20) {
                 
-                // 用户信息 (Title + Vibe)
+                // 用户信息
                 VStack(spacing: 8) {
                     Text(lang.localized(persona.title))
                         .font(.system(.title2, design: .rounded).weight(.heavy))
@@ -133,7 +135,8 @@ struct SettingsView: View {
                     // Reset Data 按钮 & Version
                     VStack(spacing: 8) {
                         Button(action: {
-                             manager.items.removeAll()
+                            // 🆕 修改：不直接删除，而是显示确认弹窗
+                            showResetAlert = true
                         }) {
                             HStack {
                                 Image(systemName: "trash.fill")
@@ -146,6 +149,18 @@ struct SettingsView: View {
                             .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                         }
                         .buttonStyle(CartoonButtonStyle(color: Color(red: 0.85, green: 0.3, blue: 0.3), cornerRadius: 12))
+                        // 🆕 新增：Alert 绑定
+                        .alert(isPresented: $showResetAlert) {
+                            Alert(
+                                title: Text(lang.localized("Confirm Delete")),
+                                message: Text(lang.localized("RESET_WARNING")),
+                                primaryButton: .destructive(Text(lang.localized("Delete"))) {
+                                    // 确认后执行删除
+                                    manager.items.removeAll()
+                                },
+                                secondaryButton: .cancel(Text(lang.localized("Cancel")))
+                            )
+                        }
                         
                         Text("\(lang.localized("Version")) \(appVersion)")
                             .font(.system(size: 10, weight: .medium, design: .monospaced))
@@ -162,8 +177,12 @@ struct SettingsView: View {
             
             // 3. 底部 OK 按钮
             Button(action: {
-                withAnimation(.spring()) {
-                    isPresented = false
+                // 🆕 修改：增加 0.15秒 延迟
+                // 这样用户能先看到按钮“按下去”的 3D 动画，然后窗口再消失
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                    withAnimation(.spring()) {
+                        isPresented = false
+                    }
                 }
             }) {
                 Text(lang.localized("OK"))
@@ -179,28 +198,32 @@ struct SettingsView: View {
     }
 }
 
-// 🆕 最终版 3D 卡通按钮样式
-// 移除了 .overlay(stroke)，消除了顶部的黑线
+// 3D 卡通按钮样式 (保持不变)
 struct CartoonButtonStyle: ButtonStyle {
     let color: Color
     var cornerRadius: CGFloat = 12
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .background(color)
-            .cornerRadius(cornerRadius)
-            // ❌ 移除：.overlay(RoundedRectangle(cornerRadius: cornerRadius).stroke(...))
-            // 移除描边后，顶部的黑线就消失了，只剩下颜色的分界，非常干净的 3D 感
-            
-            // 👇 底部阴影充当“厚度”
-            // 颜色加深一点 (GameTheme.brown) 模拟侧面阴影
-            .shadow(color: GameTheme.brown.opacity(0.4), radius: 0, x: 0, y: configuration.isPressed ? 0 : 4)
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(color)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .stroke(GameTheme.brown.opacity(0.3), lineWidth: 1)
+                    )
+            )
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(GameTheme.brown.opacity(0.4))
+                    .offset(y: configuration.isPressed ? 0 : 4)
+            )
             .offset(y: configuration.isPressed ? 4 : 0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
-// 辅助组件
+// 辅助组件 (保持不变)
 struct SoundToggleButton: View {
     let icon: String
     let label: String

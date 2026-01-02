@@ -14,8 +14,7 @@ class LanguageManager: ObservableObject {
     }
     
     let en: [String: String] = [
-        // 👇 修改：改成 SETTINGS
-        "SETTING": "SETTINGS",
+        "SETTINGS": "SETTINGS", // 之前已改为复数
         
         "Music": "Music",
         "Sound": "Sound",
@@ -32,6 +31,12 @@ class LanguageManager: ObservableObject {
         "Matrix": "Matrix",
         "Add New": "Add New",
         "Delete All": "Reset Data",
+        
+        // 🆕 新增：删除确认弹窗文案
+        "Confirm Delete": "Confirm Delete",
+        "RESET_WARNING": "Are you sure you want to delete all data? This cannot be undone.",
+        "Cancel": "Cancel",
+        "Delete": "Delete",
         
         // Titles & Vibes ... (保持不变)
         "TITLE_ELITE_VANGUARD": "Elite Vanguard",
@@ -61,7 +66,7 @@ class LanguageManager: ObservableObject {
     ]
     
     let zh: [String: String] = [
-        "SETTING": "设 置",
+        "SETTINGS": "设 置",
         "Music": "背 景 音",
         "Sound": "音 效",
         "Notifications": "提 醒",
@@ -77,6 +82,12 @@ class LanguageManager: ObservableObject {
         "Matrix": "四 象 限",
         "Add New": "新 建",
         "Delete All": "重 置 数 据",
+        
+        // 🆕 新增：删除确认弹窗文案
+        "Confirm Delete": "确认删除",
+        "RESET_WARNING": "你确定要清空所有数据吗？此操作无法撤销。",
+        "Cancel": "取消",
+        "Delete": "删除",
         
         // Titles & Vibes ... (保持不变)
         "TITLE_ELITE_VANGUARD": "精英先锋",
