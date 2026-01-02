@@ -51,7 +51,12 @@ struct ActiveTodoRow: View {
         TodoCard(
             item: item,
             isCardStyle: false,
-            onToggle: { manager.toggleStatus(for: item) }
+            onToggle: {
+                // 👇 优化：加上显式动画
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+                    manager.toggleStatus(for: item)
+                }
+            }
         )
         .background(GameTheme.cream)
         .onTapGesture {
@@ -154,7 +159,12 @@ struct MatrixTodoRow: View {
             item: item,
             isCardStyle: false,
             showSeparator: showSeparator,
-            onToggle: { manager.toggleStatus(for: item) }
+            onToggle: {
+                // 👇 修复：使用显式动画包裹状态变更，强制触发过渡效果
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+                    manager.toggleStatus(for: item)
+                }
+            }
         )
         .background(GameTheme.cream)
         .onTapGesture {
@@ -237,7 +247,12 @@ struct CompletedTodoRow: View {
             item: item,
             isCardStyle: false,
             showSeparator: true,
-            onToggle: { manager.toggleStatus(for: item) }
+            onToggle: {
+                // 👇 优化：加上显式动画
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+                    manager.toggleStatus(for: item)
+                }
+            }
         )
         .background(GameTheme.cream)
         .opacity(0.8)
