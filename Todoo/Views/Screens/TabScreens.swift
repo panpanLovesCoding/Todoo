@@ -231,9 +231,29 @@ struct CompletedListView: View {
     @ObservedObject var manager: TodoManager
     @Binding var itemToEdit: TodoItem?
     
+    // 🆕 新增：接收排序参数
+    let sortOption: SortOption
+    
     var completedItems: [TodoItem] {
-        manager.items.filter { $0.isCompleted }
-            .sorted { ($0.completedAt ?? Date()) > ($1.completedAt ?? Date()) }
+        let items = manager.items.filter { $0.isCompleted }
+        
+        // 🆕 新增：根据 sortOption 进行排序
+        switch sortOption {
+        case .creationDate:
+            // "Created Time" -> 实际上用户可能更想看“最近完成的”，
+            // 但如果严格按字面意思就是创建时间。这里你可以灵活调整。
+            // 比如：如果选 CreationDate，我们还是按“完成时间”倒序排（符合直觉），
+            // 或者严格按 createdAt。这里暂按 CreationDate 排。
+            return items.sorted { $0.createdAt > $1.createdAt }
+            
+        case .deadline:
+            // 按截止日期排序
+            return items.sorted { $0.deadline < $1.deadline }
+            
+        case .title:
+            // 按标题排序
+            return items.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
+        }
     }
     
     var body: some View {

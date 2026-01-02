@@ -4,14 +4,36 @@ struct ContentView: View {
     @StateObject var manager = TodoManager()
     @State private var showingAddSheet = false
     @State private var showingSettings = false
-    // 🆕 新增：排序弹窗状态
     @State private var showingSortPopup = false
     
     @State private var selectedTab = 0
     @State private var editingItem: TodoItem? = nil
     
-    // 排序状态
-    @State private var sortOption: SortOption = .creationDate
+    // 🆕 修改 1：拆分排序状态，每个页面独立管理
+    @State private var tasksSort: SortOption = .creationDate
+    @State private var matrixSort: SortOption = .creationDate
+    @State private var completedSort: SortOption = .creationDate
+    
+    // 🆕 修改 2：创建一个动态 Binding，根据当前 Tab 返回对应的排序状态
+    // 这样 TopBarView 不需要改代码，它会自动操作当前页面的排序变量
+    var currentSortBinding: Binding<SortOption> {
+        Binding(
+            get: {
+                switch selectedTab {
+                case 0: return tasksSort
+                case 1: return matrixSort
+                default: return completedSort
+                }
+            },
+            set: { newValue in
+                switch selectedTab {
+                case 0: tasksSort = newValue
+                case 1: matrixSort = newValue
+                default: completedSort = newValue
+                }
+            }
+        )
+    }
     
     init() {
         UITabBar.appearance().backgroundColor = UIColor.clear
@@ -21,7 +43,6 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            // 背景
             GameTheme.background.ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -30,25 +51,28 @@ struct ContentView: View {
                     manager: manager,
                     showSettings: $showingSettings,
                     showAddSheet: $showingAddSheet,
-                    // 👇 传入排序弹窗状态
                     showSortPopup: $showingSortPopup,
-                    sortOption: $sortOption
+                    // 👇 传入动态 Binding
+                    sortOption: currentSortBinding
                 )
                 
                 // 2. 内容区
                 TabView(selection: $selectedTab) {
-                    TodoListView(manager: manager, itemToEdit: $editingItem, sortOption: sortOption)
+                    // 👇 Tab 0: 传入 tasksSort
+                    TodoListView(manager: manager, itemToEdit: $editingItem, sortOption: tasksSort)
                         .tag(0)
                     
-                    EisenhowerMatrixView(manager: manager, sortOption: sortOption, itemToEdit: $editingItem)
+                    // 👇 Tab 1: 传入 matrixSort
+                    EisenhowerMatrixView(manager: manager, sortOption: matrixSort, itemToEdit: $editingItem)
                         .tag(1)
                     
-                    CompletedListView(manager: manager, itemToEdit: $editingItem)
+                    // 👇 Tab 2: 传入 completedSort (需要修改 CompletedListView 支持此参数)
+                    CompletedListView(manager: manager, itemToEdit: $editingItem, sortOption: completedSort)
                         .tag(2)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 
-                // 3. 底部 TabBar
+                // 3. 底部 TabBar (保持不变)
                 VStack(spacing: 0) {
                     Rectangle()
                         .frame(height: 4)
@@ -56,9 +80,7 @@ struct ContentView: View {
                     
                     HStack(spacing: 95) {
                         TabButton(icon: "list.bullet.clipboard", text: LanguageManager.shared.localized("Tasks"), isSelected: selectedTab == 0) { selectedTab = 0 }
-                        
                         TabButton(icon: "square.grid.2x2", text: LanguageManager.shared.localized("Matrix"), isSelected: selectedTab == 1) { selectedTab = 1 }
-                        
                         TabButton(icon: "checkmark.seal.fill", text: LanguageManager.shared.localized("Done"), isSelected: selectedTab == 2) { selectedTab = 2 }
                     }
                     .padding(.top, 10)
@@ -72,45 +94,33 @@ struct ContentView: View {
             }
             .ignoresSafeArea(.all, edges: .top)
             
-            // MARK: - 弹窗区域 (ZStack Overlay)
-            
-            // 4. 设置弹窗
+            // MARK: - 弹窗区域 (Add/Edit/Settings 保持不变...)
             if showingSettings {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
-                    // 👇 修复：点击背景关闭时也要加动画
-                    .onTapGesture {
-                        withAnimation(.spring()) {
-                            showingSettings = false
-                        }
-                    }
+                    .onTapGesture { withAnimation(.spring()) { showingSettings = false } }
                     .zIndex(99)
-                    .transition(.opacity) // 确保背景只做透明度渐变
+                    .transition(.opacity)
                 
                 SettingsView(isPresented: $showingSettings)
                     .transition(.scale.combined(with: .opacity))
                     .zIndex(100)
             }
             
-            // 5. 新建任务弹窗
             if showingAddSheet {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
-                    // 在点击背景关闭时，也使用动画
                     .onTapGesture { withAnimation(.spring()) { showingAddSheet = false } }
                     .zIndex(101)
                 
                 AddEditView(manager: manager, itemToEdit: nil, isPresented: $showingAddSheet)
-                    // 👇 修改：添加 .transition(.scale)
-                    .transition(.scale.combined(with: .opacity)) // 结合透明度过渡效果更好
+                    .transition(.scale.combined(with: .opacity))
                     .zIndex(102)
             }
 
-            // 6. 编辑任务弹窗
             if let item = editingItem {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
-                    // 在点击背景关闭时，也使用动画
                     .onTapGesture { withAnimation(.spring()) { editingItem = nil } }
                     .zIndex(103)
                 
@@ -122,19 +132,18 @@ struct ContentView: View {
                         set: { if !$0 { editingItem = nil } }
                     )
                 )
-                // 👇 修改：同样添加 .transition(.scale)
                 .transition(.scale.combined(with: .opacity))
                 .zIndex(104)
             }
             
-            // 🆕 7. 排序弹窗
+            // 🆕 排序弹窗：传入动态 binding
             if showingSortPopup {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
                     .onTapGesture { showingSortPopup = false }
                     .zIndex(105)
                 
-                SortPopupView(isPresented: $showingSortPopup, currentSort: $sortOption)
+                SortPopupView(isPresented: $showingSortPopup, currentSort: currentSortBinding)
                     .transition(.scale.combined(with: .opacity))
                     .zIndex(106)
             }
