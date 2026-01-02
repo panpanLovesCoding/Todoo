@@ -98,10 +98,32 @@ struct EisenhowerMatrixView: View {
     let sortOption: SortOption
     @Binding var itemToEdit: TodoItem?
     
+    // 🆕 新增：动态计算象限顺序
+    // 逻辑：有任务的象限在上面，没任务的象限沉到底部，内部保持原有顺序
+    var sortedQuadrants: [EisenhowerQuadrant] {
+        // 1. 找出所有包含“未完成任务”的象限集合
+        let activeQuadrants = Set(
+            manager.items
+                .filter { !$0.isCompleted } // 只看未完成的
+                .map { $0.quadrant }
+        )
+        
+        // 2. 按原始顺序筛选出“非空象限”
+        let nonEmpty = EisenhowerQuadrant.allCases.filter { activeQuadrants.contains($0) }
+        
+        // 3. 按原始顺序筛选出“空象限”
+        let empty = EisenhowerQuadrant.allCases.filter { !activeQuadrants.contains($0) }
+        
+        // 4. 拼接：非空在前，空在后
+        return nonEmpty + empty
+    }
+    
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                ForEach(EisenhowerQuadrant.allCases, id: \.self) { quadrant in
+                // 👇 修改：这里不再遍历 allCases，而是遍历 sortedQuadrants
+                ForEach(sortedQuadrants, id: \.self) { quadrant in
+                    // 获取该象限的任务（逻辑不变）
                     let baseItems = manager.items.filter { !$0.isCompleted && $0.quadrant == quadrant }
                     let items: [TodoItem] = {
                         switch sortOption {
@@ -114,6 +136,7 @@ struct EisenhowerMatrixView: View {
                     Section(header: MatrixSectionHeader(quadrant: quadrant)) {
                         VStack(spacing: 0) {
                             if items.isEmpty {
+                                // 空状态显示
                                 Text("Empty")
                                     .font(.system(.body, design: .rounded).weight(.bold))
                                     .foregroundColor(GameTheme.brown.opacity(0.4))
@@ -137,11 +160,14 @@ struct EisenhowerMatrixView: View {
                         .padding(.horizontal, 10)
                         .padding(.top, 0)
                         .padding(.bottom, 6)
+                        // 加上动画，这样象限移动时会有平滑效果
                         .animation(.spring(response: 0.5, dampingFraction: 0.7), value: items)
                     }
                 }
             }
             .background(GameTheme.cream)
+            // 👇 🆕 给整个列表加动画，确保象限上下移动时也是平滑的
+            .animation(.spring(response: 0.6, dampingFraction: 0.8), value: sortedQuadrants)
         }
         .background(GameTheme.cream)
     }
