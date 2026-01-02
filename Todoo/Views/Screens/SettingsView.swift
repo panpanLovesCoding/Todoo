@@ -200,30 +200,35 @@ struct SettingsView: View {
     }
 }
 
-// 3D 卡通按钮样式 (含半透明加粗边框)
+// 3D 卡通按钮样式
 struct CartoonButtonStyle: ButtonStyle {
     let color: Color
     var cornerRadius: CGFloat = 12
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            // 1. 顶层：颜色的涂层
+            // 1. 顶层：颜色的涂层 (按键表面)
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .fill(color)
-                    // 描边: 使用半透明深棕色 (GameTheme.brown.opacity(0.5)) 和 3 的线宽
+                    // 👇 这里调节【边框】
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius)
-                            .stroke(GameTheme.brown.opacity(0.5), lineWidth: 3)
+                            // lineWidth: 3 是边框粗细
+                            // GameTheme.brown.opacity(0.5) 是边框颜色和透明度
+                            .stroke(Color.black.opacity(0.6), lineWidth: 3)
                     )
             )
-            // 2. 底层：3D 厚度阴影
+            // 2. 底层：3D 厚度阴影 (按键侧面)
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .fill(GameTheme.brown.opacity(0.4))
+                    .fill(GameTheme.brown.opacity(0.4)) // 侧面阴影颜色
+                    // 👇 这里调节【厚度】
+                    // y: 4 表示按钮有多厚（阴影高度）
                     .offset(y: configuration.isPressed ? 0 : 4)
             )
             // 3. 整体按压动画
+            // y: 4 这里要和上面的厚度保持一致，按下时下沉多少
             .offset(y: configuration.isPressed ? 4 : 0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
