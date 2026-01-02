@@ -51,7 +51,7 @@ struct TodoListView: View {
     }
 }
 
-// List Header
+// List Header (Quest Log - 保持木纹色)
 struct TodoListHeader: View {
     var body: some View {
         ZStack {
@@ -73,10 +73,9 @@ struct TodoListHeader: View {
     }
 }
 
-// MARK: - Tab 2: Matrix (👉 修改：支持排序)
+// MARK: - Tab 2: Matrix
 struct EisenhowerMatrixView: View {
     @ObservedObject var manager: TodoManager
-    // 👇 新增：接收排序参数
     let sortOption: SortOption
     @State private var itemToEdit: TodoItem?
     
@@ -84,10 +83,10 @@ struct EisenhowerMatrixView: View {
         ScrollView {
             LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                 ForEach(EisenhowerQuadrant.allCases, id: \.self) { quadrant in
-                    // 1. 先筛选出该象限的任务
+                    // 1. 筛选
                     let baseItems = manager.items.filter { !$0.isCompleted && $0.quadrant == quadrant }
                     
-                    // 2. 👇 根据 sortOption 进行排序
+                    // 2. 排序
                     let items: [TodoItem] = {
                         switch sortOption {
                         case .creationDate:
@@ -211,11 +210,13 @@ struct CompletedListView: View {
     }
 }
 
-// Completed List Header
+// Completed List Header (👉 修改：更深的绿色)
 struct CompletedListHeader: View {
     var body: some View {
         ZStack {
-            Color(red: 0.5, green: 0.35, blue: 0.2)
+            // 👇 修改：使用更饱满的绿色
+            Color(red: 0.2, green: 0.6, blue: 0.3)
+            
             Text("COMPLETED LOG")
                 .font(.custom("Luckiest Guy", size: 28))
                 .foregroundColor(GameTheme.cream)
