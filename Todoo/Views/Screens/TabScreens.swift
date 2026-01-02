@@ -1,43 +1,127 @@
 import SwiftUI
 
-// MARK: - Tab 1: Active List
+// MARK: - Tab 1: Active List (修改版)
 struct TodoListView: View {
     @ObservedObject var manager: TodoManager
     @State private var itemToEdit: TodoItem?
-    
-    // 接收排序参数
     let sortOption: SortOption
     
     var activeItems: [TodoItem] {
         let filtered = manager.items.filter { !$0.isCompleted }
-        
         switch sortOption {
-        case .creationDate:
-            return filtered.sorted { $0.createdAt > $1.createdAt }
-        case .deadline:
-            return filtered.sorted { $0.deadline < $1.deadline }
-        case .title:
-            return filtered.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
+        case .creationDate: return filtered.sorted { $0.createdAt > $1.createdAt }
+        case .deadline: return filtered.sorted { $0.deadline < $1.deadline }
+        case .title: return filtered.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
         }
     }
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 15) {
-                if activeItems.isEmpty {
-                    EmptyStateView(message: "No active quests!")
-                }
+            // 🌟 使用 LazyVStack 并开启 Section Header 吸顶
+            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                 
-                ForEach(activeItems) { item in
-                    TodoCard(item: item) {
-                        manager.toggleStatus(for: item)
+                // 🌟 新增 Section
+                Section(header: TodoListHeader()) {
+                    
+                    if activeItems.isEmpty {
+                        // 空状态
+                        VStack {
+                            EmptyStateView(message: "No active quests!")
+                        }
+                        .padding(.top, 40)
+                    } else {
+                        // 任务列表容器
+                        VStack(spacing: 0) { // 间距设为 0，因为我们用分割线了
+                            ForEach(activeItems) { item in
+                                TodoCard(
+                                    item: item,
+                                    isCardStyle: false, // 👈 关键：设为 false，开启列表模式
+                                    onToggle: { manager.toggleStatus(for: item) }
+                                )
+                                .background(GameTheme.cream) // 给每一行一个背景色
+                                .onTapGesture { itemToEdit = item }
+                            }
+                        }
+                        // 给整个列表加一个大的外边框和圆角，像一张长纸条
+                        .cornerRadius(15)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 15)
+                                .stroke(GameTheme.brown, lineWidth: 4)
+                        )
+                        .padding(.horizontal, 20) // 列表距离屏幕左右的距离
+                        .padding(.top, 10)
+                        .padding(.bottom, 20)
                     }
-                    .onTapGesture { itemToEdit = item }
                 }
             }
-            // 👇 修改：明确设置左右间距为 25，确保不贴边
-            .padding(.horizontal, 25)
-            .padding(.top, 15)
+        }
+        .background(GameTheme.background)
+        .sheet(item: $itemToEdit) { item in
+            AddEditView(manager: manager, itemToEdit: item)
+        }
+    }
+}
+
+// MARK: - 新增组件：Todo List 吸顶标题
+struct TodoListHeader: View {
+    var body: some View {
+        HStack {
+            Image(systemName: "list.star") // 加个小图标装饰
+                .foregroundColor(.white)
+            Text("所有待办事项") // 👈 这里是你要的标题
+                .font(.system(size: 20, weight: .heavy, design: .rounded))
+                .foregroundColor(.white)
+            Spacer()
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 25)
+        .background(GameTheme.brown) // 使用深棕色背景
+        .overlay(
+            Rectangle()
+                .frame(height: 3)
+                .foregroundColor(Color.black.opacity(0.2)),
+            alignment: .bottom
+        )
+        .shadow(color: .black.opacity(0.3), radius: 3, x: 0, y: 3)
+    }
+}
+
+// MARK: - Tab 2: Matrix (保持吸顶样式)
+struct EisenhowerMatrixView: View {
+    @ObservedObject var manager: TodoManager
+    @State private var itemToEdit: TodoItem?
+    
+    var body: some View {
+        ScrollView {
+            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                ForEach(EisenhowerQuadrant.allCases, id: \.self) { quadrant in
+                    let items = manager.items.filter { !$0.isCompleted && $0.quadrant == quadrant }
+                    Section(header: MatrixSectionHeader(quadrant: quadrant)) {
+                        VStack(spacing: 12) {
+                            if items.isEmpty {
+                                Text("Empty")
+                                    .font(.system(.body, design: .rounded).weight(.bold))
+                                    .foregroundColor(GameTheme.brown.opacity(0.4))
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 30)
+                                    .background(GameTheme.cream.opacity(0.5))
+                                    .cornerRadius(12)
+                            } else {
+                                ForEach(items) { item in
+                                    // Matrix 这里继续使用卡片样式 (默认 isCardStyle: true)
+                                    TodoCard(item: item) {
+                                        manager.toggleStatus(for: item)
+                                    }
+                                    .onTapGesture { itemToEdit = item }
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 25)
+                        .padding(.vertical, 15)
+                        .padding(.bottom, 10)
+                    }
+                }
+            }
             .padding(.bottom, 20)
         }
         .background(GameTheme.background)
@@ -47,111 +131,28 @@ struct TodoListView: View {
     }
 }
 
-// MARK: - Tab 2: Matrix
-struct EisenhowerMatrixView: View {
-    @ObservedObject var manager: TodoManager
-    @State private var itemToEdit: TodoItem?
-    
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 25) {
-                ForEach(EisenhowerQuadrant.allCases, id: \.self) { quadrant in
-                    QuadrantView(
-                        quadrant: quadrant,
-                        items: manager.items.filter { !$0.isCompleted && $0.quadrant == quadrant },
-                        onTap: { item in
-                            itemToEdit = item
-                        }
-                    )
-                }
-            }
-            // 👇 修改：这里也设置为 25，保持统一
-            .padding(.horizontal, 25)
-            .padding(.vertical, 20)
-        }
-        .background(GameTheme.background)
-        .sheet(item: $itemToEdit) { item in
-            AddEditView(manager: manager, itemToEdit: item)
-        }
-    }
-}
-
-// MARK: - Quadrant View (保持不变)
-struct QuadrantView: View {
+// Matrix Section Header (保持不变)
+struct MatrixSectionHeader: View {
     let quadrant: EisenhowerQuadrant
-    let items: [TodoItem]
-    let onTap: (TodoItem) -> Void
-    
     var body: some View {
-        VStack(spacing: 0) {
-            
-            // 1. 标题区域
-            ZStack {
-                quadrant.color
-                
-                Text(quadrant.rawValue)
-                    .font(.custom("Luckiest Guy", size: 26))
-                    .foregroundColor(.white)
-                    .shadow(color: quadrant.color.opacity(0.5), radius: 0, x: 2, y: 2)
-                    .padding(.vertical, 12)
-            }
-            .frame(height: 55)
-            
-            // 2. 内容区域
-            VStack(spacing: 8) {
-                if items.isEmpty {
-                    VStack {
-                        Spacer()
-                        Text("Empty")
-                            .font(.system(.headline, design: .rounded).weight(.bold))
-                            .foregroundColor(GameTheme.brown.opacity(0.4))
-                        Spacer()
-                    }
-                    .frame(height: 120)
-                } else {
-                    ForEach(items) { item in
-                        HStack(alignment: .top) {
-                            Text(item.title)
-                                .font(.system(.callout, design: .rounded).weight(.bold))
-                                .lineLimit(2)
-                                .multilineTextAlignment(.leading)
-                                .fixedSize(horizontal: false, vertical: true)
-                            Spacer()
-                            Text(item.deadline.formatted(date: .numeric, time: .omitted))
-                                .font(.system(size: 10, design: .rounded).weight(.medium))
-                                .padding(.vertical, 2)
-                                .padding(.horizontal, 6)
-                                .background(GameTheme.brown.opacity(0.1))
-                                .cornerRadius(4)
-                        }
-                        .padding(10)
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(GameTheme.brown, lineWidth: 2))
-                        .foregroundColor(GameTheme.brown)
-                        .onTapGesture {
-                            onTap(item)
-                        }
-                    }
-                    .padding(.bottom, 4)
-                }
-            }
-            .padding(12)
-            .background(GameTheme.cream)
+        HStack {
+            Spacer()
+            Text(quadrant.rawValue)
+                .font(.custom("Luckiest Guy", size: 24))
+                .foregroundColor(.white)
+                .shadow(color: quadrant.color.opacity(0.6), radius: 0, x: 2, y: 2)
+                .padding(.vertical, 12)
+            Spacer()
         }
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(GameTheme.brown, lineWidth: 4)
-        )
-        .shadow(color: GameTheme.brown.opacity(0.4), radius: 0, x: 0, y: 6)
+        .background(quadrant.color)
+        .overlay(Rectangle().frame(height: 3).foregroundColor(GameTheme.brown.opacity(0.3)), alignment: .bottom)
+        .shadow(color: .black.opacity(0.2), radius: 3, x: 0, y: 3)
     }
 }
 
-// MARK: - Tab 3: Completed
+// MARK: - Tab 3: Completed (保持不变)
 struct CompletedListView: View {
     @ObservedObject var manager: TodoManager
-    
     var completedItems: [TodoItem] {
         manager.items.filter { $0.isCompleted }
             .sorted { ($0.completedAt ?? Date()) > ($1.completedAt ?? Date()) }
@@ -164,6 +165,7 @@ struct CompletedListView: View {
                     EmptyStateView(message: "No completed quests yet!")
                 }
                 ForEach(completedItems) { item in
+                    // 已完成列表也可以保持卡片样式
                     TodoCard(item: item) {
                         manager.toggleStatus(for: item)
                     }
@@ -171,7 +173,6 @@ struct CompletedListView: View {
                     .saturation(0.8)
                 }
             }
-            // 👇 修改：同样设置左右间距 25
             .padding(.horizontal, 25)
             .padding(.top, 15)
             .padding(.bottom, 20)
@@ -180,6 +181,7 @@ struct CompletedListView: View {
     }
 }
 
+// Helper (保持不变)
 struct EmptyStateView: View {
     let message: String
     var body: some View {
