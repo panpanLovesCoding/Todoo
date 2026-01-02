@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - Tab 1: Active List (修改版)
+// MARK: - Tab 1: Active List (修改版：边距 + 头部颜色)
 struct TodoListView: View {
     @ObservedObject var manager: TodoManager
     @State private var itemToEdit: TodoItem?
@@ -17,76 +17,69 @@ struct TodoListView: View {
     
     var body: some View {
         ScrollView {
-            // 🌟 使用 LazyVStack 并开启 Section Header 吸顶
+            // 吸顶标题容器
             LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                 
-                // 🌟 新增 Section
                 Section(header: TodoListHeader()) {
                     
                     if activeItems.isEmpty {
-                        // 空状态
                         VStack {
                             EmptyStateView(message: "No active quests!")
                         }
                         .padding(.top, 40)
                     } else {
-                        // 任务列表容器
-                        VStack(spacing: 0) { // 间距设为 0，因为我们用分割线了
+                        // 任务列表
+                        VStack(spacing: 0) {
                             ForEach(activeItems) { item in
                                 TodoCard(
                                     item: item,
-                                    isCardStyle: false, // 👈 关键：设为 false，开启列表模式
+                                    isCardStyle: false, // 列表模式
                                     onToggle: { manager.toggleStatus(for: item) }
                                 )
-                                .background(GameTheme.cream) // 给每一行一个背景色
+                                .background(GameTheme.cream)
                                 .onTapGesture { itemToEdit = item }
                             }
                         }
-                        // 给整个列表加一个大的外边框和圆角，像一张长纸条
-                        .cornerRadius(15)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 15)
-                                .stroke(GameTheme.brown, lineWidth: 4)
-                        )
-                        .padding(.horizontal, 20) // 列表距离屏幕左右的距离
-                        .padding(.top, 10)
+                        // 👇 关键修改：加回左右边距，让任务条往中间靠，不贴边
+                        .padding(.horizontal, 20)
                         .padding(.bottom, 20)
                     }
                 }
             }
         }
-        .background(GameTheme.background)
+        .background(GameTheme.cream)
         .sheet(item: $itemToEdit) { item in
             AddEditView(manager: manager, itemToEdit: item)
         }
     }
 }
 
-// MARK: - 新增组件：Todo List 吸顶标题
+// MARK: - List Header (修改：颜色区分)
 struct TodoListHeader: View {
     var body: some View {
-        HStack {
-            Image(systemName: "list.star") // 加个小图标装饰
-                .foregroundColor(.white)
-            Text("所有待办事项") // 👈 这里是你要的标题
-                .font(.system(size: 20, weight: .heavy, design: .rounded))
-                .foregroundColor(.white)
-            Spacer()
+        ZStack {
+            // 👇 修改：背景色改浅一点，不再跟 Top Bar 一样深
+            // 这里用稍微浅一点的木头色/红棕色
+            Color(red: 0.5, green: 0.35, blue: 0.2)
+            
+            Text("QUEST LOG")
+                .font(.custom("Luckiest Guy", size: 28))
+                .foregroundColor(GameTheme.cream)
+                .shadow(color: Color.black.opacity(0.3), radius: 0, x: 2, y: 2) // 加点文字阴影更清楚
+                .padding(.vertical, 15)
         }
-        .padding(.vertical, 12)
-        .padding(.horizontal, 25)
-        .background(GameTheme.brown) // 使用深棕色背景
+        .frame(height: 60)
         .overlay(
             Rectangle()
                 .frame(height: 3)
-                .foregroundColor(Color.black.opacity(0.2)),
+                .foregroundColor(Color.black.opacity(0.3)),
             alignment: .bottom
         )
-        .shadow(color: .black.opacity(0.3), radius: 3, x: 0, y: 3)
+        .shadow(radius: 3)
     }
 }
 
-// MARK: - Tab 2: Matrix (保持吸顶样式)
+// MARK: - Tab 2: Matrix (保持不变)
 struct EisenhowerMatrixView: View {
     @ObservedObject var manager: TodoManager
     @State private var itemToEdit: TodoItem?
@@ -108,7 +101,6 @@ struct EisenhowerMatrixView: View {
                                     .cornerRadius(12)
                             } else {
                                 ForEach(items) { item in
-                                    // Matrix 这里继续使用卡片样式 (默认 isCardStyle: true)
                                     TodoCard(item: item) {
                                         manager.toggleStatus(for: item)
                                     }
@@ -165,7 +157,6 @@ struct CompletedListView: View {
                     EmptyStateView(message: "No completed quests yet!")
                 }
                 ForEach(completedItems) { item in
-                    // 已完成列表也可以保持卡片样式
                     TodoCard(item: item) {
                         manager.toggleStatus(for: item)
                     }
@@ -181,7 +172,7 @@ struct CompletedListView: View {
     }
 }
 
-// Helper (保持不变)
+// Helper
 struct EmptyStateView: View {
     let message: String
     var body: some View {

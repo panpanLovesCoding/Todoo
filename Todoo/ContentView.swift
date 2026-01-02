@@ -1,19 +1,16 @@
 import SwiftUI
 
-#Preview{
-    ContentView()
-}
-          
 struct ContentView: View {
     @StateObject var manager = TodoManager()
     @State private var showingAddSheet = false
     @State private var showingSettings = false
     @State private var selectedTab = 0
     
-    // 新增：保存排序状态，默认按创建时间
+    // 排序状态
     @State private var sortOption: SortOption = .creationDate
     
     init() {
+        // 隐藏系统原生的 TabBar，因为我们要自定义
         UITabBar.appearance().backgroundColor = UIColor.clear
         UITabBar.appearance().backgroundImage = UIImage()
         UITabBar.appearance().shadowImage = UIImage()
@@ -21,11 +18,11 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            // 背景色
+            // 背景色 (会被中间的内容遮挡，主要防止边缘漏光)
             GameTheme.background.ignoresSafeArea()
             
             VStack(spacing: 0) {
-                // 1. 顶部栏 (传入 sortOption 的绑定 $sortOption)
+                // 1. 顶部栏 (Top Bar)
                 TopBarView(
                     manager: manager,
                     showSettings: $showingSettings,
@@ -33,9 +30,8 @@ struct ContentView: View {
                     sortOption: $sortOption
                 )
                 
-                // 2. 主要内容区
+                // 2. 主要内容区 (TabView)
                 TabView(selection: $selectedTab) {
-                    // 传入 sortOption 的值 (不需要绑定，只需要读取)
                     TodoListView(manager: manager, sortOption: sortOption)
                         .tag(0)
                     
@@ -45,26 +41,34 @@ struct ContentView: View {
                     CompletedListView(manager: manager)
                         .tag(2)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
+                .tabViewStyle(.page(indexDisplayMode: .never)) // 滑动切换
                 
-                // 3. 底部 TabBar
+                // 3. 底部自定义 TabBar
                 VStack(spacing: 0) {
-                    Divider()
-                        .background(GameTheme.brown)
-                        .scaleEffect(y: 4)
+                    // 顶部分割线
+                    Rectangle()
+                        .frame(height: 4)
+                        .foregroundColor(Color.black.opacity(0.3))
                     
                     HStack {
+                        // 任务列表
                         TabButton(icon: "list.bullet.clipboard", text: LanguageManager.shared.localized("Tasks"), isSelected: selectedTab == 0) { selectedTab = 0 }
                         Spacer()
+                        // 四象限
                         TabButton(icon: "square.grid.2x2", text: LanguageManager.shared.localized("Matrix"), isSelected: selectedTab == 1) { selectedTab = 1 }
                         Spacer()
+                        // 已完成
                         TabButton(icon: "checkmark.seal.fill", text: LanguageManager.shared.localized("Done"), isSelected: selectedTab == 2) { selectedTab = 2 }
                     }
                     .padding(.top, 10)
                     .padding(.horizontal, 30)
                     .padding(.bottom, 5)
                 }
-                .background(GameTheme.cream.ignoresSafeArea(edges: .bottom))
+                // 背景色：深褐色 (与 Top Bar 保持一致)
+                .background(
+                    Color(red: 0.25, green: 0.15, blue: 0.05)
+                        .ignoresSafeArea(edges: .bottom)
+                )
             }
             .ignoresSafeArea(.all, edges: .top)
             
@@ -75,13 +79,14 @@ struct ContentView: View {
                     .zIndex(100)
             }
         }
+        // 添加任务弹窗
         .sheet(isPresented: $showingAddSheet) {
             AddEditView(manager: manager, itemToEdit: nil)
         }
     }
 }
 
-// (TabButton 保持不变)
+// MARK: - 自定义 Tab 按钮组件
 struct TabButton: View {
     let icon: String
     let text: String
@@ -96,9 +101,15 @@ struct TabButton: View {
                 Text(text)
                     .font(.system(size: 10, design: .rounded).weight(.bold))
             }
-            .foregroundColor(isSelected ? GameTheme.brown : GameTheme.brown.opacity(0.5))
+            // 颜色适配深色背景：选中为米色，未选中为半透明米色
+            .foregroundColor(isSelected ? GameTheme.cream : GameTheme.cream.opacity(0.4))
             .scaleEffect(isSelected ? 1.1 : 1.0)
             .animation(.spring(), value: isSelected)
         }
     }
+}
+
+// MARK: - PREVIEW (预览功能)
+#Preview {
+    ContentView()
 }
