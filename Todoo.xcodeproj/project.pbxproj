@@ -19,6 +19,9 @@
 		264711FF2F071FA000A0169F /* TabScreens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711FE2F071FA000A0169F /* TabScreens.swift */; };
 		264712012F0724F000A0169F /* CartoonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264712002F0724F000A0169F /* CartoonButton.swift */; };
 		264712072F07467D00A0169F /* LuckiestGuy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */; };
+		264712092F074B7C00A0169F /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264712082F074B7C00A0169F /* LanguageManager.swift */; };
+		2647120B2F074BCB00A0169F /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120A2F074BCB00A0169F /* TopBarView.swift */; };
+		2647120D2F074BD700A0169F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120C2F074BD700A0169F /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +39,9 @@
 		264712002F0724F000A0169F /* CartoonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartoonButton.swift; sourceTree = "<group>"; };
 		264712042F07436600A0169F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LuckiestGuy-Regular.ttf"; sourceTree = "<group>"; };
+		264712082F074B7C00A0169F /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
+		2647120A2F074BCB00A0169F /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
+		2647120C2F074BD700A0169F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,8 +99,9 @@
 		264711EE2F071F2500A0169F /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */,
+				264712082F074B7C00A0169F /* LanguageManager.swift */,
 				264711EF2F071F3600A0169F /* GameTheme.swift */,
+				264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -128,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				264711F92F071F7D00A0169F /* GameComponents.swift */,
+				2647120A2F074BCB00A0169F /* TopBarView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -137,6 +145,7 @@
 			children = (
 				264711FC2F071F9100A0169F /* AddEditView.swift */,
 				264711FE2F071FA000A0169F /* TabScreens.swift */,
+				2647120C2F074BD700A0169F /* SettingsView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -220,7 +229,10 @@
 				264711FF2F071FA000A0169F /* TabScreens.swift in Sources */,
 				264712012F0724F000A0169F /* CartoonButton.swift in Sources */,
 				264711E12F071EE600A0169F /* TodooApp.swift in Sources */,
+				2647120B2F074BCB00A0169F /* TopBarView.swift in Sources */,
+				2647120D2F074BD700A0169F /* SettingsView.swift in Sources */,
 				264711FD2F071F9100A0169F /* AddEditView.swift in Sources */,
+				264712092F074B7C00A0169F /* LanguageManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

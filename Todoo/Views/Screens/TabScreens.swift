@@ -1,13 +1,24 @@
 import SwiftUI
 
-// MARK: - Tab 1: Active List (Minor layout tweak)
+// MARK: - Tab 1: Active List
 struct TodoListView: View {
     @ObservedObject var manager: TodoManager
     @State private var itemToEdit: TodoItem?
     
+    // 接收排序参数
+    let sortOption: SortOption
+    
     var activeItems: [TodoItem] {
-        manager.items.filter { !$0.isCompleted }
-            .sorted { $0.createdAt > $1.createdAt } // Sort by newest first
+        let filtered = manager.items.filter { !$0.isCompleted }
+        
+        switch sortOption {
+        case .creationDate:
+            return filtered.sorted { $0.createdAt > $1.createdAt }
+        case .deadline:
+            return filtered.sorted { $0.deadline < $1.deadline }
+        case .title:
+            return filtered.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
+        }
     }
     
     var body: some View {
@@ -24,7 +35,9 @@ struct TodoListView: View {
                     .onTapGesture { itemToEdit = item }
                 }
             }
-            .padding()
+            // 👇 修改：明确设置左右间距为 25，确保不贴边
+            .padding(.horizontal, 25)
+            .padding(.top, 15)
             .padding(.bottom, 20)
         }
         .background(GameTheme.background)
@@ -34,83 +47,108 @@ struct TodoListView: View {
     }
 }
 
-// MARK: - Tab 2: Matrix (MAJOR UI OVERHAUL)
+// MARK: - Tab 2: Matrix
 struct EisenhowerMatrixView: View {
     @ObservedObject var manager: TodoManager
-    let columns = [GridItem(.flexible(), spacing: 15), GridItem(.flexible(), spacing: 15)]
+    @State private var itemToEdit: TodoItem?
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns, spacing: 15) {
+            VStack(spacing: 25) {
                 ForEach(EisenhowerQuadrant.allCases, id: \.self) { quadrant in
-                    QuadrantView(quadrant: quadrant, items: manager.items.filter { !$0.isCompleted && $0.quadrant == quadrant })
+                    QuadrantView(
+                        quadrant: quadrant,
+                        items: manager.items.filter { !$0.isCompleted && $0.quadrant == quadrant },
+                        onTap: { item in
+                            itemToEdit = item
+                        }
+                    )
                 }
             }
-            .padding(15)
-            .padding(.bottom, 20)
+            // 👇 修改：这里也设置为 25，保持统一
+            .padding(.horizontal, 25)
+            .padding(.vertical, 20)
         }
         .background(GameTheme.background)
+        .sheet(item: $itemToEdit) { item in
+            AddEditView(manager: manager, itemToEdit: item)
+        }
     }
 }
 
-// Redesigned to look like the game panels in references
+// MARK: - Quadrant View (保持不变)
 struct QuadrantView: View {
     let quadrant: EisenhowerQuadrant
     let items: [TodoItem]
+    let onTap: (TodoItem) -> Void
     
     var body: some View {
         VStack(spacing: 0) {
-            // Banner Header
-            Text(quadrant.rawValue)
-                .font(.system(.headline, design: .rounded).weight(.heavy))
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity)
-                .background(
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(quadrant.color)
-                        .overlay(RoundedRectangle(cornerRadius: 15).stroke(GameTheme.brown, lineWidth: 3))
-                )
-                .foregroundColor(GameTheme.brown)
-                .padding(.bottom, -15) // Overlap effect
-                .zIndex(1)
             
-            // List Container Panel
-            ScrollView {
-                VStack(spacing: 8) {
-                    if items.isEmpty {
+            // 1. 标题区域
+            ZStack {
+                quadrant.color
+                
+                Text(quadrant.rawValue)
+                    .font(.custom("Luckiest Guy", size: 26))
+                    .foregroundColor(.white)
+                    .shadow(color: quadrant.color.opacity(0.5), radius: 0, x: 2, y: 2)
+                    .padding(.vertical, 12)
+            }
+            .frame(height: 55)
+            
+            // 2. 内容区域
+            VStack(spacing: 8) {
+                if items.isEmpty {
+                    VStack {
+                        Spacer()
                         Text("Empty")
-                            .font(.system(.caption, design: .rounded).weight(.bold))
-                            .foregroundColor(GameTheme.brown.opacity(0.5))
-                            .padding(.top, 20)
+                            .font(.system(.headline, design: .rounded).weight(.bold))
+                            .foregroundColor(GameTheme.brown.opacity(0.4))
+                        Spacer()
                     }
+                    .frame(height: 120)
+                } else {
                     ForEach(items) { item in
-                        HStack {
+                        HStack(alignment: .top) {
                             Text(item.title)
-                                .font(.system(.caption, design: .rounded).weight(.bold))
+                                .font(.system(.callout, design: .rounded).weight(.bold))
                                 .lineLimit(2)
                                 .multilineTextAlignment(.leading)
+                                .fixedSize(horizontal: false, vertical: true)
                             Spacer()
-                            Label(item.deadline.formatted(date: .numeric, time: .omitted), systemImage: "calendar")
-                                .font(.system(size: 9, design: .rounded))
-                                .opacity(0.7)
+                            Text(item.deadline.formatted(date: .numeric, time: .omitted))
+                                .font(.system(size: 10, design: .rounded).weight(.medium))
+                                .padding(.vertical, 2)
+                                .padding(.horizontal, 6)
+                                .background(GameTheme.brown.opacity(0.1))
+                                .cornerRadius(4)
                         }
-                        .padding(8)
+                        .padding(10)
                         .background(Color.white)
-                        .cornerRadius(8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 2))
+                        .cornerRadius(10)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(GameTheme.brown, lineWidth: 2))
                         .foregroundColor(GameTheme.brown)
+                        .onTapGesture {
+                            onTap(item)
+                        }
                     }
+                    .padding(.bottom, 4)
                 }
-                .padding(12)
-                .padding(.top, 15) // Adjust for banner overlap
             }
-            .frame(height: 180)
-            .modifier(GamePanelStyle(cornerRadius: 15, border: 3))
+            .padding(12)
+            .background(GameTheme.cream)
         }
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(GameTheme.brown, lineWidth: 4)
+        )
+        .shadow(color: GameTheme.brown.opacity(0.4), radius: 0, x: 0, y: 6)
     }
 }
 
-// MARK: - Tab 3: Completed (Minor layout tweak)
+// MARK: - Tab 3: Completed
 struct CompletedListView: View {
     @ObservedObject var manager: TodoManager
     
@@ -133,14 +171,15 @@ struct CompletedListView: View {
                     .saturation(0.8)
                 }
             }
-            .padding()
+            // 👇 修改：同样设置左右间距 25
+            .padding(.horizontal, 25)
+            .padding(.top, 15)
             .padding(.bottom, 20)
         }
         .background(GameTheme.background)
     }
 }
 
-// Helper for empty states
 struct EmptyStateView: View {
     let message: String
     var body: some View {

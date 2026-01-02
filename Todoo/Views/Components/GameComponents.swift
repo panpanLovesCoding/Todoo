@@ -1,13 +1,9 @@
 import SwiftUI
 
-#Preview {
-    ContentView()
-}
-
-// 1. The Card Style (unchanged)
+// MARK: - 1. 通用面板样式
 struct GamePanelStyle: ViewModifier {
     var color: Color = GameTheme.cream
-    var cornerRadius: CGFloat = GameTheme.cornerRadius
+    var cornerRadius: CGFloat = GameTheme.cornerRadius // 默认为 20
     var border: CGFloat = GameTheme.borderWidth
     
     func body(content: Content) -> some View {
@@ -22,59 +18,41 @@ struct GamePanelStyle: ViewModifier {
     }
 }
 
-// 2. The 3D Button Style (unchanged)
+// MARK: - 2. 3D 按钮样式
 struct GameButtonStyle: ButtonStyle {
-    var color: Color = GameTheme.yellow // 默认颜色
+    var color: Color = GameTheme.yellow
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            // 1. 字体设置
-            .font(.custom("Luckiest Guy", size: 28))
-            //.font(.system(.headline, design: .rounded).weight(.heavy))
+            .font(.custom("Luckiest Guy", size: 20))
             .foregroundColor(GameTheme.brown)
-            
-            // 2. 按钮内边距 (控制按钮的大小/胖瘦)
-            .padding(.vertical, 12)    // 上下高度：数字越大，按钮越高
-            .padding(.horizontal, 24)  // 左右宽度：数字越大，按钮越宽
-            
+            .padding(.vertical, 12)
+            .padding(.horizontal, 24)
             .background(
                 ZStack {
-                    // 3. 3D 阴影层 (按钮的"厚度")
-                    RoundedRectangle(cornerRadius: 15) // 圆角 A
-                        .fill(color.opacity(0.6))      // 阴影颜色
-                        .offset(y: 6)                  // ⬇️ 关键参数：垂直偏移量。数字越大，按钮看起来越"厚"
-                    
-                    // 4. 按钮顶层 (实际按下去的那一面)
-                    RoundedRectangle(cornerRadius: 15) // 圆角 B (必须和圆角 A 一样)
-                        // 下面这行实现了按下去变暗的效果
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(color.opacity(0.6))
+                        .offset(y: 6)
+                    RoundedRectangle(cornerRadius: 12)
                         .fill(configuration.isPressed ? color.opacity(0.8) : color)
                 }
             )
             .overlay(
-                // 5. 描边 (黑框)
-                RoundedRectangle(cornerRadius: 15) // 圆角 C (必须和圆角 A、B 一样)
-                    .stroke(GameTheme.brown, lineWidth: 3) // ⬇️ 关键参数：边框粗细。数字越大，边框越粗
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(GameTheme.brown, lineWidth: 3)
             )
-            // 6. 按下缩放动画
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0) // 按下时缩小到 95%
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
     }
 }
 
-// 3. The Todo List Cell (Updated for Timestamps & Date format)
+// MARK: - 3. 任务卡片组件 (修改：圆角回归)
 struct TodoCard: View {
     let item: TodoItem
     let onToggle: () -> Void
     
-    // Helper date formatter for short dates
-    private var shortDateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .none
-        return formatter
-    }
-    
     var body: some View {
         HStack(alignment: .top) {
+            // 左侧：复选框
             Button(action: onToggle) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
@@ -92,6 +70,7 @@ struct TodoCard: View {
             .buttonStyle(PlainButtonStyle())
             .padding(.top, 4)
             
+            // 右侧：文本内容
             VStack(alignment: .leading, spacing: 6) {
                 Text(item.title)
                     .font(.system(.title3, design: .rounded).weight(.heavy))
@@ -99,7 +78,6 @@ struct TodoCard: View {
                     .foregroundColor(GameTheme.brown)
                     .fixedSize(horizontal: false, vertical: true)
                 
-                // NEW: Timestamps logic
                 Group {
                     if item.isCompleted, let doneTime = item.completedAt {
                         Text("Done: \(doneTime.formatted(date: .abbreviated, time: .shortened))")
@@ -113,7 +91,6 @@ struct TodoCard: View {
                 Divider().background(GameTheme.brown.opacity(0.3))
 
                 HStack {
-                    // Changed: Only display DATE for deadline
                     Label("Due: \(item.deadline.formatted(date: .abbreviated, time: .omitted))", systemImage: "calendar")
                     Spacer()
                     if item.isUrgent { Text("🔥 Urgent") }
@@ -125,6 +102,8 @@ struct TodoCard: View {
             Spacer()
         }
         .padding(12)
-        .modifier(GamePanelStyle())
+        // 👇 改回圆角：使用默认的 20 (GameTheme.cornerRadius)
+        // 如果觉得 20 太圆，可以改成 15
+        .modifier(GamePanelStyle(cornerRadius: 20))
     }
 }

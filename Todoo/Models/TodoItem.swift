@@ -4,15 +4,15 @@ enum EisenhowerQuadrant: String, CaseIterable, Codable {
     case doNow = "DO NOW"
     case schedule = "PLAN"
     case delegate = "DELEGATE"
-    case later = "LATER"
+    case later = "LATER" // ✅ 已修正：改为 later
     
-    // Slightly adjusted colors for better UI contrast in the new design
+    // 修改：去掉了透明度，改为实心颜色
     var color: Color {
         switch self {
-        case .doNow: return GameTheme.red.opacity(0.9)
-        case .schedule: return GameTheme.blue.opacity(0.9)
-        case .delegate: return GameTheme.yellow.opacity(0.9)
-        case .later: return Color.gray.opacity(0.7)
+        case .doNow: return GameTheme.red
+        case .schedule: return GameTheme.blue
+        case .delegate: return GameTheme.yellow
+        case .later: return Color.gray // ✅ 已修正：这里也需要改成 .later
         }
     }
 }
@@ -20,7 +20,7 @@ enum EisenhowerQuadrant: String, CaseIterable, Codable {
 struct TodoItem: Identifiable, Codable {
     var id = UUID()
     var title: String
-    var deadline: Date // treated as Date only in UI
+    var deadline: Date
     var isImportant: Bool
     var isUrgent: Bool
     var isCompleted: Bool = false
@@ -34,7 +34,7 @@ struct TodoItem: Identifiable, Codable {
         case (true, true): return .doNow
         case (true, false): return .schedule
         case (false, true): return .delegate
-        case (false, false): return .later
+        case (false, false): return .later // ✅ 已修正：这里同步改为 .later
         }
     }
 }
