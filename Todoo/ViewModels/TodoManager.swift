@@ -62,11 +62,19 @@ class TodoManager: ObservableObject {
     
     // MARK: - Data Persistence
     private func save() {
-        if let encoded = try? JSONEncoder().encode(items) {
-            UserDefaults.standard.set(encoded, forKey: "TodoItems")
+        // 1. 捕获当前数据副本 (在主线程获取，防止多线程竞争)
+        let itemsToSave = self.items
+        
+        // 2. 将耗时的“打包数据”操作移到后台线程
+        DispatchQueue.global(qos: .background).async {
+            // 3. 编码数据 (这是最耗时的步骤，放在后台就不卡界面了)
+            if let encoded = try? JSONEncoder().encode(itemsToSave) {
+                // 4. 保存到 UserDefaults
+                UserDefaults.standard.set(encoded, forKey: "TodoItems")
+            }
         }
     }
-    
+
     private func load() {
         if let data = UserDefaults.standard.data(forKey: "TodoItems"),
            let decoded = try? JSONDecoder().decode([TodoItem].self, from: data) {
