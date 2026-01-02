@@ -22,9 +22,15 @@ struct AddEditView: View {
         VStack(spacing: 20) {
             
             Text(isEditing ? "EDIT QUEST" : "NEW QUEST")
-                .font(.custom("Luckiest Guy", size: 32))
-                .foregroundColor(GameTheme.brown)
-                .shadow(color: .white.opacity(0.5), radius: 0, x: 2, y: 2)
+                .font(.custom("Luckiest Guy", size: 40))
+                .foregroundColor(Color.orange)
+                // --- 开始：添加黑色描边 ---
+                .shadow(color: .black, radius: 0, x: 1, y: 0)
+                .shadow(color: .black, radius: 0, x: -1, y: 0)
+                .shadow(color: .black, radius: 0, x: 0, y: 1)
+                .shadow(color: .black, radius: 0, x: 0, y: -1)
+                // --- 结束：添加黑色描边 ---
+                .shadow(color: .white.opacity(0.5), radius: 0, x: 2, y: 2) // 你原来的高光/阴影
                 .padding(.top, 10)
             
             VStack(alignment: .leading, spacing: 15) {
@@ -60,7 +66,8 @@ struct AddEditView: View {
                 }
                 
                 // Toggles
-                HStack(spacing: 20) {
+                // [修改] 间距从 20 减小到 12，给 Important 更多空间
+                HStack(spacing: 12) {
                     ToggleView(title: "Urgent", isOn: $isUrgent, icon: "flame.fill", color: GameTheme.red)
                     ToggleView(title: "Important", isOn: $isImportant, icon: "star.fill", color: GameTheme.yellow)
                 }
@@ -72,10 +79,10 @@ struct AddEditView: View {
                 Button(action: closeView) {
                     Text(lang.localized("Cancel"))
                         .font(.custom("Luckiest Guy", size: 20))
-                        .foregroundColor(GameTheme.brown)
+                        .foregroundColor(.white) // [修改] 红色背景配白色文字更好看
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
-                        .background(GameTheme.cream.opacity(0.8))
+                        .background(Color.red) // [修改] 背景换成红色
                         .cornerRadius(12)
                         .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
                 }
@@ -86,7 +93,7 @@ struct AddEditView: View {
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
-                        .background(title.isEmpty ? Color.gray : GameTheme.green)
+                        .background(Color.green)
                         .cornerRadius(12)
                         .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
                 }
@@ -160,6 +167,7 @@ struct ToggleView: View {
                 Text(title)
                     .font(.custom("Luckiest Guy", size: 16))
                     .foregroundColor(GameTheme.brown)
+                    .fixedSize(horizontal: true, vertical: false) // [修改] 强制文字完整显示
             }
             .padding(10)
             .frame(maxWidth: .infinity)
