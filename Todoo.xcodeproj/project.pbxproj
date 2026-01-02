@@ -1,0 +1,431 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		264711E12F071EE600A0169F /* TodooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711E02F071EE600A0169F /* TodooApp.swift */; };
+		264711E32F071EE600A0169F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711E22F071EE600A0169F /* ContentView.swift */; };
+		264711E52F071EE700A0169F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 264711E42F071EE700A0169F /* Assets.xcassets */; };
+		264711E82F071EE700A0169F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 264711E72F071EE700A0169F /* Preview Assets.xcassets */; };
+		264711F02F071F3600A0169F /* GameTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711EF2F071F3600A0169F /* GameTheme.swift */; };
+		264711F32F071F5000A0169F /* TodoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711F22F071F5000A0169F /* TodoItem.swift */; };
+		264711F62F071F6500A0169F /* TodoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711F52F071F6500A0169F /* TodoManager.swift */; };
+		264711FA2F071F7D00A0169F /* GameComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711F92F071F7D00A0169F /* GameComponents.swift */; };
+		264711FD2F071F9100A0169F /* AddEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711FC2F071F9100A0169F /* AddEditView.swift */; };
+		264711FF2F071FA000A0169F /* TabScreens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711FE2F071FA000A0169F /* TabScreens.swift */; };
+		264712012F0724F000A0169F /* CartoonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264712002F0724F000A0169F /* CartoonButton.swift */; };
+		264712072F07467D00A0169F /* LuckiestGuy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		264711DD2F071EE600A0169F /* Todoo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		264711E02F071EE600A0169F /* TodooApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodooApp.swift; sourceTree = "<group>"; };
+		264711E22F071EE600A0169F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		264711E42F071EE700A0169F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		264711E72F071EE700A0169F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		264711EF2F071F3600A0169F /* GameTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTheme.swift; sourceTree = "<group>"; };
+		264711F22F071F5000A0169F /* TodoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItem.swift; sourceTree = "<group>"; };
+		264711F52F071F6500A0169F /* TodoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoManager.swift; sourceTree = "<group>"; };
+		264711F92F071F7D00A0169F /* GameComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameComponents.swift; sourceTree = "<group>"; };
+		264711FC2F071F9100A0169F /* AddEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditView.swift; sourceTree = "<group>"; };
+		264711FE2F071FA000A0169F /* TabScreens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabScreens.swift; sourceTree = "<group>"; };
+		264712002F0724F000A0169F /* CartoonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartoonButton.swift; sourceTree = "<group>"; };
+		264712042F07436600A0169F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LuckiestGuy-Regular.ttf"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		264711DA2F071EE600A0169F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		264711D42F071EE600A0169F = {
+			isa = PBXGroup;
+			children = (
+				264712002F0724F000A0169F /* CartoonButton.swift */,
+				264711DF2F071EE600A0169F /* Todoo */,
+				264711DE2F071EE600A0169F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		264711DE2F071EE600A0169F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				264711DD2F071EE600A0169F /* Todoo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		264711DF2F071EE600A0169F /* Todoo */ = {
+			isa = PBXGroup;
+			children = (
+				264712042F07436600A0169F /* Info.plist */,
+				264711F72F071F7000A0169F /* Views */,
+				264711F42F071F5D00A0169F /* ViewModels */,
+				264711F12F071F4900A0169F /* Models */,
+				264711EE2F071F2500A0169F /* Helpers */,
+				264711E02F071EE600A0169F /* TodooApp.swift */,
+				264711E22F071EE600A0169F /* ContentView.swift */,
+				264711E42F071EE700A0169F /* Assets.xcassets */,
+				264711E62F071EE700A0169F /* Preview Content */,
+			);
+			path = Todoo;
+			sourceTree = "<group>";
+		};
+		264711E62F071EE700A0169F /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				264711E72F071EE700A0169F /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		264711EE2F071F2500A0169F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */,
+				264711EF2F071F3600A0169F /* GameTheme.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		264711F12F071F4900A0169F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				264711F22F071F5000A0169F /* TodoItem.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		264711F42F071F5D00A0169F /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				264711F52F071F6500A0169F /* TodoManager.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		264711F72F071F7000A0169F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				264711FB2F071F8900A0169F /* Screens */,
+				264711F82F071F7400A0169F /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		264711F82F071F7400A0169F /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				264711F92F071F7D00A0169F /* GameComponents.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		264711FB2F071F8900A0169F /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				264711FC2F071F9100A0169F /* AddEditView.swift */,
+				264711FE2F071FA000A0169F /* TabScreens.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		264711DC2F071EE600A0169F /* Todoo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 264711EB2F071EE700A0169F /* Build configuration list for PBXNativeTarget "Todoo" */;
+			buildPhases = (
+				264711D92F071EE600A0169F /* Sources */,
+				264711DA2F071EE600A0169F /* Frameworks */,
+				264711DB2F071EE600A0169F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Todoo;
+			productName = Todoo;
+			productReference = 264711DD2F071EE600A0169F /* Todoo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		264711D52F071EE600A0169F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					264711DC2F071EE600A0169F = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = 264711D82F071EE600A0169F /* Build configuration list for PBXProject "Todoo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 264711D42F071EE600A0169F;
+			productRefGroup = 264711DE2F071EE600A0169F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				264711DC2F071EE600A0169F /* Todoo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		264711DB2F071EE600A0169F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				264711E82F071EE700A0169F /* Preview Assets.xcassets in Resources */,
+				264711E52F071EE700A0169F /* Assets.xcassets in Resources */,
+				264712072F07467D00A0169F /* LuckiestGuy-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		264711D92F071EE600A0169F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				264711F62F071F6500A0169F /* TodoManager.swift in Sources */,
+				264711E32F071EE600A0169F /* ContentView.swift in Sources */,
+				264711F02F071F3600A0169F /* GameTheme.swift in Sources */,
+				264711FA2F071F7D00A0169F /* GameComponents.swift in Sources */,
+				264711F32F071F5000A0169F /* TodoItem.swift in Sources */,
+				264711FF2F071FA000A0169F /* TabScreens.swift in Sources */,
+				264712012F0724F000A0169F /* CartoonButton.swift in Sources */,
+				264711E12F071EE600A0169F /* TodooApp.swift in Sources */,
+				264711FD2F071F9100A0169F /* AddEditView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		264711E92F071EE700A0169F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		264711EA2F071EE700A0169F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		264711EC2F071EE700A0169F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Todoo/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Todoo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cmoisandy.Todoo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		264711ED2F071EE700A0169F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Todoo/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Todoo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cmoisandy.Todoo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		264711D82F071EE600A0169F /* Build configuration list for PBXProject "Todoo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				264711E92F071EE700A0169F /* Debug */,
+				264711EA2F071EE700A0169F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		264711EB2F071EE700A0169F /* Build configuration list for PBXNativeTarget "Todoo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				264711EC2F071EE700A0169F /* Debug */,
+				264711ED2F071EE700A0169F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 264711D52F071EE600A0169F /* Project object */;
+}
