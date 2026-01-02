@@ -1,7 +1,7 @@
 import SwiftUI
 
 class LanguageManager: ObservableObject {
-    @AppStorage("selectedLanguage") var language: String = "en" // "en" or "zh"
+    @AppStorage("selectedLanguage") var language: String = "en"
     
     static let shared = LanguageManager()
     
@@ -13,11 +13,15 @@ class LanguageManager: ObservableObject {
         }
     }
     
-    // 英文原文
     let en: [String: String] = [
-        "SETTING": "SETTING",
+        // 👇 修改：改成 SETTINGS
+        "SETTING": "SETTINGS",
+        
         "Music": "Music",
         "Sound": "Sound",
+        "Notifications": "Notif",
+        "Version": "Version",
+        
         "Language": "Language",
         "Rate Us": "Rate Us",
         "OK": "OK",
@@ -29,40 +33,40 @@ class LanguageManager: ObservableObject {
         "Add New": "Add New",
         "Delete All": "Reset Data",
         
-        // Titles
+        // Titles & Vibes ... (保持不变)
         "TITLE_ELITE_VANGUARD": "Elite Vanguard",
-        "TITLE_CHAOS_SURFER": "Chaos Surfer",
-        "TITLE_DEADLINE_DAREDEVIL": "Deadline Daredevil",
-        "TITLE_GRANDMASTER": "Grandmaster Strategist",
-        "TITLE_BENEVOLENT_RULER": "The Benevolent Ruler",
-        "TITLE_PHILOSOPHER_KING": "Philosopher King",
-        "TITLE_SPINNING_TOP": "Spinning Top",
-        "TITLE_SIDE_QUEST_HERO": "Side-Quest Hero",
-        "TITLE_NPC_ENERGY": "NPC Energy",
-        "TITLE_CLUTCH_GAMER": "The Clutch Gamer",
-        "TITLE_DAYDREAM_BELIEVER": "Daydream Believer",
-        "TITLE_POTATO_MODE": "Potato Mode Activated",
-        
-        // Vibes
         "VIBE_ELITE_VANGUARD": "\"I don't just put out fires; I build fireproof houses.\"",
+        "TITLE_CHAOS_SURFER": "Chaos Surfer",
         "VIBE_CHAOS_SURFER": "\"Is it 5 PM yet? I've done 100 things and 90 of them were screaming at me.\"",
+        "TITLE_DEADLINE_DAREDEVIL": "Deadline Daredevil",
         "VIBE_DEADLINE_DAREDEVIL": "\"Work hard, play hard, panic harder.\"",
+        "TITLE_GRANDMASTER": "Grandmaster Strategist",
         "VIBE_GRANDMASTER": "\"I planned for this crisis three weeks ago.\"",
+        "TITLE_BENEVOLENT_RULER": "The Benevolent Ruler",
         "VIBE_BENEVOLENT_RULER": "\"I'm trying to build an empire here, but sure, I'll fix your printer.\"",
+        "TITLE_PHILOSOPHER_KING": "Philosopher King",
         "VIBE_PHILOSOPHER_KING": "\"I have a 5-year plan, but first, let me watch this cat video for inspiration.\"",
+        "TITLE_SPINNING_TOP": "Spinning Top",
         "VIBE_SPINNING_TOP": "\"So much speed, so little destination.\"",
+        "TITLE_SIDE_QUEST_HERO": "Side-Quest Hero",
         "VIBE_SIDE_QUEST_HERO": "\"The world needs saving, but this villager needs 5 apples right now.\"",
+        "TITLE_NPC_ENERGY": "NPC Energy",
         "VIBE_NPC_ENERGY": "\"I'm just here to fill the space.\"",
+        "TITLE_CLUTCH_GAMER": "The Clutch Gamer",
         "VIBE_CLUTCH_GAMER": "\"I work best when I have exactly 5 minutes left.\"",
+        "TITLE_DAYDREAM_BELIEVER": "Daydream Believer",
         "VIBE_DAYDREAM_BELIEVER": "\"My to-do list is a wish list.\"",
+        "TITLE_POTATO_MODE": "Potato Mode Activated",
         "VIBE_POTATO_MODE": "\"Can I do this tomorrow? Or never? Never works for me.\""
     ]
     
-    // 中文翻译
     let zh: [String: String] = [
         "SETTING": "设 置",
         "Music": "背 景 音",
         "Sound": "音 效",
+        "Notifications": "提 醒",
+        "Version": "版 本",
+        
         "Language": "语 言",
         "Rate Us": "去 App Store 评分",
         "OK": "确 定",
@@ -74,32 +78,30 @@ class LanguageManager: ObservableObject {
         "Add New": "新 建",
         "Delete All": "重 置 数 据",
         
-        // Titles
+        // Titles & Vibes ... (保持不变)
         "TITLE_ELITE_VANGUARD": "精英先锋",
-        "TITLE_CHAOS_SURFER": "混沌冲浪手",
-        "TITLE_DEADLINE_DAREDEVIL": "死线狂徒",
-        "TITLE_GRANDMASTER": "特级战略大师",
-        "TITLE_BENEVOLENT_RULER": "仁慈的统治者",
-        "TITLE_PHILOSOPHER_KING": "哲学之王",
-        "TITLE_SPINNING_TOP": "疯狂陀螺",
-        "TITLE_SIDE_QUEST_HERO": "支线任务之王",
-        "TITLE_NPC_ENERGY": "路人甲体质",
-        "TITLE_CLUTCH_GAMER": "翻盘赌徒",
-        "TITLE_DAYDREAM_BELIEVER": "白日梦想家",
-        "TITLE_POTATO_MODE": "土豆模式开启中",
-        
-        // Vibes (意译以保留神韵)
         "VIBE_ELITE_VANGUARD": "“我不只负责救火，我还建造防火屋。”",
+        "TITLE_CHAOS_SURFER": "混沌冲浪手",
         "VIBE_CHAOS_SURFER": "“五点了吗？我做了100件事，其中90件都在对我尖叫。”",
+        "TITLE_DEADLINE_DAREDEVIL": "死线狂徒",
         "VIBE_DEADLINE_DAREDEVIL": "“努力工作，尽情玩乐，更加恐慌。”",
+        "TITLE_GRANDMASTER": "特级战略大师",
         "VIBE_GRANDMASTER": "“为了这场危机，我三周前就做好了计划。”",
+        "TITLE_BENEVOLENT_RULER": "仁慈的统治者",
         "VIBE_BENEVOLENT_RULER": "“我正忙着建立帝国呢，但行吧，我去修你的打印机。”",
+        "TITLE_PHILOSOPHER_KING": "哲学之王",
         "VIBE_PHILOSOPHER_KING": "“我有五年计划，但首先，让我看个猫片找找灵感。”",
+        "TITLE_SPINNING_TOP": "疯狂陀螺",
         "VIBE_SPINNING_TOP": "“速度极快，方向全无。”",
+        "TITLE_SIDE_QUEST_HERO": "支线任务之王",
         "VIBE_SIDE_QUEST_HERO": "“世界需要拯救，但这该死的村民现在就要5个苹果。”",
+        "TITLE_NPC_ENERGY": "路人甲体质",
         "VIBE_NPC_ENERGY": "“我只是来充数的 NPC。”",
+        "TITLE_CLUTCH_GAMER": "翻盘赌徒",
         "VIBE_CLUTCH_GAMER": "“离死线只有5分钟时，才是我战力最强的时候。”",
+        "TITLE_DAYDREAM_BELIEVER": "白日梦想家",
         "VIBE_DAYDREAM_BELIEVER": "“我的待办清单其实是许愿单。”",
+        "TITLE_POTATO_MODE": "土豆模式开启中",
         "VIBE_POTATO_MODE": "“能明天做吗？或者这辈子都不做？我觉得后者不错。”"
     ]
 }

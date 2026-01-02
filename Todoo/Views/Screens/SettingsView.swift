@@ -3,20 +3,30 @@ import SwiftUI
 struct SettingsView: View {
     @Binding var isPresented: Bool
     
-    // 传入 manager 获取称号数据
     @ObservedObject var manager: TodoManager
-    
     @ObservedObject var lang = LanguageManager.shared
     
+    // 设置状态
     @AppStorage("soundEnabled") var soundEnabled: Bool = true
     @AppStorage("musicEnabled") var musicEnabled: Bool = true
+    @AppStorage("notificationsEnabled") var notificationsEnabled: Bool = true
+    
+    // 获取 App 版本号
+    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+    
+    // 辅助函数：获取字体名称
+    func getFontName() -> String {
+        return lang.language == "zh" ? "HappyZcool-2016" : "Luckiest Guy"
+    }
+    
+    // 物理外挂：获取阴影颜色
+    func boldShadowColor(_ color: Color) -> Color {
+        return lang.language == "zh" ? color : .clear
+    }
     
     var body: some View {
-        // 获取当前人设
         let persona = manager.userPersonality
         
-        // ❌ 之前的问题：这里如果有 ZStack + Color.black，弹窗动画就会错。
-        // ✅ 修复：直接返回内容 VStack，背景交给 ContentView 处理。
         VStack(spacing: 0) {
             // 1. 顶部标题 Banner
             ZStack {
@@ -25,12 +35,14 @@ struct SettingsView: View {
                     .renderingMode(.template)
                     .foregroundColor(GameTheme.yellow)
                     .frame(width: 200, height: 60)
-                    .shadow(radius: 2, y: 2)
+                    // Banner 保持底部阴影
+                    .shadow(color: GameTheme.brown.opacity(0.3), radius: 0, x: 0, y: 3)
                     .overlay(
-                        Text(lang.localized("SETTING"))
-                            .font(.custom("Luckiest Guy", size: 28)) // 标题保持不变
+                        Text(lang.localized("SETTINGS"))
+                            .font(.custom(getFontName(), size: 28))
                             .foregroundColor(GameTheme.brown)
                             .offset(y: -5)
+                            .shadow(color: boldShadowColor(GameTheme.brown), radius: 0, x: 1, y: 1)
                     )
             }
             .zIndex(1)
@@ -39,7 +51,7 @@ struct SettingsView: View {
             // 2. 木板内容区域
             VStack(spacing: 20) {
                 
-                // 用户信息展示 (Title + Vibe)
+                // 用户信息 (Title + Vibe)
                 VStack(spacing: 8) {
                     Text(lang.localized(persona.title))
                         .font(.system(.title2, design: .rounded).weight(.heavy))
@@ -57,10 +69,16 @@ struct SettingsView: View {
                 
                 Divider().background(GameTheme.brown)
                 
-                // 音效开关
-                HStack(spacing: 30) {
+                // 开关控制区
+                HStack(spacing: 15) {
                     SoundToggleButton(icon: "music.note", label: "Music", isOn: $musicEnabled)
                     SoundToggleButton(icon: "speaker.wave.2.fill", label: "Sound", isOn: $soundEnabled)
+                    SoundToggleButton(icon: "bell.fill", label: "Notifications", isOn: $notificationsEnabled)
+                        .onChange(of: notificationsEnabled) { newValue in
+                            if newValue {
+                                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in }
+                            }
+                        }
                 }
                 
                 Divider().background(GameTheme.brown)
@@ -69,56 +87,72 @@ struct SettingsView: View {
                 HStack {
                     Button(action: { lang.language = "en" }) {
                         Text("ENG")
-                            // 👇 修改 1: 字体改为 Luckiest Guy
                             .font(.custom("Luckiest Guy", size: 18))
                             .frame(width: 80, height: 40)
-                            .background(lang.language == "en" ? GameTheme.orange : GameTheme.cream)
-                            .cornerRadius(8)
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 2))
                             .foregroundColor(GameTheme.brown)
                     }
+                    .buttonStyle(CartoonButtonStyle(
+                        color: lang.language == "en" ? GameTheme.orange : GameTheme.cream,
+                        cornerRadius: 8
+                    ))
                     
                     Button(action: { lang.language = "zh" }) {
                         Text("中文")
-                            // 👇 修改 2: 字体改为 Luckiest Guy
-                            .font(.custom("Luckiest Guy", size: 18))
+                            .font(.custom("HappyZcool-2016", size: 18))
                             .frame(width: 80, height: 40)
-                            .background(lang.language == "zh" ? GameTheme.orange : GameTheme.cream)
-                            .cornerRadius(8)
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 2))
                             .foregroundColor(GameTheme.brown)
+                            .shadow(color: GameTheme.brown, radius: 0, x: 0.5, y: 0.5)
                     }
+                    .buttonStyle(CartoonButtonStyle(
+                        color: lang.language == "zh" ? GameTheme.orange : GameTheme.cream,
+                        cornerRadius: 8
+                    ))
                 }
                 
-                // Rate Us 按钮
-                Button(action: {
-                    if let url = URL(string: "itms-apps://itunes.apple.com/app/id123456789") {
-                        UIApplication.shared.open(url)
+                // 按钮组
+                VStack(spacing: 12) {
+                    
+                    // Rate Us 按钮
+                    Button(action: {
+                        if let url = URL(string: "itms-apps://itunes.apple.com/app/id123456789") {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "star.fill").foregroundColor(.yellow)
+                            Text(lang.localized("Rate Us"))
+                                .font(.custom(getFontName(), size: 20))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(12)
+                        .foregroundColor(.white)
+                        .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                     }
-                }) {
-                    HStack {
-                        Image(systemName: "star.fill").foregroundColor(.yellow)
-                        Text(lang.localized("Rate Us"))
-                            // 👇 修改 3: 字体改为 Luckiest Guy
-                            .font(.custom("Luckiest Guy", size: 20))
+                    .buttonStyle(CartoonButtonStyle(color: GameTheme.blue, cornerRadius: 12))
+                    
+                    // Reset Data 按钮 & Version
+                    VStack(spacing: 8) {
+                        Button(action: {
+                             manager.items.removeAll()
+                        }) {
+                            HStack {
+                                Image(systemName: "trash.fill")
+                                Text(lang.localized("Delete All"))
+                                    .font(.custom(getFontName(), size: 18))
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(10)
+                            .foregroundColor(.white)
+                            .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
+                        }
+                        .buttonStyle(CartoonButtonStyle(color: Color(red: 0.85, green: 0.3, blue: 0.3), cornerRadius: 12))
+                        
+                        Text("\(lang.localized("Version")) \(appVersion)")
+                            .font(.system(size: 10, weight: .medium, design: .monospaced))
+                            .foregroundColor(GameTheme.brown.opacity(0.3))
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(12)
-                    .background(GameTheme.blue)
-                    .cornerRadius(12)
-                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 2))
-                    .foregroundColor(.white)
                 }
-                
-                // 重置数据按钮
-                Button(action: {
-                    // manager.items.removeAll()
-                }) {
-                    Text(lang.localized("Delete All"))
-                         // 👇 修改 4: 字体改为 Luckiest Guy (稍微小一点)
-                        .font(.custom("Luckiest Guy", size: 16))
-                        .foregroundColor(GameTheme.brown.opacity(0.5))
-                }
+                .padding(.bottom, 15)
             }
             .padding(25)
             .background(GameTheme.cream)
@@ -133,22 +167,40 @@ struct SettingsView: View {
                 }
             }) {
                 Text(lang.localized("OK"))
-                    // 这个本来就是 Luckiest Guy，保持不变
-                    .font(.custom("Luckiest Guy", size: 24))
+                    .font(.custom(getFontName(), size: 24))
                     .foregroundColor(.white)
                     .padding(.vertical, 10)
                     .padding(.horizontal, 40)
-                    .background(GameTheme.green)
-                    .cornerRadius(15)
-                    .overlay(RoundedRectangle(cornerRadius: 15).stroke(GameTheme.brown, lineWidth: 3))
-                    .shadow(radius: 3, y: 3)
+                    .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
             }
             .offset(y: -25)
+            .buttonStyle(CartoonButtonStyle(color: GameTheme.green, cornerRadius: 15))
         }
     }
 }
 
-// 辅助组件 (保持在文件底部)
+// 🆕 最终版 3D 卡通按钮样式
+// 移除了 .overlay(stroke)，消除了顶部的黑线
+struct CartoonButtonStyle: ButtonStyle {
+    let color: Color
+    var cornerRadius: CGFloat = 12
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(color)
+            .cornerRadius(cornerRadius)
+            // ❌ 移除：.overlay(RoundedRectangle(cornerRadius: cornerRadius).stroke(...))
+            // 移除描边后，顶部的黑线就消失了，只剩下颜色的分界，非常干净的 3D 感
+            
+            // 👇 底部阴影充当“厚度”
+            // 颜色加深一点 (GameTheme.brown) 模拟侧面阴影
+            .shadow(color: GameTheme.brown.opacity(0.4), radius: 0, x: 0, y: configuration.isPressed ? 0 : 4)
+            .offset(y: configuration.isPressed ? 4 : 0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+    }
+}
+
+// 辅助组件
 struct SoundToggleButton: View {
     let icon: String
     let label: String
@@ -162,10 +214,10 @@ struct SoundToggleButton: View {
                     .foregroundColor(isOn ? GameTheme.brown : Color.gray)
             }
             .frame(width: 60, height: 60)
-            .background(isOn ? GameTheme.yellow : Color.gray.opacity(0.3))
-            .cornerRadius(12)
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 2))
-            .shadow(color: .black.opacity(0.2), radius: 1, y: 2)
         }
+        .buttonStyle(CartoonButtonStyle(
+            color: isOn ? GameTheme.yellow : Color.gray.opacity(0.3),
+            cornerRadius: 12
+        ))
     }
 }
