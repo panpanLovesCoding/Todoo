@@ -32,7 +32,8 @@ struct ContentView: View {
                     TodoListView(manager: manager, sortOption: sortOption)
                         .tag(0)
                     
-                    EisenhowerMatrixView(manager: manager)
+                    // 👇 修改：传入 sortOption
+                    EisenhowerMatrixView(manager: manager, sortOption: sortOption)
                         .tag(1)
                     
                     CompletedListView(manager: manager)
@@ -47,7 +48,7 @@ struct ContentView: View {
                         .frame(height: 4)
                         .foregroundColor(Color.black.opacity(0.3))
                     
-                    // 👇 修改：spacing 加大到 95，让图标分得更开一些，填补左右的空白
+                    // 按钮组
                     HStack(spacing: 95) {
                         TabButton(icon: "list.bullet.clipboard", text: LanguageManager.shared.localized("Tasks"), isSelected: selectedTab == 0) { selectedTab = 0 }
                         

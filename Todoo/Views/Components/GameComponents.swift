@@ -45,10 +45,12 @@ struct GameButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - 3. 任务卡片组件 (修改：分割线全宽)
+// MARK: - 3. 任务卡片组件 (修改：增加 showSeparator 控制)
 struct TodoCard: View {
     let item: TodoItem
     var isCardStyle: Bool = true
+    // 新增：控制是否显示底部分割线 (默认显示)
+    var showSeparator: Bool = true
     let onToggle: () -> Void
     
     var body: some View {
@@ -108,10 +110,10 @@ struct TodoCard: View {
             .padding(12)
             
             // 列表模式下：底部分割线
-            if !isCardStyle {
+            // 👇 修改：增加了 && showSeparator 判断
+            if !isCardStyle && showSeparator {
                 Divider()
                     .background(GameTheme.brown.opacity(0.5))
-                    // 👇 修改：去掉了 padding，现在是从最左到最右
             }
         }
         .background(isCardStyle ? GameTheme.cream : Color.clear)

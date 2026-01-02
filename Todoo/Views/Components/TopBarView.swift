@@ -12,7 +12,7 @@ struct TopBarView: View {
     @Binding var showSettings: Bool
     @Binding var showAddSheet: Bool
     
-    // 2. 新增：绑定排序选项
+    // 2. 绑定排序选项
     @Binding var sortOption: SortOption
     
     @ObservedObject var lang = LanguageManager.shared
@@ -29,7 +29,7 @@ struct TopBarView: View {
             HStack(alignment: .center) {
                 
                 // 左侧：状态计数器
-                HStack(spacing: 12) {
+                HStack(spacing: 8) {
                     StatusCounter(icon: "list.bullet", color: GameTheme.yellow, value: totalActive)
                     StatusCounter(icon: "exclamationmark.2", color: GameTheme.red, value: urgentImportant)
                     StatusCounter(icon: "checkmark", color: GameTheme.green, value: totalDone)
@@ -38,14 +38,14 @@ struct TopBarView: View {
                 Spacer()
                 
                 // 右侧：功能按键组
-                HStack(spacing: 15) {
+                HStack(spacing: 10) {
                     
-                    // 1. Add Button (最左)
+                    // 1. Add Button
                     TopBarButton(icon: "plus", color: GameTheme.green) {
                         showAddSheet = true
                     }
                     
-                    // 2. Sort Button (中间) - 这是一个菜单按钮
+                    // 2. Sort Button (Menu)
                     Menu {
                         Picker("Sort By", selection: $sortOption) {
                             ForEach(SortOption.allCases, id: \.self) { option in
@@ -53,29 +53,29 @@ struct TopBarView: View {
                             }
                         }
                     } label: {
-                        // 使用跟 TopBarButton 一模一样的样式
                         Image(systemName: "arrow.up.arrow.down")
-                            .font(.system(size: 20, weight: .black))
+                            .font(.system(size: 16, weight: .black))
                             .foregroundColor(.white)
-                            .frame(width: 44, height: 44)
+                            .frame(width: 38, height: 38)
                             .background(
                                 ZStack {
-                                    RoundedRectangle(cornerRadius: 12).fill(GameTheme.orange) // 使用橙色区分
-                                    RoundedRectangle(cornerRadius: 12)
+                                    RoundedRectangle(cornerRadius: 10).fill(GameTheme.orange)
+                                    RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.white.opacity(0.6), lineWidth: 3)
                                         .padding(1)
                                 }
                             )
-                            .shadow(color: .black.opacity(0.4), radius: 3, y: 3)
+                            .shadow(color: .black.opacity(0.4), radius: 2, y: 2)
                     }
                     
-                    // 3. Settings Button (最右)
+                    // 3. Settings Button
                     TopBarButton(icon: "gearshape.fill", color: GameTheme.blue) {
                         showSettings = true
                     }
                 }
             }
-            .padding(.horizontal, 20)
+            // 👇 修改：边距从 35 改为 25，让图标往两边散开一点
+            .padding(.horizontal, 25)
             .padding(.top, 60)
             
             // MARK: - 第二行：App 标题
@@ -84,16 +84,16 @@ struct TopBarView: View {
                 .foregroundColor(GameTheme.cream)
                 .shadow(color: GameTheme.brown, radius: 0, x: 4, y: 4)
                 .padding(.bottom, 10)
-                .padding(.top, 20)
+                .padding(.top, 10)
         }
         .background(
-            Color(red: 0.25, green: 0.15, blue: 0.05) // 深褐色木纹背景
+            Color(red: 0.25, green: 0.15, blue: 0.05)
                 .ignoresSafeArea()
         )
     }
 }
 
-// (下面的 StatusCounter 和 TopBarButton 保持不变)
+// MARK: - Status Counter 组件 (保持小尺寸)
 struct StatusCounter: View {
     let icon: String
     let color: Color
@@ -102,11 +102,11 @@ struct StatusCounter: View {
     var body: some View {
         ZStack(alignment: .leading) {
             Text("\(value)")
-                .font(.system(size: 14, weight: .black, design: .rounded))
+                .font(.system(size: 12, weight: .black, design: .rounded))
                 .foregroundColor(.white)
-                .padding(.leading, 42)
-                .padding(.trailing, 12)
-                .padding(.vertical, 6)
+                .padding(.leading, 36)
+                .padding(.trailing, 10)
+                .padding(.vertical, 4)
                 .background(
                     Capsule()
                         .fill(Color.black.opacity(0.5))
@@ -119,7 +119,7 @@ struct StatusCounter: View {
             ZStack {
                 Circle()
                     .fill(color)
-                    .frame(width: 32, height: 32)
+                    .frame(width: 28, height: 28)
                     .overlay(
                         Circle()
                             .stroke(Color.white, lineWidth: 2)
@@ -127,13 +127,14 @@ struct StatusCounter: View {
                     .shadow(radius: 2, y: 2)
                 
                 Image(systemName: icon)
-                    .font(.system(size: 14, weight: .black))
+                    .font(.system(size: 12, weight: .black))
                     .foregroundColor(GameTheme.brown)
             }
         }
     }
 }
 
+// MARK: - Top Bar Button 组件 (保持小尺寸)
 struct TopBarButton: View {
     let icon: String
     let color: Color
@@ -142,18 +143,18 @@ struct TopBarButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: icon)
-                .font(.system(size: 20, weight: .black))
+                .font(.system(size: 16, weight: .black))
                 .foregroundColor(.white)
-                .frame(width: 44, height: 44)
+                .frame(width: 38, height: 38)
                 .background(
                     ZStack {
-                        RoundedRectangle(cornerRadius: 12).fill(color)
-                        RoundedRectangle(cornerRadius: 12)
+                        RoundedRectangle(cornerRadius: 10).fill(color)
+                        RoundedRectangle(cornerRadius: 10)
                             .stroke(Color.white.opacity(0.6), lineWidth: 3)
                             .padding(1)
                     }
                 )
-                .shadow(color: .black.opacity(0.4), radius: 3, y: 3)
+                .shadow(color: .black.opacity(0.4), radius: 2, y: 2)
         }
     }
 }
