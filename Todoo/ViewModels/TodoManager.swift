@@ -3,80 +3,67 @@ import SwiftUI
 class TodoManager: ObservableObject {
     @Published var items: [TodoItem] = [] {
         didSet {
-            saveData()
+            save()
         }
     }
     
-    private let fileName = "todos.json"
-    
     init() {
-        loadData()
+        load()
     }
     
-    // MARK: - User Actions
+    // 1. 添加任务
+    func addItem(title: String, deadline: Date, isUrgent: Bool, isImportant: Bool) {
+        let newItem = TodoItem(
+            title: title,
+            deadline: deadline,
+            isUrgent: isUrgent,
+            isImportant: isImportant
+        )
+        items.append(newItem)
+    }
     
+    // 2. 更新任务
+    func updateItem(item: TodoItem, title: String, deadline: Date, isUrgent: Bool, isImportant: Bool) {
+        if let index = items.firstIndex(where: { $0.id == item.id }) {
+            var updatedItem = items[index]
+            updatedItem.title = title
+            updatedItem.deadline = deadline
+            updatedItem.isUrgent = isUrgent
+            updatedItem.isImportant = isImportant
+            items[index] = updatedItem
+        }
+    }
+    
+    // 3. 删除任务
+    func deleteItem(item: TodoItem) {
+        if let index = items.firstIndex(where: { $0.id == item.id }) {
+            items.remove(at: index)
+        }
+    }
+    
+    // 4. 切换状态
     func toggleStatus(for item: TodoItem) {
         if let index = items.firstIndex(where: { $0.id == item.id }) {
-            withAnimation(.spring()) {
-                items[index].isCompleted.toggle()
-                if items[index].isCompleted {
-                    items[index].completedAt = Date()
-                } else {
-                    items[index].completedAt = nil
-                }
+            items[index].isCompleted.toggle()
+            if items[index].isCompleted {
+                items[index].completedAt = Date()
+            } else {
+                items[index].completedAt = nil
             }
         }
     }
     
-    func delete(item: TodoItem) {
-        withAnimation {
-            items.removeAll(where: { $0.id == item.id })
+    // MARK: - Data Persistence
+    private func save() {
+        if let encoded = try? JSONEncoder().encode(items) {
+            UserDefaults.standard.set(encoded, forKey: "TodoItems")
         }
     }
     
-    func delete(id: UUID) {
-        withAnimation {
-            items.removeAll(where: { $0.id == id })
-        }
-    }
-    
-    func addOrUpdate(_ item: TodoItem) {
-        if let index = items.firstIndex(where: { $0.id == item.id }) {
-            var updatedItem = item
-            updatedItem.createdAt = items[index].createdAt // Keep original creation date
-            items[index] = updatedItem
-        } else {
-            items.append(item)
-        }
-    }
-    
-    // MARK: - Persistence Logic (更为健壮的保存/读取)
-    
-    private func getDocumentsDirectory() -> URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    }
-    
-    private func saveData() {
-        do {
-            let data = try JSONEncoder().encode(items)
-            let url = getDocumentsDirectory().appendingPathComponent(fileName)
-            try data.write(to: url)
-            print("💾 Data saved successfully to: \(url.path)")
-        } catch {
-            print("❌ Failed to save data: \(error.localizedDescription)")
-        }
-    }
-    
-    private func loadData() {
-        let url = getDocumentsDirectory().appendingPathComponent(fileName)
-        do {
-            let data = try Data(contentsOf: url)
-            let decodedItems = try JSONDecoder().decode([TodoItem].self, from: data)
-            self.items = decodedItems
-            print("📂 Data loaded successfully. Count: \(decodedItems.count)")
-        } catch {
-            // 如果读取失败（比如因为数据结构变了），这里会打印具体原因
-            print("⚠️ Failed to load data (Starting fresh): \(error)")
+    private func load() {
+        if let data = UserDefaults.standard.data(forKey: "TodoItems"),
+           let decoded = try? JSONDecoder().decode([TodoItem].self, from: data) {
+            items = decoded
         }
     }
 }

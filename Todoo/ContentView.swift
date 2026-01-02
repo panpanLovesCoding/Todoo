@@ -6,6 +6,7 @@ struct ContentView: View {
     @State private var showingSettings = false
     @State private var selectedTab = 0
     
+    // 排序状态
     @State private var sortOption: SortOption = .creationDate
     
     init() {
@@ -16,6 +17,7 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
+            // 背景
             GameTheme.background.ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -32,7 +34,6 @@ struct ContentView: View {
                     TodoListView(manager: manager, sortOption: sortOption)
                         .tag(0)
                     
-                    // 👇 修改：传入 sortOption
                     EisenhowerMatrixView(manager: manager, sortOption: sortOption)
                         .tag(1)
                     
@@ -43,12 +44,10 @@ struct ContentView: View {
                 
                 // 3. 底部 TabBar
                 VStack(spacing: 0) {
-                    // 分割线
                     Rectangle()
                         .frame(height: 4)
                         .foregroundColor(Color.black.opacity(0.3))
                     
-                    // 按钮组
                     HStack(spacing: 95) {
                         TabButton(icon: "list.bullet.clipboard", text: LanguageManager.shared.localized("Tasks"), isSelected: selectedTab == 0) { selectedTab = 0 }
                         
@@ -67,15 +66,34 @@ struct ContentView: View {
             }
             .ignoresSafeArea(.all, edges: .top)
             
+            // MARK: - 弹窗区域 (ZStack Overlay)
+            
             // 4. 设置弹窗
             if showingSettings {
+                // 半透明遮罩 (点击关闭)
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture { showingSettings = false }
+                    .zIndex(99)
+                
                 SettingsView(isPresented: $showingSettings)
-                    .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                    .transition(.scale.combined(with: .opacity))
                     .zIndex(100)
             }
-        }
-        .sheet(isPresented: $showingAddSheet) {
-            AddEditView(manager: manager, itemToEdit: nil)
+            
+            // 5. 👇 修改：添加任务弹窗 (现在也是弹窗了！)
+            if showingAddSheet {
+                // 半透明遮罩
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture { showingAddSheet = false }
+                    .zIndex(101)
+                
+                // 传入 binding 以便内部关闭
+                AddEditView(manager: manager, itemToEdit: nil, isPresented: $showingAddSheet)
+                    .transition(.scale.combined(with: .opacity))
+                    .zIndex(102)
+            }
         }
     }
 }

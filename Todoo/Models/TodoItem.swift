@@ -1,40 +1,40 @@
 import SwiftUI
 
-enum EisenhowerQuadrant: String, CaseIterable, Codable {
-    case doNow = "DO NOW"
-    case schedule = "PLAN"
-    case delegate = "DELEGATE"
-    case later = "LATER" // ✅ 已修正：改为 later
+struct TodoItem: Identifiable, Codable {
+    var id = UUID()
+    var title: String
+    var isCompleted: Bool = false
+    var createdAt: Date = Date()
+    var deadline: Date = Date()
+    var completedAt: Date? = nil
     
-    // 修改：去掉了透明度，改为实心颜色
-    var color: Color {
-        switch self {
-        case .doNow: return GameTheme.red
-        case .schedule: return GameTheme.blue
-        case .delegate: return GameTheme.yellow
-        case .later: return Color.gray // ✅ 已修正：这里也需要改成 .later
+    // Matrix 属性
+    var isUrgent: Bool = false
+    var isImportant: Bool = false
+    
+    var quadrant: EisenhowerQuadrant {
+        switch (isUrgent, isImportant) {
+        case (true, true): return .doNow
+        case (false, true): return .plan
+        case (true, false): return .delegate
+        case (false, false): return .eliminate
         }
     }
 }
 
-struct TodoItem: Identifiable, Codable {
-    var id = UUID()
-    var title: String
-    var deadline: Date
-    var isImportant: Bool
-    var isUrgent: Bool
-    var isCompleted: Bool = false
+enum EisenhowerQuadrant: String, CaseIterable, Codable {
+    case doNow = "DO NOW"
+    case plan = "PLAN"
+    case delegate = "DELEGATE"
+    case eliminate = "LATER"
     
-    // NEW: Timestamps
-    var createdAt: Date = Date()
-    var completedAt: Date? = nil
-    
-    var quadrant: EisenhowerQuadrant {
-        switch (isImportant, isUrgent) {
-        case (true, true): return .doNow
-        case (true, false): return .schedule
-        case (false, true): return .delegate
-        case (false, false): return .later // ✅ 已修正：这里同步改为 .later
+    var color: Color {
+        switch self {
+        case .doNow: return GameTheme.red
+        case .plan: return GameTheme.blue
+        case .delegate: return GameTheme.yellow
+        // 👇 修复：把 GameTheme.gray 改成 Color.gray (系统自带灰色)
+        case .eliminate: return Color.gray
         }
     }
 }
