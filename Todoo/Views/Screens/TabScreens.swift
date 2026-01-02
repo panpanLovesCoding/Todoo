@@ -26,14 +26,12 @@ struct TodoListView: View {
                         .padding(.top, 40)
                     } else {
                         VStack(spacing: 0) {
-                            // 使用提取出的子视图
                             ForEach(activeItems, id: \.id) { item in
                                 ActiveTodoRow(item: item, manager: manager, itemToEdit: $itemToEdit)
                             }
                         }
                         .padding(.horizontal, 10)
                         .padding(.bottom, 20)
-                        // 绑定动画到数组变化
                         .animation(.spring(response: 0.5, dampingFraction: 0.7), value: activeItems)
                     }
                 }
@@ -43,7 +41,7 @@ struct TodoListView: View {
     }
 }
 
-// 🆕 提取的子视图：Active 列表行
+// 子视图：Active 列表行
 struct ActiveTodoRow: View {
     let item: TodoItem
     @ObservedObject var manager: TodoManager
@@ -59,15 +57,15 @@ struct ActiveTodoRow: View {
         .onTapGesture {
             withAnimation { itemToEdit = item }
         }
-        // 定义滑出动画
+        // 动画：进出都从底部滑动
         .transition(.asymmetric(
-            insertion: .identity,
+            insertion: .move(edge: .bottom).combined(with: .opacity),
             removal: .move(edge: .bottom).combined(with: .opacity)
         ))
     }
 }
 
-// List Header
+// 头部：Active List Header
 struct TodoListHeader: View {
     var body: some View {
         ZStack {
@@ -121,7 +119,6 @@ struct EisenhowerMatrixView: View {
                                     .padding(.horizontal, 20)
                                     .padding(.vertical, 4)
                             } else {
-                                // 使用提取出的子视图
                                 ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                                     MatrixTodoRow(
                                         item: item,
@@ -145,7 +142,7 @@ struct EisenhowerMatrixView: View {
     }
 }
 
-// 🆕 提取的子视图：Matrix 列表行
+// 子视图：Matrix 列表行
 struct MatrixTodoRow: View {
     let item: TodoItem
     let showSeparator: Bool
@@ -164,13 +161,13 @@ struct MatrixTodoRow: View {
             withAnimation { itemToEdit = item }
         }
         .transition(.asymmetric(
-            insertion: .identity,
+            insertion: .move(edge: .bottom).combined(with: .opacity),
             removal: .move(edge: .bottom).combined(with: .opacity)
         ))
     }
 }
 
-// Matrix Section Header
+// 头部：Matrix Header
 struct MatrixSectionHeader: View {
     let quadrant: EisenhowerQuadrant
     var body: some View {
@@ -220,6 +217,7 @@ struct CompletedListView: View {
                         }
                         .padding(.horizontal, 10)
                         .padding(.bottom, 20)
+                        .animation(.spring(response: 0.5, dampingFraction: 0.7), value: completedItems)
                     }
                 }
             }
@@ -228,7 +226,7 @@ struct CompletedListView: View {
     }
 }
 
-// 🆕 提取的子视图：Completed 列表行
+// 子视图：Completed 列表行
 struct CompletedTodoRow: View {
     let item: TodoItem
     @ObservedObject var manager: TodoManager
@@ -247,10 +245,14 @@ struct CompletedTodoRow: View {
         .onTapGesture {
             withAnimation { itemToEdit = item }
         }
+        .transition(.asymmetric(
+            insertion: .move(edge: .bottom).combined(with: .opacity),
+            removal: .move(edge: .bottom).combined(with: .opacity)
+        ))
     }
 }
 
-// Completed List Header
+// 头部：Completed List Header
 struct CompletedListHeader: View {
     var body: some View {
         ZStack {
@@ -272,7 +274,7 @@ struct CompletedListHeader: View {
     }
 }
 
-// Helper
+// 辅助组件：Empty State
 struct EmptyStateView: View {
     let message: String
     var body: some View {
