@@ -3,7 +3,6 @@ import SwiftUI
 // MARK: - Tab 1: Active List
 struct TodoListView: View {
     @ObservedObject var manager: TodoManager
-    // 👇 修改：改为 Binding，接收 ContentView 的状态
     @Binding var itemToEdit: TodoItem?
     let sortOption: SortOption
     
@@ -19,9 +18,7 @@ struct TodoListView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                
                 Section(header: TodoListHeader()) {
-                    
                     if activeItems.isEmpty {
                         VStack {
                             EmptyStateView(message: "No active quests!")
@@ -29,33 +26,48 @@ struct TodoListView: View {
                         .padding(.top, 40)
                     } else {
                         VStack(spacing: 0) {
-                            ForEach(activeItems) { item in
-                                TodoCard(
-                                    item: item,
-                                    isCardStyle: false,
-                                    onToggle: { manager.toggleStatus(for: item) }
-                                )
-                                .background(GameTheme.cream)
-                                .onTapGesture {
-                                    // 👇 触发：设置 Binding，通知 ContentView 弹窗
-                                    withAnimation {
-                                        itemToEdit = item
-                                    }
-                                }
+                            // 使用提取出的子视图
+                            ForEach(activeItems, id: \.id) { item in
+                                ActiveTodoRow(item: item, manager: manager, itemToEdit: $itemToEdit)
                             }
                         }
                         .padding(.horizontal, 10)
                         .padding(.bottom, 20)
+                        // 绑定动画到数组变化
+                        .animation(.spring(response: 0.5, dampingFraction: 0.7), value: activeItems)
                     }
                 }
             }
         }
         .background(GameTheme.cream)
-        // ❌ 删除：.sheet(item: $itemToEdit) ...
     }
 }
 
-// List Header (Quest Log - 保持木纹色)
+// 🆕 提取的子视图：Active 列表行
+struct ActiveTodoRow: View {
+    let item: TodoItem
+    @ObservedObject var manager: TodoManager
+    @Binding var itemToEdit: TodoItem?
+    
+    var body: some View {
+        TodoCard(
+            item: item,
+            isCardStyle: false,
+            onToggle: { manager.toggleStatus(for: item) }
+        )
+        .background(GameTheme.cream)
+        .onTapGesture {
+            withAnimation { itemToEdit = item }
+        }
+        // 定义滑出动画
+        .transition(.asymmetric(
+            insertion: .identity,
+            removal: .move(edge: .bottom).combined(with: .opacity)
+        ))
+    }
+}
+
+// List Header
 struct TodoListHeader: View {
     var body: some View {
         ZStack {
@@ -81,25 +93,18 @@ struct TodoListHeader: View {
 struct EisenhowerMatrixView: View {
     @ObservedObject var manager: TodoManager
     let sortOption: SortOption
-    // 👇 修改：改为 Binding
     @Binding var itemToEdit: TodoItem?
     
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
                 ForEach(EisenhowerQuadrant.allCases, id: \.self) { quadrant in
-                    // 1. 筛选
                     let baseItems = manager.items.filter { !$0.isCompleted && $0.quadrant == quadrant }
-                    
-                    // 2. 排序
                     let items: [TodoItem] = {
                         switch sortOption {
-                        case .creationDate:
-                            return baseItems.sorted { $0.createdAt > $1.createdAt }
-                        case .deadline:
-                            return baseItems.sorted { $0.deadline < $1.deadline }
-                        case .title:
-                            return baseItems.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
+                        case .creationDate: return baseItems.sorted { $0.createdAt > $1.createdAt }
+                        case .deadline: return baseItems.sorted { $0.deadline < $1.deadline }
+                        case .title: return baseItems.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
                         }
                     }()
                     
@@ -116,33 +121,52 @@ struct EisenhowerMatrixView: View {
                                     .padding(.horizontal, 20)
                                     .padding(.vertical, 4)
                             } else {
+                                // 使用提取出的子视图
                                 ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                                    TodoCard(
+                                    MatrixTodoRow(
                                         item: item,
-                                        isCardStyle: false,
                                         showSeparator: index < items.count - 1,
-                                        onToggle: { manager.toggleStatus(for: item) }
+                                        manager: manager,
+                                        itemToEdit: $itemToEdit
                                     )
-                                    .background(GameTheme.cream)
-                                    .onTapGesture {
-                                        // 👇 触发
-                                        withAnimation {
-                                            itemToEdit = item
-                                        }
-                                    }
                                 }
                             }
                         }
                         .padding(.horizontal, 10)
                         .padding(.top, 0)
                         .padding(.bottom, 6)
+                        .animation(.spring(response: 0.5, dampingFraction: 0.7), value: items)
                     }
                 }
             }
             .background(GameTheme.cream)
         }
         .background(GameTheme.cream)
-        // ❌ 删除：.sheet
+    }
+}
+
+// 🆕 提取的子视图：Matrix 列表行
+struct MatrixTodoRow: View {
+    let item: TodoItem
+    let showSeparator: Bool
+    @ObservedObject var manager: TodoManager
+    @Binding var itemToEdit: TodoItem?
+    
+    var body: some View {
+        TodoCard(
+            item: item,
+            isCardStyle: false,
+            showSeparator: showSeparator,
+            onToggle: { manager.toggleStatus(for: item) }
+        )
+        .background(GameTheme.cream)
+        .onTapGesture {
+            withAnimation { itemToEdit = item }
+        }
+        .transition(.asymmetric(
+            insertion: .identity,
+            removal: .move(edge: .bottom).combined(with: .opacity)
+        ))
     }
 }
 
@@ -172,7 +196,6 @@ struct MatrixSectionHeader: View {
 // MARK: - Tab 3: Completed
 struct CompletedListView: View {
     @ObservedObject var manager: TodoManager
-    // 👇 修改：改为 Binding
     @Binding var itemToEdit: TodoItem?
     
     var completedItems: [TodoItem] {
@@ -183,9 +206,7 @@ struct CompletedListView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                
                 Section(header: CompletedListHeader()) {
-                    
                     if completedItems.isEmpty {
                         VStack {
                             EmptyStateView(message: "No completed quests yet!")
@@ -194,21 +215,7 @@ struct CompletedListView: View {
                     } else {
                         VStack(spacing: 0) {
                             ForEach(Array(completedItems.enumerated()), id: \.element.id) { index, item in
-                                TodoCard(
-                                    item: item,
-                                    isCardStyle: false,
-                                    showSeparator: true,
-                                    onToggle: { manager.toggleStatus(for: item) }
-                                )
-                                .background(GameTheme.cream)
-                                .opacity(0.8)
-                                .saturation(0.8)
-                                .onTapGesture {
-                                    // 👇 触发
-                                    withAnimation {
-                                        itemToEdit = item
-                                    }
-                                }
+                                CompletedTodoRow(item: item, manager: manager, itemToEdit: $itemToEdit)
                             }
                         }
                         .padding(.horizontal, 10)
@@ -218,7 +225,28 @@ struct CompletedListView: View {
             }
         }
         .background(GameTheme.cream)
-        // ❌ 删除：.sheet
+    }
+}
+
+// 🆕 提取的子视图：Completed 列表行
+struct CompletedTodoRow: View {
+    let item: TodoItem
+    @ObservedObject var manager: TodoManager
+    @Binding var itemToEdit: TodoItem?
+    
+    var body: some View {
+        TodoCard(
+            item: item,
+            isCardStyle: false,
+            showSeparator: true,
+            onToggle: { manager.toggleStatus(for: item) }
+        )
+        .background(GameTheme.cream)
+        .opacity(0.8)
+        .saturation(0.8)
+        .onTapGesture {
+            withAnimation { itemToEdit = item }
+        }
     }
 }
 
@@ -227,7 +255,6 @@ struct CompletedListHeader: View {
     var body: some View {
         ZStack {
             Color(red: 0.2, green: 0.6, blue: 0.3)
-            
             Text("COMPLETED LOG")
                 .font(.custom("Luckiest Guy", size: 28))
                 .foregroundColor(GameTheme.cream)
@@ -262,5 +289,3 @@ struct EmptyStateView: View {
         .frame(maxWidth: .infinity)
     }
 }
-
-

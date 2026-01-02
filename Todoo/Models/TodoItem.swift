@@ -1,6 +1,7 @@
 import SwiftUI
 
-struct TodoItem: Identifiable, Codable {
+// 👇 修改：添加 Equatable 协议
+struct TodoItem: Identifiable, Codable, Equatable {
     var id = UUID()
     var title: String
     var isCompleted: Bool = false
@@ -12,6 +13,7 @@ struct TodoItem: Identifiable, Codable {
     var isUrgent: Bool = false
     var isImportant: Bool = false
     
+    // 计算属性不需要参与 Equatable 的合成，Swift 会自动处理存储属性
     var quadrant: EisenhowerQuadrant {
         switch (isUrgent, isImportant) {
         case (true, true): return .doNow
@@ -20,6 +22,10 @@ struct TodoItem: Identifiable, Codable {
         case (false, false): return .eliminate
         }
     }
+    
+    // 👇 手动实现 Equatable (可选)，但通常不需要，
+    // 只要上面加了 Equatable，Swift 就会自动对比所有存储属性。
+    // 如果你以后添加了无法自动比较的属性，才需要手动实现。
 }
 
 enum EisenhowerQuadrant: String, CaseIterable, Codable {

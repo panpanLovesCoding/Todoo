@@ -45,29 +45,49 @@ struct GameButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - 3. 任务卡片组件 (修改：增加 showSeparator 控制)
+// MARK: - 3. 任务卡片组件
 struct TodoCard: View {
     let item: TodoItem
     var isCardStyle: Bool = true
-    // 新增：控制是否显示底部分割线 (默认显示)
     var showSeparator: Bool = true
     let onToggle: () -> Void
+    
+    // 🆕 本地状态：记录是否刚刚被点击
+    @State private var justChecked = false
     
     var body: some View {
         VStack(spacing: 0) {
             HStack(alignment: .top) {
                 // 复选框
-                Button(action: onToggle) {
+                Button(action: {
+                    if !item.isCompleted {
+                        // 1. 立即显示绿勾
+                        withAnimation(.spring()) {
+                            justChecked = true
+                        }
+                        
+                        // 2. 延迟 0.5 秒再真正移除任务 (让用户看清勾选动作)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            onToggle()
+                            justChecked = false
+                        }
+                    } else {
+                        onToggle()
+                    }
+                }) {
                     ZStack {
+                        // 白方块
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(item.isCompleted ? GameTheme.green : Color.white)
+                            .fill(Color.white)
                             .frame(width: 32, height: 32)
                             .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 3))
                         
-                        if item.isCompleted {
+                        // 绿勾
+                        if item.isCompleted || justChecked {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(.white)
+                                .foregroundColor(GameTheme.green)
+                                .transition(.scale.combined(with: .opacity))
                         }
                     }
                 }
@@ -78,7 +98,7 @@ struct TodoCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(item.title)
                         .font(.system(.title3, design: .rounded).weight(.heavy))
-                        .strikethrough(item.isCompleted)
+                        .strikethrough(item.isCompleted || justChecked)
                         .foregroundColor(GameTheme.brown)
                         .fixedSize(horizontal: false, vertical: true)
                     
@@ -110,7 +130,6 @@ struct TodoCard: View {
             .padding(12)
             
             // 列表模式下：底部分割线
-            // 👇 修改：增加了 && showSeparator 判断
             if !isCardStyle && showSeparator {
                 Divider()
                     .background(GameTheme.brown.opacity(0.5))
