@@ -9,16 +9,16 @@ struct SettingsView: View {
     @AppStorage("musicEnabled") var musicEnabled: Bool = true
     
     var body: some View {
+        // ⚠️ 修改：虽然保留 ZStack 用于布局（Banner 和木板的层级），但去掉了全屏黑色背景
         ZStack {
-            // 半透明黑色背景
-            Color.black.opacity(0.5).ignoresSafeArea()
-                .onTapGesture { isPresented = false }
+            // ❌ 删除：这里的 Color.black 和 onTapGesture
+            // 外部 ContentView 已经有了遮罩，这里如果不删，它会跟着整个 View 一起被 .scale 放大
             
             // 主面板
             VStack(spacing: 0) {
                 // 1. 顶部标题 Banner (模仿 Setting 图片)
                 ZStack {
-                    Image(systemName: "bookmark.fill") // 这里简单用形状模拟 banner，实际可以用图片
+                    Image(systemName: "bookmark.fill")
                         .resizable()
                         .renderingMode(.template)
                         .foregroundColor(GameTheme.yellow)
@@ -50,7 +50,7 @@ struct SettingsView: View {
                     
                     Divider().background(GameTheme.brown)
                     
-                    // 音效开关 (模仿图片中的方块按钮)
+                    // 音效开关
                     HStack(spacing: 30) {
                         SoundToggleButton(icon: "music.note", label: "Music", isOn: $musicEnabled)
                         SoundToggleButton(icon: "speaker.wave.2.fill", label: "Sound", isOn: $soundEnabled)
@@ -83,7 +83,6 @@ struct SettingsView: View {
                     
                     // Rate Us 按钮
                     Button(action: {
-                        // 跳转到 App Store (示例链接)
                         if let url = URL(string: "itms-apps://itunes.apple.com/app/id123456789") {
                             UIApplication.shared.open(url)
                         }
@@ -118,7 +117,11 @@ struct SettingsView: View {
                 .padding(.horizontal, 40)
                 
                 // 3. 底部 OK 按钮
-                Button(action: { isPresented = false }) {
+                Button(action: {
+                    withAnimation(.spring()) {
+                        isPresented = false
+                    }
+                }) {
                     Text(lang.localized("OK"))
                         .font(.custom("Luckiest Guy", size: 24))
                         .foregroundColor(.white)

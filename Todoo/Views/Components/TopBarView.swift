@@ -68,7 +68,10 @@ struct TopBarView: View {
                     
                     // 3. Settings Button
                     TopBarButton(icon: "gearshape.fill", color: GameTheme.blue) {
-                        showSettings = true
+                        // 👇 修复：必须加上 withAnimation，否则ContentView里的 transition 不会触发
+                        withAnimation(.spring()) {
+                            showSettings = true
+                        }
                     }
                 }
             }

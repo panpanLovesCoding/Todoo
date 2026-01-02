@@ -78,8 +78,14 @@ struct ContentView: View {
             if showingSettings {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
-                    .onTapGesture { showingSettings = false }
+                    // 👇 修复：点击背景关闭时也要加动画
+                    .onTapGesture {
+                        withAnimation(.spring()) {
+                            showingSettings = false
+                        }
+                    }
                     .zIndex(99)
+                    .transition(.opacity) // 确保背景只做透明度渐变
                 
                 SettingsView(isPresented: $showingSettings)
                     .transition(.scale.combined(with: .opacity))
