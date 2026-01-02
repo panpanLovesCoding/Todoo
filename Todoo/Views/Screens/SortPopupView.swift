@@ -4,60 +4,82 @@ struct SortPopupView: View {
     @Binding var isPresented: Bool
     @Binding var currentSort: SortOption
     
+    // 临时状态：用于记录用户在弹窗里选了什么，但还未确认
+    @State private var tempSelectedOption: SortOption = .creationDate
+    
     var body: some View {
         VStack(spacing: 20) {
             // 标题
             Text("SORT BY")
-                .font(.custom("Luckiest Guy", size: 32))
-                .foregroundColor(GameTheme.orange)
-                // 黑色描边
+                .font(.custom("Luckiest Guy", size: 35))
+                .foregroundColor(GameTheme.pumpkin)
                 .shadow(color: .black, radius: 0, x: 1, y: 1)
                 .padding(.top, 10)
             
             VStack(spacing: 12) {
-                // 生成三个排序按钮
                 ForEach(SortOption.allCases, id: \.self) { option in
                     SortButton(
                         title: option.rawValue,
                         icon: iconFor(option),
-                        isSelected: currentSort == option
+                        isSelected: tempSelectedOption == option
                     ) {
-                        currentSort = option
-                        // 关闭弹窗
-                        withAnimation {
-                            isPresented = false
+                        // 点击动作：只更新临时状态
+                        withAnimation(.spring()) {
+                            tempSelectedOption = option
                         }
                     }
                 }
             }
             .padding(.horizontal, 10)
             
-            // 关闭按钮
-            Button(action: { withAnimation { isPresented = false } }) {
-                Text("Cancel")
-                    .font(.custom("Luckiest Guy", size: 18))
-                    .foregroundColor(.white)
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.red)
-                    .cornerRadius(12)
-                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
+            // Buttons - 修改为与 New Quest 界面一致的布局 (HStack)
+            HStack(spacing: 20) {
+                // Cancel 按钮 (左侧，红色)
+                Button(action: { withAnimation { isPresented = false } }) {
+                    Text("Cancel")
+                        .font(.custom("Luckiest Guy", size: 20)) // [修改] 字体大小改为 20
+                        .foregroundColor(.white)
+                        .padding(.vertical, 12) // [修改] 垂直内边距改为 12
+                        .frame(maxWidth: .infinity)
+                        .background(Color.red)
+                        .cornerRadius(12)
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
+                }
+                
+                // Select 按钮 (右侧，绿色)
+                Button(action: {
+                    currentSort = tempSelectedOption
+                    withAnimation {
+                        isPresented = false
+                    }
+                }) {
+                    Text("Select")
+                        .font(.custom("Luckiest Guy", size: 20)) // [修改] 字体大小改为 20
+                        .foregroundColor(.white)
+                        .padding(.vertical, 12) // [修改] 垂直内边距改为 12
+                        .frame(maxWidth: .infinity)
+                        .background(Color.green) // [修改] 使用与 New Quest 一致的绿色 (Color.green)
+                        .cornerRadius(12)
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
+                }
             }
             .padding(.top, 10)
         }
         .padding(25)
-        .frame(width: 280) // 弹窗宽度
+        .frame(width: 320) // [可选调整] 稍微加宽一点以适应横排按钮，或者保持 280 也可以
         .background(GameTheme.cream)
         .cornerRadius(25)
-        // 粗边框风格
         .overlay(
             RoundedRectangle(cornerRadius: 25)
                 .stroke(GameTheme.brown, lineWidth: 5)
         )
         .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 10)
+        // 初始化
+        .onAppear {
+            tempSelectedOption = currentSort
+        }
     }
     
-    // 辅助：获取图标
     func iconFor(_ option: SortOption) -> String {
         switch option {
         case .creationDate: return "calendar.badge.plus"
@@ -67,7 +89,7 @@ struct SortPopupView: View {
     }
 }
 
-// 辅助组件：排序按钮
+// 辅助组件：SortButton
 struct SortButton: View {
     let title: String
     let icon: String
@@ -96,7 +118,6 @@ struct SortButton: View {
             .padding(12)
             .background(Color.white)
             .cornerRadius(12)
-            // 选中时有橙色边框
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(isSelected ? GameTheme.orange : GameTheme.brown.opacity(0.2), lineWidth: isSelected ? 3 : 2)

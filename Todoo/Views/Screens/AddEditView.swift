@@ -14,6 +14,9 @@ struct AddEditView: View {
     @State private var isUrgent = false
     @State private var isImportant = false
     
+    // 🆕 新增：控制删除确认弹窗的状态
+    @State private var showingDeleteAlert = false
+    
     @ObservedObject var lang = LanguageManager.shared
     
     var isEditing: Bool { itemToEdit != nil }
@@ -23,15 +26,8 @@ struct AddEditView: View {
             
             Text(isEditing ? "EDIT QUEST" : "NEW QUEST")
                 .font(.custom("Luckiest Guy", size: 40))
-                // 👇 修改：New Quest 用橘色，Edit Quest 用蓝色
-                .foregroundColor(isEditing ? Color.blue : Color.orange)
-                // --- 开始：添加黑色描边 ---
-                .shadow(color: .black, radius: 0, x: 1, y: 0)
-                .shadow(color: .black, radius: 0, x: -1, y: 0)
-                .shadow(color: .black, radius: 0, x: 0, y: 1)
-                .shadow(color: .black, radius: 0, x: 0, y: -1)
-                // --- 结束：添加黑色描边 ---
-                .shadow(color: .white.opacity(0.5), radius: 0, x: 2, y: 2)
+                .foregroundColor(isEditing ? Color.blue : GameTheme.background)
+                .shadow(color: .black, radius: 0, x: 1, y: 1)
                 .padding(.top, 10)
             
             VStack(alignment: .leading, spacing: 15) {
@@ -102,7 +98,8 @@ struct AddEditView: View {
             .padding(.top, 10)
             
             if isEditing {
-                Button(action: deleteItem) {
+                // 👇 修改：点击按钮不再直接删除，而是弹出确认框
+                Button(action: { showingDeleteAlert = true }) {
                     Label(lang.localized("Abandon Quest"), systemImage: "trash")
                         .font(.system(.subheadline, design: .rounded).weight(.bold))
                         .foregroundColor(GameTheme.red)
@@ -123,6 +120,17 @@ struct AddEditView: View {
                 isUrgent = item.isUrgent
                 isImportant = item.isImportant
             }
+        }
+        // 🆕 新增：删除确认弹窗
+        .alert(isPresented: $showingDeleteAlert) {
+            Alert(
+                title: Text("Abandon Quest?"), // 标题
+                message: Text("Are you sure you want to abandon this quest? This cannot be undone."), // 内容
+                primaryButton: .destructive(Text("Abandon")) { // 确认按钮 (红色)
+                    deleteItem()
+                },
+                secondaryButton: .cancel() // 取消按钮
+            )
         }
     }
     
