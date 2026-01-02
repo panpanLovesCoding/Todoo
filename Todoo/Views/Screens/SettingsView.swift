@@ -2,19 +2,23 @@ import SwiftUI
 
 struct SettingsView: View {
     @Binding var isPresented: Bool
+    
+    // 传入 manager 获取称号数据
     @ObservedObject var manager: TodoManager
+    
     @ObservedObject var lang = LanguageManager.shared
     
     @AppStorage("soundEnabled") var soundEnabled: Bool = true
     @AppStorage("musicEnabled") var musicEnabled: Bool = true
     
     var body: some View {
+        // 获取当前人设
         let persona = manager.userPersonality
         
-        // ❌ 删除：ZStack 和 Color.black
-        // 我们只返回这个核心的 VStack，这样它就是一个紧凑的视图，.scale 动画才会只作用于它
+        // ❌ 之前的问题：这里如果有 ZStack + Color.black，弹窗动画就会错。
+        // ✅ 修复：直接返回内容 VStack，背景交给 ContentView 处理。
         VStack(spacing: 0) {
-            // Banner
+            // 1. 顶部标题 Banner
             ZStack {
                 Image(systemName: "bookmark.fill")
                     .resizable()
@@ -24,7 +28,7 @@ struct SettingsView: View {
                     .shadow(radius: 2, y: 2)
                     .overlay(
                         Text(lang.localized("SETTING"))
-                            .font(.custom("Luckiest Guy", size: 28))
+                            .font(.custom("Luckiest Guy", size: 28)) // 标题保持不变
                             .foregroundColor(GameTheme.brown)
                             .offset(y: -5)
                     )
@@ -32,9 +36,10 @@ struct SettingsView: View {
             .zIndex(1)
             .offset(y: 25)
             
-            // 木板内容
+            // 2. 木板内容区域
             VStack(spacing: 20) {
-                // Title + Vibe
+                
+                // 用户信息展示 (Title + Vibe)
                 VStack(spacing: 8) {
                     Text(lang.localized(persona.title))
                         .font(.system(.title2, design: .rounded).weight(.heavy))
@@ -64,7 +69,8 @@ struct SettingsView: View {
                 HStack {
                     Button(action: { lang.language = "en" }) {
                         Text("ENG")
-                            .bold()
+                            // 👇 修改 1: 字体改为 Luckiest Guy
+                            .font(.custom("Luckiest Guy", size: 18))
                             .frame(width: 80, height: 40)
                             .background(lang.language == "en" ? GameTheme.orange : GameTheme.cream)
                             .cornerRadius(8)
@@ -74,7 +80,8 @@ struct SettingsView: View {
                     
                     Button(action: { lang.language = "zh" }) {
                         Text("中文")
-                            .bold()
+                            // 👇 修改 2: 字体改为 Luckiest Guy
+                            .font(.custom("Luckiest Guy", size: 18))
                             .frame(width: 80, height: 40)
                             .background(lang.language == "zh" ? GameTheme.orange : GameTheme.cream)
                             .cornerRadius(8)
@@ -83,7 +90,7 @@ struct SettingsView: View {
                     }
                 }
                 
-                // 按钮组
+                // Rate Us 按钮
                 Button(action: {
                     if let url = URL(string: "itms-apps://itunes.apple.com/app/id123456789") {
                         UIApplication.shared.open(url)
@@ -92,6 +99,8 @@ struct SettingsView: View {
                     HStack {
                         Image(systemName: "star.fill").foregroundColor(.yellow)
                         Text(lang.localized("Rate Us"))
+                            // 👇 修改 3: 字体改为 Luckiest Guy
+                            .font(.custom("Luckiest Guy", size: 20))
                     }
                     .frame(maxWidth: .infinity)
                     .padding(12)
@@ -99,12 +108,15 @@ struct SettingsView: View {
                     .cornerRadius(12)
                     .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 2))
                     .foregroundColor(.white)
-                    .font(.system(.title3, design: .rounded).weight(.bold))
                 }
                 
-                Button(action: {}) {
+                // 重置数据按钮
+                Button(action: {
+                    // manager.items.removeAll()
+                }) {
                     Text(lang.localized("Delete All"))
-                        .font(.caption.weight(.bold))
+                         // 👇 修改 4: 字体改为 Luckiest Guy (稍微小一点)
+                        .font(.custom("Luckiest Guy", size: 16))
                         .foregroundColor(GameTheme.brown.opacity(0.5))
                 }
             }
@@ -114,14 +126,14 @@ struct SettingsView: View {
             .overlay(RoundedRectangle(cornerRadius: 20).stroke(GameTheme.brown, lineWidth: 5))
             .padding(.horizontal, 40)
             
-            // OK Button
+            // 3. 底部 OK 按钮
             Button(action: {
-                // 这里的动画很重要，确保关闭时也有缩放效果
                 withAnimation(.spring()) {
                     isPresented = false
                 }
             }) {
                 Text(lang.localized("OK"))
+                    // 这个本来就是 Luckiest Guy，保持不变
                     .font(.custom("Luckiest Guy", size: 24))
                     .foregroundColor(.white)
                     .padding(.vertical, 10)
@@ -133,12 +145,10 @@ struct SettingsView: View {
             }
             .offset(y: -25)
         }
-        // ❌ 注意：不要在这里加 .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // 让 VStack 保持它自己的大小，这样 ContentView 里的 scale 动画才会漂亮地从中心放大
     }
 }
 
-// 别忘了 SoundToggleButton (保持在文件底部)
+// 辅助组件 (保持在文件底部)
 struct SoundToggleButton: View {
     let icon: String
     let label: String

@@ -23,6 +23,7 @@
 		2647120B2F074BCB00A0169F /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120A2F074BCB00A0169F /* TopBarView.swift */; };
 		2647120D2F074BD700A0169F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120C2F074BD700A0169F /* SettingsView.swift */; };
 		2647120F2F07937F00A0169F /* SortPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120E2F07937F00A0169F /* SortPopupView.swift */; };
+		264712112F087AAC00A0169F /* ZhanKuKuaiLeTi2016XiuDingBan-1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 264712102F087AAC00A0169F /* ZhanKuKuaiLeTi2016XiuDingBan-1.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		2647120A2F074BCB00A0169F /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
 		2647120C2F074BD700A0169F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2647120E2F07937F00A0169F /* SortPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortPopupView.swift; sourceTree = "<group>"; };
+		264712102F087AAC00A0169F /* ZhanKuKuaiLeTi2016XiuDingBan-1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ZhanKuKuaiLeTi2016XiuDingBan-1.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 				264712082F074B7C00A0169F /* LanguageManager.swift */,
 				264711EF2F071F3600A0169F /* GameTheme.swift */,
 				264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */,
+				264712102F087AAC00A0169F /* ZhanKuKuaiLeTi2016XiuDingBan-1.ttf */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -214,6 +217,7 @@
 				264711E82F071EE700A0169F /* Preview Assets.xcassets in Resources */,
 				264711E52F071EE700A0169F /* Assets.xcassets in Resources */,
 				264712072F07467D00A0169F /* LuckiestGuy-Regular.ttf in Resources */,
+				264712112F087AAC00A0169F /* ZhanKuKuaiLeTi2016XiuDingBan-1.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
