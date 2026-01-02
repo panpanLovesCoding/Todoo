@@ -153,7 +153,10 @@ struct AddEditView: View {
     
     func closeView() {
         if let binding = isPresented {
-            binding.wrappedValue = false
+            // 👇 修复：加上 withAnimation，这样点击 Cancel/Save 关闭时才会有缩放消失的动画
+            withAnimation(.spring()) {
+                binding.wrappedValue = false
+            }
         } else {
             dismiss()
         }
