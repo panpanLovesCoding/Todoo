@@ -4,9 +4,10 @@ struct ContentView: View {
     @StateObject var manager = TodoManager()
     @State private var showingAddSheet = false
     @State private var showingSettings = false
-    @State private var selectedTab = 0
+    // 🆕 新增：排序弹窗状态
+    @State private var showingSortPopup = false
     
-    // 🆕 新增：将编辑状态提升到此处管理
+    @State private var selectedTab = 0
     @State private var editingItem: TodoItem? = nil
     
     // 排序状态
@@ -28,13 +29,14 @@ struct ContentView: View {
                 TopBarView(
                     manager: manager,
                     showSettings: $showingSettings,
-                    showAddSheet: $showingAddSheet, // 新建任务的开关
+                    showAddSheet: $showingAddSheet,
+                    // 👇 传入排序弹窗状态
+                    showSortPopup: $showingSortPopup,
                     sortOption: $sortOption
                 )
                 
                 // 2. 内容区
                 TabView(selection: $selectedTab) {
-                    // 👇 修改：传入 editingItem 的 Binding
                     TodoListView(manager: manager, itemToEdit: $editingItem, sortOption: sortOption)
                         .tag(0)
                     
@@ -96,17 +98,16 @@ struct ContentView: View {
                     .zIndex(102)
             }
             
-            // 🆕 6. 编辑任务弹窗 (修改为 Overlay 方式)
+            // 6. 编辑任务弹窗
             if let item = editingItem {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
-                    .onTapGesture { editingItem = nil } // 点击背景关闭
+                    .onTapGesture { editingItem = nil }
                     .zIndex(103)
                 
                 AddEditView(
                     manager: manager,
                     itemToEdit: item,
-                    // 创建一个临时的 Binding 来控制关闭
                     isPresented: Binding(
                         get: { editingItem != nil },
                         set: { if !$0 { editingItem = nil } }
@@ -114,6 +115,18 @@ struct ContentView: View {
                 )
                 .transition(.scale.combined(with: .opacity))
                 .zIndex(104)
+            }
+            
+            // 🆕 7. 排序弹窗
+            if showingSortPopup {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture { showingSortPopup = false }
+                    .zIndex(105)
+                
+                SortPopupView(isPresented: $showingSortPopup, currentSort: $sortOption)
+                    .transition(.scale.combined(with: .opacity))
+                    .zIndex(106)
             }
         }
     }

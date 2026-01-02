@@ -22,6 +22,7 @@
 		264712092F074B7C00A0169F /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264712082F074B7C00A0169F /* LanguageManager.swift */; };
 		2647120B2F074BCB00A0169F /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120A2F074BCB00A0169F /* TopBarView.swift */; };
 		2647120D2F074BD700A0169F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120C2F074BD700A0169F /* SettingsView.swift */; };
+		2647120F2F07937F00A0169F /* SortPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120E2F07937F00A0169F /* SortPopupView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		264712082F074B7C00A0169F /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
 		2647120A2F074BCB00A0169F /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
 		2647120C2F074BD700A0169F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		2647120E2F07937F00A0169F /* SortPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortPopupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +148,7 @@
 				264711FC2F071F9100A0169F /* AddEditView.swift */,
 				264711FE2F071FA000A0169F /* TabScreens.swift */,
 				2647120C2F074BD700A0169F /* SettingsView.swift */,
+				2647120E2F07937F00A0169F /* SortPopupView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2647120F2F07937F00A0169F /* SortPopupView.swift in Sources */,
 				264711F62F071F6500A0169F /* TodoManager.swift in Sources */,
 				264711E32F071EE600A0169F /* ContentView.swift in Sources */,
 				264711F02F071F3600A0169F /* GameTheme.swift in Sources */,

@@ -1,18 +1,15 @@
 import SwiftUI
 
-// 1. 定义排序选项 (全局可用)
-enum SortOption: String, CaseIterable {
-    case creationDate = "Created Time"
-    case deadline = "Due Date"
-    case title = "Task Name"
-}
+// ❌ 已删除：enum SortOption 定义移到了 TodoManager.swift，避免重复
 
 struct TopBarView: View {
     @ObservedObject var manager: TodoManager
     @Binding var showSettings: Bool
     @Binding var showAddSheet: Bool
     
-    // 2. 绑定排序选项
+    // 🆕 新增：排序弹窗开关
+    @Binding var showSortPopup: Bool
+    
     @Binding var sortOption: SortOption
     
     @ObservedObject var lang = LanguageManager.shared
@@ -45,14 +42,12 @@ struct TopBarView: View {
                         showAddSheet = true
                     }
                     
-                    // 2. Sort Button (Menu)
-                    Menu {
-                        Picker("Sort By", selection: $sortOption) {
-                            ForEach(SortOption.allCases, id: \.self) { option in
-                                Text(option.rawValue).tag(option)
-                            }
+                    // 2. Sort Button (👇 修改：改为点击触发 showSortPopup)
+                    Button(action: {
+                        withAnimation {
+                            showSortPopup = true
                         }
-                    } label: {
+                    }) {
                         Image(systemName: "arrow.up.arrow.down")
                             .font(.system(size: 16, weight: .black))
                             .foregroundColor(.white)
@@ -74,7 +69,7 @@ struct TopBarView: View {
                     }
                 }
             }
-            // 👇 修改：边距从 35 改为 25，让图标往两边散开一点
+            // 边距
             .padding(.horizontal, 25)
             .padding(.top, 60)
             
@@ -93,7 +88,7 @@ struct TopBarView: View {
     }
 }
 
-// MARK: - Status Counter 组件 (保持小尺寸)
+// (StatusCounter 和 TopBarButton 保持不变...)
 struct StatusCounter: View {
     let icon: String
     let color: Color
@@ -134,7 +129,6 @@ struct StatusCounter: View {
     }
 }
 
-// MARK: - Top Bar Button 组件 (保持小尺寸)
 struct TopBarButton: View {
     let icon: String
     let color: Color

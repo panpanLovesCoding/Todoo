@@ -1,5 +1,12 @@
 import SwiftUI
 
+// 👇 1. 将 SortOption 移到这里，修复 "Cannot find type" 错误
+enum SortOption: String, CaseIterable {
+    case creationDate = "Created Time"
+    case deadline = "Due Date"
+    case title = "Task Name"
+}
+
 class TodoManager: ObservableObject {
     @Published var items: [TodoItem] = [] {
         didSet {
