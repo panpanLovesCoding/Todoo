@@ -30,11 +30,11 @@ enum EisenhowerQuadrant: String, CaseIterable, Codable {
     
     var color: Color {
         switch self {
-        case .doNow: return GameTheme.red
-        case .plan: return GameTheme.blue
-        case .delegate: return GameTheme.yellow
+        case .doNow: return GameTheme.crimson
+        case .plan: return GameTheme.azure
+        case .delegate: return GameTheme.amber
         // 👇 修复：把 GameTheme.gray 改成 Color.gray (系统自带灰色)
-        case .eliminate: return Color.gray
+        case .eliminate: return GameTheme.stone
         }
     }
 }

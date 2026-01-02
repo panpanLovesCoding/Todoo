@@ -6,6 +6,9 @@ struct ContentView: View {
     @State private var showingSettings = false
     @State private var selectedTab = 0
     
+    // 🆕 新增：将编辑状态提升到此处管理
+    @State private var editingItem: TodoItem? = nil
+    
     // 排序状态
     @State private var sortOption: SortOption = .creationDate
     
@@ -25,19 +28,20 @@ struct ContentView: View {
                 TopBarView(
                     manager: manager,
                     showSettings: $showingSettings,
-                    showAddSheet: $showingAddSheet,
+                    showAddSheet: $showingAddSheet, // 新建任务的开关
                     sortOption: $sortOption
                 )
                 
                 // 2. 内容区
                 TabView(selection: $selectedTab) {
-                    TodoListView(manager: manager, sortOption: sortOption)
+                    // 👇 修改：传入 editingItem 的 Binding
+                    TodoListView(manager: manager, itemToEdit: $editingItem, sortOption: sortOption)
                         .tag(0)
                     
-                    EisenhowerMatrixView(manager: manager, sortOption: sortOption)
+                    EisenhowerMatrixView(manager: manager, sortOption: sortOption, itemToEdit: $editingItem)
                         .tag(1)
                     
-                    CompletedListView(manager: manager)
+                    CompletedListView(manager: manager, itemToEdit: $editingItem)
                         .tag(2)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
@@ -70,7 +74,6 @@ struct ContentView: View {
             
             // 4. 设置弹窗
             if showingSettings {
-                // 半透明遮罩 (点击关闭)
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
                     .onTapGesture { showingSettings = false }
@@ -81,18 +84,36 @@ struct ContentView: View {
                     .zIndex(100)
             }
             
-            // 5. 👇 修改：添加任务弹窗 (现在也是弹窗了！)
+            // 5. 新建任务弹窗
             if showingAddSheet {
-                // 半透明遮罩
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
                     .onTapGesture { showingAddSheet = false }
                     .zIndex(101)
                 
-                // 传入 binding 以便内部关闭
                 AddEditView(manager: manager, itemToEdit: nil, isPresented: $showingAddSheet)
                     .transition(.scale.combined(with: .opacity))
                     .zIndex(102)
+            }
+            
+            // 🆕 6. 编辑任务弹窗 (修改为 Overlay 方式)
+            if let item = editingItem {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture { editingItem = nil } // 点击背景关闭
+                    .zIndex(103)
+                
+                AddEditView(
+                    manager: manager,
+                    itemToEdit: item,
+                    // 创建一个临时的 Binding 来控制关闭
+                    isPresented: Binding(
+                        get: { editingItem != nil },
+                        set: { if !$0 { editingItem = nil } }
+                    )
+                )
+                .transition(.scale.combined(with: .opacity))
+                .zIndex(104)
             }
         }
     }

@@ -35,7 +35,7 @@ class LanguageManager: ObservableObject {
         "Music": "背 景 音",
         "Sound": "音 效",
         "Language": "语 言",
-        "Rate Us": "去 评 分",
+        "Rate Us": "去 App Store 评分",
         "OK": "确 定",
         "Total": "待 办",
         "Important": "重 要",

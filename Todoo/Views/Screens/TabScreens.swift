@@ -3,7 +3,8 @@ import SwiftUI
 // MARK: - Tab 1: Active List
 struct TodoListView: View {
     @ObservedObject var manager: TodoManager
-    @State private var itemToEdit: TodoItem?
+    // 👇 修改：改为 Binding，接收 ContentView 的状态
+    @Binding var itemToEdit: TodoItem?
     let sortOption: SortOption
     
     var activeItems: [TodoItem] {
@@ -35,7 +36,12 @@ struct TodoListView: View {
                                     onToggle: { manager.toggleStatus(for: item) }
                                 )
                                 .background(GameTheme.cream)
-                                .onTapGesture { itemToEdit = item }
+                                .onTapGesture {
+                                    // 👇 触发：设置 Binding，通知 ContentView 弹窗
+                                    withAnimation {
+                                        itemToEdit = item
+                                    }
+                                }
                             }
                         }
                         .padding(.horizontal, 10)
@@ -45,9 +51,7 @@ struct TodoListView: View {
             }
         }
         .background(GameTheme.cream)
-        .sheet(item: $itemToEdit) { item in
-            AddEditView(manager: manager, itemToEdit: item)
-        }
+        // ❌ 删除：.sheet(item: $itemToEdit) ...
     }
 }
 
@@ -77,7 +81,8 @@ struct TodoListHeader: View {
 struct EisenhowerMatrixView: View {
     @ObservedObject var manager: TodoManager
     let sortOption: SortOption
-    @State private var itemToEdit: TodoItem?
+    // 👇 修改：改为 Binding
+    @Binding var itemToEdit: TodoItem?
     
     var body: some View {
         ScrollView {
@@ -119,7 +124,12 @@ struct EisenhowerMatrixView: View {
                                         onToggle: { manager.toggleStatus(for: item) }
                                     )
                                     .background(GameTheme.cream)
-                                    .onTapGesture { itemToEdit = item }
+                                    .onTapGesture {
+                                        // 👇 触发
+                                        withAnimation {
+                                            itemToEdit = item
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -132,9 +142,7 @@ struct EisenhowerMatrixView: View {
             .background(GameTheme.cream)
         }
         .background(GameTheme.cream)
-        .sheet(item: $itemToEdit) { item in
-            AddEditView(manager: manager, itemToEdit: item)
-        }
+        // ❌ 删除：.sheet
     }
 }
 
@@ -164,7 +172,8 @@ struct MatrixSectionHeader: View {
 // MARK: - Tab 3: Completed
 struct CompletedListView: View {
     @ObservedObject var manager: TodoManager
-    @State private var itemToEdit: TodoItem?
+    // 👇 修改：改为 Binding
+    @Binding var itemToEdit: TodoItem?
     
     var completedItems: [TodoItem] {
         manager.items.filter { $0.isCompleted }
@@ -194,7 +203,12 @@ struct CompletedListView: View {
                                 .background(GameTheme.cream)
                                 .opacity(0.8)
                                 .saturation(0.8)
-                                .onTapGesture { itemToEdit = item }
+                                .onTapGesture {
+                                    // 👇 触发
+                                    withAnimation {
+                                        itemToEdit = item
+                                    }
+                                }
                             }
                         }
                         .padding(.horizontal, 10)
@@ -204,17 +218,14 @@ struct CompletedListView: View {
             }
         }
         .background(GameTheme.cream)
-        .sheet(item: $itemToEdit) { item in
-            AddEditView(manager: manager, itemToEdit: item)
-        }
+        // ❌ 删除：.sheet
     }
 }
 
-// Completed List Header (👉 修改：更深的绿色)
+// Completed List Header
 struct CompletedListHeader: View {
     var body: some View {
         ZStack {
-            // 👇 修改：使用更饱满的绿色
             Color(red: 0.2, green: 0.6, blue: 0.3)
             
             Text("COMPLETED LOG")
@@ -251,3 +262,5 @@ struct EmptyStateView: View {
         .frame(maxWidth: .infinity)
     }
 }
+
+
