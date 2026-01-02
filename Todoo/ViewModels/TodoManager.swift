@@ -16,6 +16,12 @@ class TodoManager: ObservableObject {
     
     init() {
         load()
+        
+        // 🆕 新增：如果加载后发现列表是空的，就自动添加测试数据
+        // 这样你每次重置数据(Delete All)并重启 App 后，都会有一批新数据方便测试
+        if items.isEmpty {
+            addSampleData()
+        }
     }
     
     // 1. 添加任务
@@ -120,6 +126,38 @@ class TodoManager: ObservableObject {
         default: return ("TITLE_ELITE_VANGUARD", "VIBE_ELITE_VANGUARD")
         }
     }
+    
+    // MARK: - Debug / Test Data
+    // 🆕 新增：生成测试数据
+    func addSampleData() {
+        let now = Date()
+        let day = 86400.0 // 一天的秒数
+        
+        let samples = [
+            // 🔴 Quadrant 1: Do Now (Urgent + Important)
+            TodoItem(title: "🔥 Fix Crash Bug", deadline: now.addingTimeInterval(3600), isUrgent: true, isImportant: true),
+            TodoItem(title: "Submit App Review", deadline: now.addingTimeInterval(day), isUrgent: true, isImportant: true),
+            TodoItem(title: "Pay Server Bill", deadline: now.addingTimeInterval(day * 0.5), isUrgent: true, isImportant: true),
+            
+            // 🔵 Quadrant 2: Plan (Not Urgent + Important)
+            TodoItem(title: "📚 Learn SwiftUI Animation", deadline: now.addingTimeInterval(day * 7), isUrgent: false, isImportant: true),
+            TodoItem(title: "Design New Icon", deadline: now.addingTimeInterval(day * 3), isUrgent: false, isImportant: true),
+            TodoItem(title: "Plan Marketing Strategy", deadline: now.addingTimeInterval(day * 10), isUrgent: false, isImportant: true),
+            
+            // 🟡 Quadrant 3: Delegate (Urgent + Not Important)
+            TodoItem(title: "📞 Return Mom's Call", deadline: now.addingTimeInterval(1800), isUrgent: true, isImportant: false),
+            TodoItem(title: "Reply to Comments", deadline: now.addingTimeInterval(7200), isUrgent: true, isImportant: false),
+            TodoItem(title: "Buy Coffee Beans", deadline: now.addingTimeInterval(day * 0.2), isUrgent: true, isImportant: false),
+            
+            // ⚪️ Quadrant 4: Later (Not Urgent + Not Important)
+            TodoItem(title: "🎮 Watch Cat Videos", deadline: now.addingTimeInterval(day * 2), isUrgent: false, isImportant: false),
+            TodoItem(title: "Organize Desktop Icons", deadline: now.addingTimeInterval(day * 5), isUrgent: false, isImportant: false),
+            TodoItem(title: "Browse Reddit", deadline: now.addingTimeInterval(day * 1), isUrgent: false, isImportant: false)
+        ]
+        
+        // 直接添加到数组
+        items.append(contentsOf: samples)
+    }
 
     // MARK: - Data Persistence
     private func save() {
@@ -137,9 +175,12 @@ class TodoManager: ObservableObject {
     }
 
     private func load() {
-        if let data = UserDefaults.standard.data(forKey: "TodoItems"),
-           let decoded = try? JSONDecoder().decode([TodoItem].self, from: data) {
-            items = decoded
+        if let data = UserDefaults.standard.data(forKey: "TodoItems") {
+            if let decoded = try? JSONDecoder().decode([TodoItem].self, from: data) {
+                self.items = decoded
+                return
+            }
         }
+        // 如果读取失败，数组保持为空，init 里会触发 addSampleData
     }
 }
