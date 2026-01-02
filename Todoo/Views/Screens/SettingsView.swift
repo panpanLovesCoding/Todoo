@@ -11,15 +11,21 @@ struct SettingsView: View {
     @AppStorage("musicEnabled") var musicEnabled: Bool = true
     @AppStorage("notificationsEnabled") var notificationsEnabled: Bool = true
     
-    // 🆕 新增：控制删除确认弹窗
+    // 控制删除确认弹窗
     @State private var showResetAlert = false
     
-    // 获取 App 版本号
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
     
-    // 辅助函数：获取字体名称
+    // 🛠️ 字体逻辑
     func getFontName() -> String {
-        return lang.language == "zh" ? "HappyZcool-2016" : "Luckiest Guy"
+        // 中文使用站酷快乐体 (PostScript Name)
+        if lang.language == "zh" {
+            return "HappyZcool-2016"
+        }
+        // 英文使用 Luckiest Guy
+        else {
+            return "LuckiestGuy-Regular"
+        }
     }
     
     // 物理外挂：获取阴影颜色
@@ -89,7 +95,7 @@ struct SettingsView: View {
                 HStack {
                     Button(action: { lang.language = "en" }) {
                         Text("ENG")
-                            .font(.custom("Luckiest Guy", size: 18))
+                            .font(.custom("LuckiestGuy-Regular", size: 18))
                             .frame(width: 80, height: 40)
                             .foregroundColor(GameTheme.brown)
                     }
@@ -100,6 +106,7 @@ struct SettingsView: View {
                     
                     Button(action: { lang.language = "zh" }) {
                         Text("中文")
+                            // 确保这里用的是 "HappyZcool-2016"
                             .font(.custom("HappyZcool-2016", size: 18))
                             .frame(width: 80, height: 40)
                             .foregroundColor(GameTheme.brown)
@@ -135,7 +142,6 @@ struct SettingsView: View {
                     // Reset Data 按钮 & Version
                     VStack(spacing: 8) {
                         Button(action: {
-                            // 🆕 修改：不直接删除，而是显示确认弹窗
                             showResetAlert = true
                         }) {
                             HStack {
@@ -149,13 +155,11 @@ struct SettingsView: View {
                             .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                         }
                         .buttonStyle(CartoonButtonStyle(color: Color(red: 0.85, green: 0.3, blue: 0.3), cornerRadius: 12))
-                        // 🆕 新增：Alert 绑定
                         .alert(isPresented: $showResetAlert) {
                             Alert(
                                 title: Text(lang.localized("Confirm Delete")),
                                 message: Text(lang.localized("RESET_WARNING")),
                                 primaryButton: .destructive(Text(lang.localized("Delete"))) {
-                                    // 确认后执行删除
                                     manager.items.removeAll()
                                 },
                                 secondaryButton: .cancel(Text(lang.localized("Cancel")))
@@ -177,8 +181,6 @@ struct SettingsView: View {
             
             // 3. 底部 OK 按钮
             Button(action: {
-                // 🆕 修改：增加 0.15秒 延迟
-                // 这样用户能先看到按钮“按下去”的 3D 动画，然后窗口再消失
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                     withAnimation(.spring()) {
                         isPresented = false
@@ -198,32 +200,36 @@ struct SettingsView: View {
     }
 }
 
-// 3D 卡通按钮样式 (保持不变)
+// 3D 卡通按钮样式 (含半透明加粗边框)
 struct CartoonButtonStyle: ButtonStyle {
     let color: Color
     var cornerRadius: CGFloat = 12
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
+            // 1. 顶层：颜色的涂层
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .fill(color)
+                    // 描边: 使用半透明深棕色 (GameTheme.brown.opacity(0.5)) 和 3 的线宽
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius)
-                            .stroke(GameTheme.brown.opacity(0.3), lineWidth: 1)
+                            .stroke(GameTheme.brown.opacity(0.5), lineWidth: 3)
                     )
             )
+            // 2. 底层：3D 厚度阴影
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .fill(GameTheme.brown.opacity(0.4))
                     .offset(y: configuration.isPressed ? 0 : 4)
             )
+            // 3. 整体按压动画
             .offset(y: configuration.isPressed ? 4 : 0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
-// 辅助组件 (保持不变)
+// 辅助组件
 struct SoundToggleButton: View {
     let icon: String
     let label: String
