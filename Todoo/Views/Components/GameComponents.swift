@@ -45,10 +45,10 @@ struct GameButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - 3. 任务卡片组件 (最终版)
+// MARK: - 3. 任务卡片组件 (修改：分割线全宽)
 struct TodoCard: View {
     let item: TodoItem
-    var isCardStyle: Bool = true // 默认为 true
+    var isCardStyle: Bool = true
     let onToggle: () -> Void
     
     var body: some View {
@@ -90,7 +90,6 @@ struct TodoCard: View {
                     .font(.system(size: 11, design: .rounded).weight(.medium))
                     .foregroundColor(GameTheme.brown.opacity(0.7))
 
-                    // 只有在卡片模式下才显示这个内部分割线
                     if isCardStyle {
                         Divider().background(GameTheme.brown.opacity(0.3))
                     }
@@ -111,12 +110,11 @@ struct TodoCard: View {
             // 列表模式下：底部分割线
             if !isCardStyle {
                 Divider()
-                    .background(GameTheme.brown.opacity(0.5)) // 分割线深一点
-                    .padding(.leading, 56) // 对齐文本，避开 checkbox
+                    .background(GameTheme.brown.opacity(0.5))
+                    // 👇 修改：去掉了 padding，现在是从最左到最右
             }
         }
-        // 根据样式应用 Modifier
-        .background(isCardStyle ? GameTheme.cream : Color.clear) // 列表模式背景透明(或白色)
+        .background(isCardStyle ? GameTheme.cream : Color.clear)
         .cornerRadius(isCardStyle ? 20 : 0)
         .overlay(
             RoundedRectangle(cornerRadius: isCardStyle ? 20 : 0)
