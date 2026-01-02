@@ -90,19 +90,22 @@ struct ContentView: View {
             if showingAddSheet {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
-                    .onTapGesture { showingAddSheet = false }
+                    // 在点击背景关闭时，也使用动画
+                    .onTapGesture { withAnimation(.spring()) { showingAddSheet = false } }
                     .zIndex(101)
                 
                 AddEditView(manager: manager, itemToEdit: nil, isPresented: $showingAddSheet)
-                    .transition(.scale.combined(with: .opacity))
+                    // 👇 修改：添加 .transition(.scale)
+                    .transition(.scale.combined(with: .opacity)) // 结合透明度过渡效果更好
                     .zIndex(102)
             }
-            
+
             // 6. 编辑任务弹窗
             if let item = editingItem {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
-                    .onTapGesture { editingItem = nil }
+                    // 在点击背景关闭时，也使用动画
+                    .onTapGesture { withAnimation(.spring()) { editingItem = nil } }
                     .zIndex(103)
                 
                 AddEditView(
@@ -113,6 +116,7 @@ struct ContentView: View {
                         set: { if !$0 { editingItem = nil } }
                     )
                 )
+                // 👇 修改：同样添加 .transition(.scale)
                 .transition(.scale.combined(with: .opacity))
                 .zIndex(104)
             }

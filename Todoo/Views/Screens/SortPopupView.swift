@@ -36,12 +36,12 @@ struct SortPopupView: View {
             Button(action: { withAnimation { isPresented = false } }) {
                 Text("Cancel")
                     .font(.custom("Luckiest Guy", size: 18))
-                    .foregroundColor(GameTheme.brown)
+                    .foregroundColor(.white)
                     .padding(.vertical, 10)
                     .frame(maxWidth: .infinity)
-                    .background(GameTheme.stone.opacity(0.3)) // 使用之前的灰色
+                    .background(Color.red)
                     .cornerRadius(12)
-                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown.opacity(0.3), lineWidth: 2))
+                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
             }
             .padding(.top, 10)
         }

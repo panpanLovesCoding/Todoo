@@ -39,7 +39,10 @@ struct TopBarView: View {
                     
                     // 1. Add Button
                     TopBarButton(icon: "plus", color: GameTheme.green) {
-                        showAddSheet = true
+                        // 👇 确保这里有 withAnimation
+                            withAnimation(.spring()) {
+                                showAddSheet = true
+                            }
                     }
                     
                     // 2. Sort Button (👇 修改：改为点击触发 showSortPopup)
