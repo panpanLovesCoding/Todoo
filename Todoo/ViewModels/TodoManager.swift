@@ -60,6 +60,67 @@ class TodoManager: ObservableObject {
         }
     }
     
+    // MARK: - User Persona Logic
+    // 计算用户人设 (TitleKey, VibeKey)
+    var userPersonality: (title: String, vibe: String) {
+        let completedItems = items.filter { $0.isCompleted }
+        
+        // 初始状态 (没有完成任务时) -> Elite Vanguard
+        if completedItems.isEmpty {
+            return ("TITLE_ELITE_VANGUARD", "VIBE_ELITE_VANGUARD")
+        }
+        
+        // 1. 统计各象限数量
+        var counts: [EisenhowerQuadrant: Int] = [
+            .doNow: 0, .plan: 0, .delegate: 0, .eliminate: 0
+        ]
+        
+        for item in completedItems {
+            counts[item.quadrant, default: 0] += 1
+        }
+        
+        // 2. 排序：数量多的在前。如果数量相同，按固定优先级排序(DoNow > Plan > Delegate > Eliminate)以保持稳定性
+        let sortedQuadrants = counts.sorted { (pair1, pair2) -> Bool in
+            if pair1.value == pair2.value {
+                // 处理平局情况的优先级
+                let priority: [EisenhowerQuadrant: Int] = [.doNow: 4, .plan: 3, .delegate: 2, .eliminate: 1]
+                return priority[pair1.key, default: 0] > priority[pair2.key, default: 0]
+            }
+            return pair1.value > pair2.value
+        }
+        
+        // 3. 获取 Top 1 和 Top 2
+        // 因为我们初始化了字典所有 Key，所以 sortedQuadrants 永远有4个元素
+        let first = sortedQuadrants[0].key
+        let second = sortedQuadrants[1].key
+        
+        // 4. 匹配人设
+        switch (first, second) {
+        // Group 1: DO NOW 霸榜
+        case (.doNow, .plan): return ("TITLE_ELITE_VANGUARD", "VIBE_ELITE_VANGUARD")
+        case (.doNow, .delegate): return ("TITLE_CHAOS_SURFER", "VIBE_CHAOS_SURFER")
+        case (.doNow, .eliminate): return ("TITLE_DEADLINE_DAREDEVIL", "VIBE_DEADLINE_DAREDEVIL")
+            
+        // Group 2: PLAN 霸榜
+        case (.plan, .doNow): return ("TITLE_GRANDMASTER", "VIBE_GRANDMASTER")
+        case (.plan, .delegate): return ("TITLE_BENEVOLENT_RULER", "VIBE_BENEVOLENT_RULER")
+        case (.plan, .eliminate): return ("TITLE_PHILOSOPHER_KING", "VIBE_PHILOSOPHER_KING")
+            
+        // Group 3: DELEGATE 霸榜
+        case (.delegate, .doNow): return ("TITLE_SPINNING_TOP", "VIBE_SPINNING_TOP")
+        case (.delegate, .plan): return ("TITLE_SIDE_QUEST_HERO", "VIBE_SIDE_QUEST_HERO")
+        case (.delegate, .eliminate): return ("TITLE_NPC_ENERGY", "VIBE_NPC_ENERGY")
+            
+        // Group 4: LATER 霸榜
+        case (.eliminate, .doNow): return ("TITLE_CLUTCH_GAMER", "VIBE_CLUTCH_GAMER")
+        case (.eliminate, .plan): return ("TITLE_DAYDREAM_BELIEVER", "VIBE_DAYDREAM_BELIEVER")
+        case (.eliminate, .delegate): return ("TITLE_POTATO_MODE", "VIBE_POTATO_MODE")
+            
+        // 理论上不会走到这里，因为上面的 case 覆盖了所有排列，但为了保险：
+        default: return ("TITLE_ELITE_VANGUARD", "VIBE_ELITE_VANGUARD")
+        }
+    }
+
     // MARK: - Data Persistence
     private func save() {
         // 1. 捕获当前数据副本 (在主线程获取，防止多线程竞争)

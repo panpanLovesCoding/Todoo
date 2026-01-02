@@ -94,16 +94,21 @@ struct ContentView: View {
             }
             .ignoresSafeArea(.all, edges: .top)
             
-            // MARK: - 弹窗区域 (Add/Edit/Settings 保持不变...)
+            // 4. 设置弹窗
             if showingSettings {
+                // 这一层负责背景变暗，和 SettingsView 分离
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
-                    .onTapGesture { withAnimation(.spring()) { showingSettings = false } }
+                    .onTapGesture {
+                         withAnimation(.spring()) {
+                             showingSettings = false
+                         }
+                    }
                     .zIndex(99)
-                    .transition(.opacity)
                 
-                SettingsView(isPresented: $showingSettings)
-                    .transition(.scale.combined(with: .opacity))
+                // 这一层负责卡片弹窗
+                SettingsView(isPresented: $showingSettings, manager: manager) // 👈 记得加上 manager
+                    .transition(.scale.combined(with: .opacity)) // 现在它只作用于那个小卡片了
                     .zIndex(100)
             }
             

@@ -2,143 +2,143 @@ import SwiftUI
 
 struct SettingsView: View {
     @Binding var isPresented: Bool
+    @ObservedObject var manager: TodoManager
     @ObservedObject var lang = LanguageManager.shared
     
-    // 设置状态
     @AppStorage("soundEnabled") var soundEnabled: Bool = true
     @AppStorage("musicEnabled") var musicEnabled: Bool = true
     
     var body: some View {
-        // ⚠️ 修改：虽然保留 ZStack 用于布局（Banner 和木板的层级），但去掉了全屏黑色背景
-        ZStack {
-            // ❌ 删除：这里的 Color.black 和 onTapGesture
-            // 外部 ContentView 已经有了遮罩，这里如果不删，它会跟着整个 View 一起被 .scale 放大
-            
-            // 主面板
-            VStack(spacing: 0) {
-                // 1. 顶部标题 Banner (模仿 Setting 图片)
-                ZStack {
-                    Image(systemName: "bookmark.fill")
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(GameTheme.yellow)
-                        .frame(width: 200, height: 60)
-                        .shadow(radius: 2, y: 2)
-                        .overlay(
-                            Text(lang.localized("SETTING"))
-                                .font(.custom("Luckiest Guy", size: 28))
-                                .foregroundColor(GameTheme.brown)
-                                .offset(y: -5)
-                        )
-                }
-                .zIndex(1) // 让它浮在木板上面
-                .offset(y: 25) // 下沉一点盖住木板顶部
-                
-                // 2. 木板内容区域
-                VStack(spacing: 20) {
-                    
-                    // 用户信息 (装饰用)
-                    VStack(spacing: 5) {
-                        Text("PLAYER ONE")
-                            .font(.system(.headline, design: .rounded).weight(.heavy))
+        let persona = manager.userPersonality
+        
+        // ❌ 删除：ZStack 和 Color.black
+        // 我们只返回这个核心的 VStack，这样它就是一个紧凑的视图，.scale 动画才会只作用于它
+        VStack(spacing: 0) {
+            // Banner
+            ZStack {
+                Image(systemName: "bookmark.fill")
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundColor(GameTheme.yellow)
+                    .frame(width: 200, height: 60)
+                    .shadow(radius: 2, y: 2)
+                    .overlay(
+                        Text(lang.localized("SETTING"))
+                            .font(.custom("Luckiest Guy", size: 28))
                             .foregroundColor(GameTheme.brown)
-                        Text("ID: 8888-TODO")
-                            .font(.system(.caption, design: .rounded).weight(.bold))
-                            .foregroundColor(GameTheme.brown.opacity(0.6))
-                    }
-                    .padding(.top, 30)
+                            .offset(y: -5)
+                    )
+            }
+            .zIndex(1)
+            .offset(y: 25)
+            
+            // 木板内容
+            VStack(spacing: 20) {
+                // Title + Vibe
+                VStack(spacing: 8) {
+                    Text(lang.localized(persona.title))
+                        .font(.system(.title2, design: .rounded).weight(.heavy))
+                        .foregroundColor(GameTheme.brown)
+                        .multilineTextAlignment(.center)
                     
-                    Divider().background(GameTheme.brown)
-                    
-                    // 音效开关
-                    HStack(spacing: 30) {
-                        SoundToggleButton(icon: "music.note", label: "Music", isOn: $musicEnabled)
-                        SoundToggleButton(icon: "speaker.wave.2.fill", label: "Sound", isOn: $soundEnabled)
-                    }
-                    
-                    Divider().background(GameTheme.brown)
-                    
-                    // 语言选择
-                    HStack {
-                        Button(action: { lang.language = "en" }) {
-                            Text("ENG")
-                                .bold()
-                                .frame(width: 80, height: 40)
-                                .background(lang.language == "en" ? GameTheme.orange : GameTheme.cream)
-                                .cornerRadius(8)
-                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 2))
-                                .foregroundColor(GameTheme.brown)
-                        }
-                        
-                        Button(action: { lang.language = "zh" }) {
-                            Text("中文")
-                                .bold()
-                                .frame(width: 80, height: 40)
-                                .background(lang.language == "zh" ? GameTheme.orange : GameTheme.cream)
-                                .cornerRadius(8)
-                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 2))
-                                .foregroundColor(GameTheme.brown)
-                        }
-                    }
-                    
-                    // Rate Us 按钮
-                    Button(action: {
-                        if let url = URL(string: "itms-apps://itunes.apple.com/app/id123456789") {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: "star.fill").foregroundColor(.yellow)
-                            Text(lang.localized("Rate Us"))
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(12)
-                        .background(GameTheme.blue)
-                        .cornerRadius(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 2))
-                        .foregroundColor(.white)
-                        .font(.system(.title3, design: .rounded).weight(.bold))
-                    }
-                    
-                    // 危险区域：重置数据
-                    Button(action: {
-                         // 这里可以添加清空数据的逻辑
-                    }) {
-                        Text(lang.localized("Delete All"))
-                            .font(.caption.weight(.bold))
-                            .foregroundColor(GameTheme.brown.opacity(0.5))
-                    }
-                    
+                    Text(lang.localized(persona.vibe))
+                        .font(.system(.caption, design: .serif).italic())
+                        .foregroundColor(GameTheme.brown.opacity(0.7))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 10)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(25)
-                .background(GameTheme.cream)
-                .cornerRadius(20)
-                .overlay(RoundedRectangle(cornerRadius: 20).stroke(GameTheme.brown, lineWidth: 5))
-                .padding(.horizontal, 40)
+                .padding(.top, 30)
                 
-                // 3. 底部 OK 按钮
+                Divider().background(GameTheme.brown)
+                
+                // 音效开关
+                HStack(spacing: 30) {
+                    SoundToggleButton(icon: "music.note", label: "Music", isOn: $musicEnabled)
+                    SoundToggleButton(icon: "speaker.wave.2.fill", label: "Sound", isOn: $soundEnabled)
+                }
+                
+                Divider().background(GameTheme.brown)
+                
+                // 语言选择
+                HStack {
+                    Button(action: { lang.language = "en" }) {
+                        Text("ENG")
+                            .bold()
+                            .frame(width: 80, height: 40)
+                            .background(lang.language == "en" ? GameTheme.orange : GameTheme.cream)
+                            .cornerRadius(8)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 2))
+                            .foregroundColor(GameTheme.brown)
+                    }
+                    
+                    Button(action: { lang.language = "zh" }) {
+                        Text("中文")
+                            .bold()
+                            .frame(width: 80, height: 40)
+                            .background(lang.language == "zh" ? GameTheme.orange : GameTheme.cream)
+                            .cornerRadius(8)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 2))
+                            .foregroundColor(GameTheme.brown)
+                    }
+                }
+                
+                // 按钮组
                 Button(action: {
-                    withAnimation(.spring()) {
-                        isPresented = false
+                    if let url = URL(string: "itms-apps://itunes.apple.com/app/id123456789") {
+                        UIApplication.shared.open(url)
                     }
                 }) {
-                    Text(lang.localized("OK"))
-                        .font(.custom("Luckiest Guy", size: 24))
-                        .foregroundColor(.white)
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 40)
-                        .background(GameTheme.green)
-                        .cornerRadius(15)
-                        .overlay(RoundedRectangle(cornerRadius: 15).stroke(GameTheme.brown, lineWidth: 3))
-                        .shadow(radius: 3, y: 3)
+                    HStack {
+                        Image(systemName: "star.fill").foregroundColor(.yellow)
+                        Text(lang.localized("Rate Us"))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .background(GameTheme.blue)
+                    .cornerRadius(12)
+                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 2))
+                    .foregroundColor(.white)
+                    .font(.system(.title3, design: .rounded).weight(.bold))
                 }
-                .offset(y: -25) // 上移盖住木板底部
+                
+                Button(action: {}) {
+                    Text(lang.localized("Delete All"))
+                        .font(.caption.weight(.bold))
+                        .foregroundColor(GameTheme.brown.opacity(0.5))
+                }
             }
+            .padding(25)
+            .background(GameTheme.cream)
+            .cornerRadius(20)
+            .overlay(RoundedRectangle(cornerRadius: 20).stroke(GameTheme.brown, lineWidth: 5))
+            .padding(.horizontal, 40)
+            
+            // OK Button
+            Button(action: {
+                // 这里的动画很重要，确保关闭时也有缩放效果
+                withAnimation(.spring()) {
+                    isPresented = false
+                }
+            }) {
+                Text(lang.localized("OK"))
+                    .font(.custom("Luckiest Guy", size: 24))
+                    .foregroundColor(.white)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 40)
+                    .background(GameTheme.green)
+                    .cornerRadius(15)
+                    .overlay(RoundedRectangle(cornerRadius: 15).stroke(GameTheme.brown, lineWidth: 3))
+                    .shadow(radius: 3, y: 3)
+            }
+            .offset(y: -25)
         }
+        // ❌ 注意：不要在这里加 .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // 让 VStack 保持它自己的大小，这样 ContentView 里的 scale 动画才会漂亮地从中心放大
     }
 }
 
-// 辅助组件：音效方块开关
+// 别忘了 SoundToggleButton (保持在文件底部)
 struct SoundToggleButton: View {
     let icon: String
     let label: String
