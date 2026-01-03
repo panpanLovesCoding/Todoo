@@ -25,7 +25,7 @@ struct TodoListView: View {
                     if activeItems.isEmpty {
                         VStack {
                             Text(lang.localized("No active quests!")) // 🌐 本地化
-                                .font(.custom(lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular", size: 20))
+                                .font(.system(.headline, design: .rounded).weight(.bold))
                                 .foregroundColor(GameTheme.brown.opacity(0.5))
                                 .padding(.top, 40)
                         }
@@ -263,7 +263,7 @@ struct CompletedListView: View {
                     if completedItems.isEmpty {
                         VStack {
                             Text(lang.localized("No completed quests yet!")) // 🌐 本地化
-                                .font(.custom(lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular", size: 20))
+                                .font(.system(.headline, design: .rounded).weight(.bold))
                                 .foregroundColor(GameTheme.brown.opacity(0.5))
                                 .padding(.top, 40)
                         }
