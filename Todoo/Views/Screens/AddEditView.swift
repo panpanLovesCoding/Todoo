@@ -22,10 +22,10 @@ struct AddEditView: View {
     var body: some View {
         VStack(spacing: 20) {
             
+            // 标题保持卡通字体
             Text(isEditing ? "EDIT QUEST" : "NEW QUEST")
                 .font(.custom("Luckiest Guy", size: 40))
                 .foregroundColor(isEditing ? Color.blue : GameTheme.background)
-                // 🆕 修正位置：超大标题下移 5
                 .offset(y: 5)
                 .shadow(color: .black, radius: 0, x: 1, y: 1)
                 .padding(.top, 10)
@@ -34,10 +34,9 @@ struct AddEditView: View {
                 
                 // Name
                 VStack(alignment: .leading, spacing: 5) {
+                    // 🆕 修改：改回普通字体 (系统圆体)，并移除 offset
                     Text(lang.localized("Quest Name"))
-                        .font(.custom("Luckiest Guy", size: 18))
-                        // 🆕 修正位置：标签文字也稍微下移
-                        .offset(y: 2)
+                        .font(.system(.headline, design: .rounded).weight(.bold))
                         .foregroundColor(GameTheme.brown)
                     
                     TextField("Enter quest name...", text: $title)
@@ -51,10 +50,9 @@ struct AddEditView: View {
                 
                 // Deadline
                 VStack(alignment: .leading, spacing: 5) {
+                    // 🆕 修改：改回普通字体 (系统圆体)，并移除 offset
                     Text(lang.localized("Deadline"))
-                        .font(.custom("Luckiest Guy", size: 18))
-                        // 🆕 修正位置
-                        .offset(y: 2)
+                        .font(.system(.headline, design: .rounded).weight(.bold))
                         .foregroundColor(GameTheme.brown)
                     
                     DatePicker("", selection: $deadline, displayedComponents: .date)
@@ -74,12 +72,11 @@ struct AddEditView: View {
             }
             .padding(.horizontal, 10)
             
-            // Buttons
+            // Buttons (保持卡通字体)
             HStack(spacing: 20) {
                 Button(action: closeView) {
                     Text(lang.localized("Cancel"))
                         .font(.custom("Luckiest Guy", size: 20))
-                        // 🆕 修正位置：中号按钮下移 4
                         .offset(y: 4)
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
@@ -92,7 +89,6 @@ struct AddEditView: View {
                 Button(action: saveItem) {
                     Text(lang.localized("Save"))
                         .font(.custom("Luckiest Guy", size: 20))
-                        // 🆕 修正位置：中号按钮下移 4
                         .offset(y: 4)
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
@@ -168,7 +164,8 @@ struct AddEditView: View {
     }
 }
 
-// 辅助组件
+// 辅助组件 (ToggleView 里的字体可以保持卡通，或者如果你想让 Toggle 也是普通字体，也可以在这里改)
+// 目前 ToggleView 里的字体保持为 Luckiest Guy (Size 16)
 struct ToggleView: View {
     let title: String
     @Binding var isOn: Bool
@@ -182,7 +179,6 @@ struct ToggleView: View {
                     .foregroundColor(isOn ? color : GameTheme.brown.opacity(0.5))
                 Text(title)
                     .font(.custom("Luckiest Guy", size: 16))
-                    // 🆕 修正位置：开关文字下移 3
                     .offset(y: 3)
                     .foregroundColor(GameTheme.brown)
                     .fixedSize(horizontal: true, vertical: false)
