@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications // 🆕 引入这个框架，防止 UNUserNotificationCenter 报错
 
 struct SettingsView: View {
     @Binding var isPresented: Bool
@@ -81,8 +82,10 @@ struct SettingsView: View {
                 HStack(spacing: 15) {
                     SoundToggleButton(icon: "music.note", label: "Music", isOn: $musicEnabled)
                     SoundToggleButton(icon: "speaker.wave.2.fill", label: "Sound", isOn: $soundEnabled)
+                    
                     SoundToggleButton(icon: "bell.fill", label: "Notifications", isOn: $notificationsEnabled)
-                        .onChange(of: notificationsEnabled) { newValue in
+                        // 🛠️ 修复核心：iOS 17+ 标准写法，使用 { oldValue, newValue in ... }
+                        .onChange(of: notificationsEnabled) { oldValue, newValue in
                             if newValue {
                                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in }
                             }
