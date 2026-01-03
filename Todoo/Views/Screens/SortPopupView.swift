@@ -13,17 +13,16 @@ struct SortPopupView: View {
         VStack(spacing: 20) {
             // 标题
             Text(lang.localized("SORT BY")) // 🌐 本地化
-                .font(.custom("Luckiest Guy", size: 35))
+                .font(.custom(getFontName(), size: 35)) // 🛠️ 动态字体
                 .foregroundColor(GameTheme.pumpkin)
-                // 修正位置
-                .offset(y: 5)
+                .offset(y: getTextOffset(size: 35)) // 🛠️ 动态偏移
                 .shadow(color: .black, radius: 0, x: 1, y: 1)
                 .padding(.top, 10)
             
             VStack(spacing: 12) {
                 ForEach(SortOption.allCases, id: \.self) { option in
                     SortButton(
-                        title: lang.localized(option.rawValue), // 🌐 本地化排序选项 (Created Time 等)
+                        title: lang.localized(option.rawValue), // 🌐 本地化 (Created Time -> 创建时间)
                         icon: iconFor(option),
                         isSelected: tempSelectedOption == option
                     ) {
@@ -40,9 +39,8 @@ struct SortPopupView: View {
                 // Cancel 按钮
                 Button(action: { withAnimation { isPresented = false } }) {
                     Text(lang.localized("Cancel")) // 🌐 本地化
-                        .font(.custom("Luckiest Guy", size: 20))
-                        // 修正位置
-                        .offset(y: 4)
+                        .font(.custom(getFontName(), size: 20)) // 🛠️ 动态字体
+                        .offset(y: getTextOffset(size: 20)) // 🛠️ 动态偏移
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -59,9 +57,8 @@ struct SortPopupView: View {
                     }
                 }) {
                     Text(lang.localized("Select")) // 🌐 本地化
-                        .font(.custom("Luckiest Guy", size: 20))
-                        // 修正位置
-                        .offset(y: 4)
+                        .font(.custom(getFontName(), size: 20)) // 🛠️ 动态字体
+                        .offset(y: getTextOffset(size: 20)) // 🛠️ 动态偏移
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -86,6 +83,20 @@ struct SortPopupView: View {
         }
     }
     
+    // 🛠️ 辅助函数：获取字体名称
+    // 对应 ZhanKuKuaiLeTi2016XiuDingBan-1.ttf
+    func getFontName() -> String {
+        return lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular"
+    }
+    
+    // 🛠️ 辅助函数：获取垂直偏移
+    // 中文不需要偏移，英文 Luckiest Guy 需要下移
+    func getTextOffset(size: CGFloat) -> CGFloat {
+        if lang.language == "zh" { return 0 }
+        // 根据字体大小微调偏移量
+        return size > 30 ? 5 : 4
+    }
+    
     func iconFor(_ option: SortOption) -> String {
         switch option {
         case .creationDate: return "calendar.badge.plus"
@@ -102,6 +113,9 @@ struct SortButton: View {
     let isSelected: Bool
     let action: () -> Void
     
+    // 🆕 引入语言管理器用于字体判断
+    @ObservedObject var lang = LanguageManager.shared
+    
     var body: some View {
         Button(action: action) {
             HStack {
@@ -110,9 +124,8 @@ struct SortButton: View {
                     .frame(width: 24)
                 
                 Text(title)
-                    .font(.custom("Luckiest Guy", size: 18))
-                    // 修正位置
-                    .offset(y: 3)
+                    .font(.custom(lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular", size: 18)) // 🛠️ 动态字体
+                    .offset(y: lang.language == "zh" ? 0 : 3) // 🛠️ 动态偏移 (中文0，英文3)
                 
                 Spacer()
                 
