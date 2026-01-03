@@ -52,10 +52,34 @@ struct TodoCard: View {
     var showSeparator: Bool = true
     let onToggle: () -> Void
     
-    // 状态 1: 刚刚勾选 (从无到有)
+    // 状态
     @State private var justChecked = false
-    // 🆕 状态 2: 正在取消勾选 (从有到无)
     @State private var isUnchecking = false
+    
+    // 判断是否是今天
+    var isDueToday: Bool {
+        Calendar.current.isDateInToday(item.deadline)
+    }
+    
+    // 🆕 新增：判断是否过期 (截止日期在今天之前)
+    var isOverdue: Bool {
+        // 比较 deadline 和 当前时间(Date())，粒度为“天”
+        // orderedAscending 意味着 deadline < today (即过去)
+        Calendar.current.compare(item.deadline, to: Date(), toGranularity: .day) == .orderedAscending
+    }
+    
+    // 🆕 辅助函数：获取日期颜色
+    func getDateColor() -> Color {
+        if item.isCompleted {
+            return GameTheme.brown // 已完成：保持棕色
+        } else if isOverdue {
+            return Color.gray      // 已过期：显示灰色
+        } else if isDueToday {
+            return GameTheme.red   // 今天：显示红色
+        } else {
+            return GameTheme.brown // 未来：显示棕色
+        }
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -70,12 +94,10 @@ struct TodoCard: View {
                             .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 3))
                         
                         // 绿勾
-                        // 显示条件：(任务是完成状态 OR 刚刚勾选) AND (不在取消勾选的过程中)
                         if (item.isCompleted || justChecked) && !isUnchecking {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(GameTheme.green)
-                                // 动画：缩放+透明度 (出现和消失都会有这个效果)
                                 .transition(.scale.combined(with: .opacity))
                         }
                     }
@@ -87,7 +109,6 @@ struct TodoCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(item.title)
                         .font(.system(.title3, design: .rounded).weight(.heavy))
-                        // 删除线逻辑：(已完成 OR 刚勾选) AND (没在取消)
                         .strikethrough((item.isCompleted || justChecked) && !isUnchecking)
                         .foregroundColor(GameTheme.brown)
                         .fixedSize(horizontal: false, vertical: true)
@@ -107,12 +128,16 @@ struct TodoCard: View {
                     }
 
                     HStack {
+                        // 🆕 应用颜色逻辑
                         Label("Due: \(item.deadline.formatted(date: .abbreviated, time: .omitted))", systemImage: "calendar")
+                            .foregroundColor(getDateColor()) // 使用上面的函数
+                        
                         Spacer()
                         if item.isUrgent { Text("🔥 Urgent") }
                         if item.isImportant { Text("⭐ Important") }
                     }
                     .font(.system(size: 11, design: .rounded).weight(.bold))
+                    // 这里原本是统一设置颜色，现在 label 颜色会覆盖，右边的 urgent/important 继承这里的棕色
                     .foregroundColor(GameTheme.brown)
                 }
                 Spacer()
@@ -134,29 +159,22 @@ struct TodoCard: View {
         .shadow(color: isCardStyle ? .black.opacity(0.3) : .clear, radius: 2, x: 2, y: 4)
     }
     
-    // 逻辑处理函数
+    // 逻辑处理函数 (保持不变)
     func handleToggle() {
         if !item.isCompleted {
-            // [动作：去完成]
-            // 1. 立即显示绿勾
             withAnimation(.spring()) {
                 justChecked = true
             }
-            // 2. 延迟执行数据更新
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 onToggle()
                 justChecked = false
             }
         } else {
-            // [动作：取消完成/倒放]
-            // 1. 立即触发“取消中”动画 -> 绿勾会消失
             withAnimation(.spring()) {
                 isUnchecking = true
             }
-            // 2. 延迟执行数据更新 (让绿勾消失动画播放完)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 onToggle()
-                // 重置状态
                 isUnchecking = false
             }
         }
