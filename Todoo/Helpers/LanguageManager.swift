@@ -20,7 +20,7 @@ class LanguageManager: ObservableObject {
         "QUEST LOG": "QUEST LOG",
         "COMPLETED LOG": "COMPLETED LOG",
         
-        // 🆕 四象限 (Eisenhower Matrix)
+        // 🆕 四象限 (使用硬编码 Key 对应)
         "Do Now": "DO NOW",
         "Plan": "PLAN",
         "Delegate": "DELEGATE",
@@ -53,7 +53,7 @@ class LanguageManager: ObservableObject {
         "ABANDON_WARNING": "Are you sure you want to abandon this quest? This cannot be undone.",
         "Abandon": "Abandon",
         
-        // 其他通用
+        // 其他
         "Music": "Music",
         "Sound": "Sound",
         "Notifications": "Notif",
@@ -70,7 +70,7 @@ class LanguageManager: ObservableObject {
         "RESET_WARNING": "Are you sure you want to delete all data? This cannot be undone.",
         "Delete": "Delete",
         
-        // Titles & Vibes
+        // Titles & Vibes ... (保持不变)
         "TITLE_ELITE_VANGUARD": "Elite Vanguard",
         "VIBE_ELITE_VANGUARD": "\"I don't just put out fires; I build fireproof houses.\"",
         "TITLE_CHAOS_SURFER": "Chaos Surfer",
@@ -129,7 +129,7 @@ class LanguageManager: ObservableObject {
         "Due Date": "截 止 日 期",
         "Task Name": "任 务 名 称",
         
-        // 🆕 空状态与弹窗
+        // 🆕 空状态
         "No active quests!": "暂无进行中的冒险！",
         "No completed quests yet!": "还没有完成的任务！",
         "Empty": "空",
@@ -137,7 +137,7 @@ class LanguageManager: ObservableObject {
         "ABANDON_WARNING": "确定要放弃这个任务吗？此操作无法撤销。",
         "Abandon": "放 弃",
         
-        // 其他通用
+        // 其他
         "Music": "背 景 音",
         "Sound": "音 效",
         "Notifications": "提 醒",
@@ -154,7 +154,7 @@ class LanguageManager: ObservableObject {
         "RESET_WARNING": "你确定要清空所有数据吗？此操作无法撤销。",
         "Delete": "删 除",
         
-        // Titles & Vibes (保持原样)
+        // Titles & Vibes ... (保持原样)
         "TITLE_ELITE_VANGUARD": "精英先锋",
         "VIBE_ELITE_VANGUARD": "“我不只负责救火，我还建造防火屋。”",
         "TITLE_CHAOS_SURFER": "混沌冲浪手",

@@ -77,19 +77,21 @@ class TodoManager: ObservableObject {
         }
         
         // 1. 统计各象限数量
+        // 👇 修复：将 .eliminate 改为 .later
         var counts: [EisenhowerQuadrant: Int] = [
-            .doNow: 0, .plan: 0, .delegate: 0, .eliminate: 0
+            .doNow: 0, .plan: 0, .delegate: 0, .later: 0
         ]
         
         for item in completedItems {
             counts[item.quadrant, default: 0] += 1
         }
         
-        // 2. 排序：数量多的在前。如果数量相同，按固定优先级排序(DoNow > Plan > Delegate > Eliminate)以保持稳定性
+        // 2. 排序：数量多的在前。如果数量相同，按固定优先级排序(DoNow > Plan > Delegate > Later)以保持稳定性
         let sortedQuadrants = counts.sorted { (pair1, pair2) -> Bool in
             if pair1.value == pair2.value {
                 // 处理平局情况的优先级
-                let priority: [EisenhowerQuadrant: Int] = [.doNow: 4, .plan: 3, .delegate: 2, .eliminate: 1]
+                // 👇 修复：将 .eliminate 改为 .later
+                let priority: [EisenhowerQuadrant: Int] = [.doNow: 4, .plan: 3, .delegate: 2, .later: 1]
                 return priority[pair1.key, default: 0] > priority[pair2.key, default: 0]
             }
             return pair1.value > pair2.value
@@ -105,22 +107,26 @@ class TodoManager: ObservableObject {
         // Group 1: DO NOW 霸榜
         case (.doNow, .plan): return ("TITLE_ELITE_VANGUARD", "VIBE_ELITE_VANGUARD")
         case (.doNow, .delegate): return ("TITLE_CHAOS_SURFER", "VIBE_CHAOS_SURFER")
-        case (.doNow, .eliminate): return ("TITLE_DEADLINE_DAREDEVIL", "VIBE_DEADLINE_DAREDEVIL")
+        // 👇 修复：.eliminate -> .later
+        case (.doNow, .later): return ("TITLE_DEADLINE_DAREDEVIL", "VIBE_DEADLINE_DAREDEVIL")
             
         // Group 2: PLAN 霸榜
         case (.plan, .doNow): return ("TITLE_GRANDMASTER", "VIBE_GRANDMASTER")
         case (.plan, .delegate): return ("TITLE_BENEVOLENT_RULER", "VIBE_BENEVOLENT_RULER")
-        case (.plan, .eliminate): return ("TITLE_PHILOSOPHER_KING", "VIBE_PHILOSOPHER_KING")
+        // 👇 修复：.eliminate -> .later
+        case (.plan, .later): return ("TITLE_PHILOSOPHER_KING", "VIBE_PHILOSOPHER_KING")
             
         // Group 3: DELEGATE 霸榜
         case (.delegate, .doNow): return ("TITLE_SPINNING_TOP", "VIBE_SPINNING_TOP")
         case (.delegate, .plan): return ("TITLE_SIDE_QUEST_HERO", "VIBE_SIDE_QUEST_HERO")
-        case (.delegate, .eliminate): return ("TITLE_NPC_ENERGY", "VIBE_NPC_ENERGY")
+        // 👇 修复：.eliminate -> .later
+        case (.delegate, .later): return ("TITLE_NPC_ENERGY", "VIBE_NPC_ENERGY")
             
         // Group 4: LATER 霸榜
-        case (.eliminate, .doNow): return ("TITLE_CLUTCH_GAMER", "VIBE_CLUTCH_GAMER")
-        case (.eliminate, .plan): return ("TITLE_DAYDREAM_BELIEVER", "VIBE_DAYDREAM_BELIEVER")
-        case (.eliminate, .delegate): return ("TITLE_POTATO_MODE", "VIBE_POTATO_MODE")
+        // 👇 修复：.eliminate -> .later (全替换)
+        case (.later, .doNow): return ("TITLE_CLUTCH_GAMER", "VIBE_CLUTCH_GAMER")
+        case (.later, .plan): return ("TITLE_DAYDREAM_BELIEVER", "VIBE_DAYDREAM_BELIEVER")
+        case (.later, .delegate): return ("TITLE_POTATO_MODE", "VIBE_POTATO_MODE")
             
         // 理论上不会走到这里，因为上面的 case 覆盖了所有排列，但为了保险：
         default: return ("TITLE_ELITE_VANGUARD", "VIBE_ELITE_VANGUARD")

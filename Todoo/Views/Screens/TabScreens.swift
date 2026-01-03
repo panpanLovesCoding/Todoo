@@ -73,13 +73,12 @@ struct ActiveTodoRow: View {
     }
 }
 
-// 🆕 头部：Active List Header
+// 头部：Active List Header
 struct TodoListHeader: View {
     @ObservedObject var lang = LanguageManager.shared
     
-    // 🛠️ 字体逻辑
+    // 🛠️ 字体与偏移
     var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
-    // 🛠️ 偏移逻辑：中文不偏移，英文偏移
     var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
     
     var body: some View {
@@ -208,10 +207,21 @@ struct MatrixSectionHeader: View {
     var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
     var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
     
+    // 🛠️ 强制键值映射 (Safe Mapping)
+    // 无论 rawValue 是什么，都强制转换成我们在 LanguageManager 里定义的 Key
+    var quadrantKey: String {
+        switch quadrant {
+        case .doNow: return "Do Now"
+        case .plan: return "Plan"
+        case .delegate: return "Delegate"
+        case .later: return "Later"
+        }
+    }
+    
     var body: some View {
         ZStack {
             quadrant.color
-            Text(lang.localized(quadrant.rawValue)) // 🌐 本地化 rawValue (Do Now -> 马上做)
+            Text(lang.localized(quadrantKey)) // 使用强制映射的 Key
                 .font(.custom(fontName, size: 28))
                 .foregroundColor(.white)
                 .shadow(color: Color.black.opacity(0.3), radius: 0, x: 2, y: 2)

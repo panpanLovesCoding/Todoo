@@ -4,7 +4,6 @@ struct SortPopupView: View {
     @Binding var isPresented: Bool
     @Binding var currentSort: SortOption
     
-    // 🆕 引入语言管理器
     @ObservedObject var lang = LanguageManager.shared
     
     @State private var tempSelectedOption: SortOption = .creationDate
@@ -12,17 +11,17 @@ struct SortPopupView: View {
     var body: some View {
         VStack(spacing: 20) {
             // 标题
-            Text(lang.localized("SORT BY")) // 🌐 本地化
-                .font(.custom(getFontName(), size: 35)) // 🛠️ 动态字体
+            Text(lang.localized("SORT BY"))
+                .font(.custom(getFontName(), size: 35))
                 .foregroundColor(GameTheme.pumpkin)
-                .offset(y: getTextOffset(size: 35)) // 🛠️ 动态偏移
+                .offset(y: getTextOffset(size: 35))
                 .shadow(color: .black, radius: 0, x: 1, y: 1)
                 .padding(.top, 10)
             
             VStack(spacing: 12) {
                 ForEach(SortOption.allCases, id: \.self) { option in
                     SortButton(
-                        title: lang.localized(option.rawValue), // 🌐 本地化 (Created Time -> 创建时间)
+                        title: lang.localized(option.rawValue),
                         icon: iconFor(option),
                         isSelected: tempSelectedOption == option
                     ) {
@@ -36,11 +35,11 @@ struct SortPopupView: View {
             
             // Buttons
             HStack(spacing: 20) {
-                // Cancel 按钮
+                // Cancel
                 Button(action: { withAnimation { isPresented = false } }) {
-                    Text(lang.localized("Cancel")) // 🌐 本地化
-                        .font(.custom(getFontName(), size: 20)) // 🛠️ 动态字体
-                        .offset(y: getTextOffset(size: 20)) // 🛠️ 动态偏移
+                    Text(lang.localized("Cancel"))
+                        .font(.custom(getFontName(), size: 20))
+                        .offset(y: getTextOffset(size: 20))
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -49,16 +48,16 @@ struct SortPopupView: View {
                         .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
                 }
                 
-                // Select 按钮
+                // Select
                 Button(action: {
                     currentSort = tempSelectedOption
                     withAnimation {
                         isPresented = false
                     }
                 }) {
-                    Text(lang.localized("Select")) // 🌐 本地化
-                        .font(.custom(getFontName(), size: 20)) // 🛠️ 动态字体
-                        .offset(y: getTextOffset(size: 20)) // 🛠️ 动态偏移
+                    Text(lang.localized("Select"))
+                        .font(.custom(getFontName(), size: 20))
+                        .offset(y: getTextOffset(size: 20))
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -83,17 +82,12 @@ struct SortPopupView: View {
         }
     }
     
-    // 🛠️ 辅助函数：获取字体名称
-    // 对应 ZhanKuKuaiLeTi2016XiuDingBan-1.ttf
     func getFontName() -> String {
         return lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular"
     }
     
-    // 🛠️ 辅助函数：获取垂直偏移
-    // 中文不需要偏移，英文 Luckiest Guy 需要下移
     func getTextOffset(size: CGFloat) -> CGFloat {
         if lang.language == "zh" { return 0 }
-        // 根据字体大小微调偏移量
         return size > 30 ? 5 : 4
     }
     
@@ -106,14 +100,12 @@ struct SortPopupView: View {
     }
 }
 
-// 辅助组件：SortButton
 struct SortButton: View {
     let title: String
     let icon: String
     let isSelected: Bool
     let action: () -> Void
     
-    // 🆕 引入语言管理器用于字体判断
     @ObservedObject var lang = LanguageManager.shared
     
     var body: some View {
@@ -124,8 +116,8 @@ struct SortButton: View {
                     .frame(width: 24)
                 
                 Text(title)
-                    .font(.custom(lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular", size: 18)) // 🛠️ 动态字体
-                    .offset(y: lang.language == "zh" ? 0 : 3) // 🛠️ 动态偏移 (中文0，英文3)
+                    .font(.custom(lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular", size: 18))
+                    .offset(y: lang.language == "zh" ? 0 : 3)
                 
                 Spacer()
                 

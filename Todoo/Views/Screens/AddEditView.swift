@@ -19,7 +19,7 @@ struct AddEditView: View {
     
     var isEditing: Bool { itemToEdit != nil }
     
-    // 🛠️ 字体逻辑
+    // 🛠️ 字体与偏移
     var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
     var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
     
@@ -36,7 +36,7 @@ struct AddEditView: View {
             
             VStack(alignment: .leading, spacing: 15) {
                 
-                // Name
+                // Name (普通字体)
                 VStack(alignment: .leading, spacing: 5) {
                     Text(lang.localized("Quest Name"))
                         .font(.system(.headline, design: .rounded).weight(.bold))
@@ -51,7 +51,7 @@ struct AddEditView: View {
                         .foregroundColor(GameTheme.brown)
                 }
                 
-                // Deadline
+                // Deadline (普通字体)
                 VStack(alignment: .leading, spacing: 5) {
                     Text(lang.localized("Deadline"))
                         .font(.system(.headline, design: .rounded).weight(.bold))
@@ -66,9 +66,8 @@ struct AddEditView: View {
                         .accentColor(GameTheme.brown)
                 }
                 
-                // Toggles - Urgent / Important
+                // Toggles (特殊字体 + 中文)
                 HStack(spacing: 12) {
-                    // 👇 修复：使用 localized 字符串，并且 ToggleView 内部现在会使用动态字体
                     ToggleView(title: lang.localized("Urgent"), isOn: $isUrgent, icon: "flame.fill", color: GameTheme.red)
                     ToggleView(title: lang.localized("Important"), isOn: $isImportant, icon: "star.fill", color: GameTheme.yellow)
                 }
@@ -80,7 +79,7 @@ struct AddEditView: View {
                 Button(action: closeView) {
                     Text(lang.localized("Cancel"))
                         .font(.custom(fontName, size: 20))
-                        .offset(y: lang.language == "zh" ? 0 : 4) // 中号按钮偏移修正
+                        .offset(y: lang.language == "zh" ? 0 : 4) // 中号偏移
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -92,7 +91,7 @@ struct AddEditView: View {
                 Button(action: saveItem) {
                     Text(lang.localized("Save"))
                         .font(.custom(fontName, size: 20))
-                        .offset(y: lang.language == "zh" ? 0 : 4) // 中号按钮偏移修正
+                        .offset(y: lang.language == "zh" ? 0 : 4) // 中号偏移
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -167,8 +166,7 @@ struct AddEditView: View {
     }
 }
 
-// 辅助组件：ToggleView
-// 🆕 修复：内部使用动态字体，确保中文显示 HappyZcool
+// 辅助组件：ToggleView (内部也应用动态字体)
 struct ToggleView: View {
     let title: String
     @Binding var isOn: Bool
@@ -177,7 +175,6 @@ struct ToggleView: View {
     
     @ObservedObject var lang = LanguageManager.shared
     
-    // 🛠️ 字体逻辑
     var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
     var yOffset: CGFloat { lang.language == "zh" ? 0 : 3 }
     
@@ -187,7 +184,7 @@ struct ToggleView: View {
                 Image(systemName: isOn ? icon : "circle")
                     .foregroundColor(isOn ? color : GameTheme.brown.opacity(0.5))
                 Text(title)
-                    .font(.custom(fontName, size: 16)) // 使用动态字体
+                    .font(.custom(fontName, size: 16)) // 动态字体
                     .offset(y: yOffset) // 动态偏移
                     .foregroundColor(GameTheme.brown)
                     .fixedSize(horizontal: true, vertical: false)
