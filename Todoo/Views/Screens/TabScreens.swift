@@ -6,6 +6,9 @@ struct TodoListView: View {
     @Binding var itemToEdit: TodoItem?
     let sortOption: SortOption
     
+    // 🆕 引入语言管理器
+    @ObservedObject var lang = LanguageManager.shared
+    
     var activeItems: [TodoItem] {
         let filtered = manager.items.filter { !$0.isCompleted }
         switch sortOption {
@@ -21,9 +24,11 @@ struct TodoListView: View {
                 Section(header: TodoListHeader()) {
                     if activeItems.isEmpty {
                         VStack {
-                            EmptyStateView(message: "No active quests!")
+                            Text(lang.localized("No active quests!")) // 🌐 本地化
+                                .font(.custom(lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular", size: 20))
+                                .foregroundColor(GameTheme.brown.opacity(0.5))
+                                .padding(.top, 40)
                         }
-                        .padding(.top, 40)
                     } else {
                         VStack(spacing: 0) {
                             ForEach(activeItems, id: \.id) { item in
@@ -52,7 +57,6 @@ struct ActiveTodoRow: View {
             item: item,
             isCardStyle: false,
             onToggle: {
-                // 👇 优化：加上显式动画
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     manager.toggleStatus(for: item)
                 }
@@ -62,7 +66,6 @@ struct ActiveTodoRow: View {
         .onTapGesture {
             withAnimation { itemToEdit = item }
         }
-        // 动画：进出都从底部滑动
         .transition(.asymmetric(
             insertion: .move(edge: .bottom).combined(with: .opacity),
             removal: .move(edge: .bottom).combined(with: .opacity)
@@ -70,15 +73,23 @@ struct ActiveTodoRow: View {
     }
 }
 
-// 头部：Active List Header
+// 🆕 头部：Active List Header
 struct TodoListHeader: View {
+    @ObservedObject var lang = LanguageManager.shared
+    
+    // 🛠️ 字体逻辑
+    var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
+    // 🛠️ 偏移逻辑：中文不偏移，英文偏移
+    var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
+    
     var body: some View {
         ZStack {
             Color(red: 0.5, green: 0.35, blue: 0.2)
-            Text("QUEST LOG")
-                .font(.custom("Luckiest Guy", size: 28))
+            Text(lang.localized("QUEST LOG")) // 🌐 本地化
+                .font(.custom(fontName, size: 28))
                 .foregroundColor(GameTheme.cream)
                 .shadow(color: Color.black.opacity(0.3), radius: 0, x: 2, y: 2)
+                .offset(y: yOffset)
                 .padding(.vertical, 15)
         }
         .frame(height: 60)
@@ -98,32 +109,23 @@ struct EisenhowerMatrixView: View {
     let sortOption: SortOption
     @Binding var itemToEdit: TodoItem?
     
-    // 🆕 新增：动态计算象限顺序
-    // 逻辑：有任务的象限在上面，没任务的象限沉到底部，内部保持原有顺序
+    @ObservedObject var lang = LanguageManager.shared
+    
     var sortedQuadrants: [EisenhowerQuadrant] {
-        // 1. 找出所有包含“未完成任务”的象限集合
         let activeQuadrants = Set(
             manager.items
-                .filter { !$0.isCompleted } // 只看未完成的
+                .filter { !$0.isCompleted }
                 .map { $0.quadrant }
         )
-        
-        // 2. 按原始顺序筛选出“非空象限”
         let nonEmpty = EisenhowerQuadrant.allCases.filter { activeQuadrants.contains($0) }
-        
-        // 3. 按原始顺序筛选出“空象限”
         let empty = EisenhowerQuadrant.allCases.filter { !activeQuadrants.contains($0) }
-        
-        // 4. 拼接：非空在前，空在后
         return nonEmpty + empty
     }
     
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                // 👇 修改：这里不再遍历 allCases，而是遍历 sortedQuadrants
                 ForEach(sortedQuadrants, id: \.self) { quadrant in
-                    // 获取该象限的任务（逻辑不变）
                     let baseItems = manager.items.filter { !$0.isCompleted && $0.quadrant == quadrant }
                     let items: [TodoItem] = {
                         switch sortOption {
@@ -136,8 +138,7 @@ struct EisenhowerMatrixView: View {
                     Section(header: MatrixSectionHeader(quadrant: quadrant)) {
                         VStack(spacing: 0) {
                             if items.isEmpty {
-                                // 空状态显示
-                                Text("Empty")
+                                Text(lang.localized("Empty")) // 🌐 本地化
                                     .font(.system(.body, design: .rounded).weight(.bold))
                                     .foregroundColor(GameTheme.brown.opacity(0.4))
                                     .frame(maxWidth: .infinity)
@@ -160,20 +161,17 @@ struct EisenhowerMatrixView: View {
                         .padding(.horizontal, 10)
                         .padding(.top, 0)
                         .padding(.bottom, 6)
-                        // 加上动画，这样象限移动时会有平滑效果
                         .animation(.spring(response: 0.5, dampingFraction: 0.7), value: items)
                     }
                 }
             }
             .background(GameTheme.cream)
-            // 👇 🆕 给整个列表加动画，确保象限上下移动时也是平滑的
             .animation(.spring(response: 0.6, dampingFraction: 0.8), value: sortedQuadrants)
         }
         .background(GameTheme.cream)
     }
 }
 
-// 子视图：Matrix 列表行
 struct MatrixTodoRow: View {
     let item: TodoItem
     let showSeparator: Bool
@@ -186,7 +184,6 @@ struct MatrixTodoRow: View {
             isCardStyle: false,
             showSeparator: showSeparator,
             onToggle: {
-                // 👇 修复：使用显式动画包裹状态变更，强制触发过渡效果
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     manager.toggleStatus(for: item)
                 }
@@ -203,16 +200,22 @@ struct MatrixTodoRow: View {
     }
 }
 
-// 头部：Matrix Header
+// 🆕 头部：Matrix Header
 struct MatrixSectionHeader: View {
     let quadrant: EisenhowerQuadrant
+    @ObservedObject var lang = LanguageManager.shared
+    
+    var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
+    var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
+    
     var body: some View {
         ZStack {
             quadrant.color
-            Text(quadrant.rawValue)
-                .font(.custom("Luckiest Guy", size: 28))
+            Text(lang.localized(quadrant.rawValue)) // 🌐 本地化 rawValue (Do Now -> 马上做)
+                .font(.custom(fontName, size: 28))
                 .foregroundColor(.white)
                 .shadow(color: Color.black.opacity(0.3), radius: 0, x: 2, y: 2)
+                .offset(y: yOffset)
                 .padding(.vertical, 15)
         }
         .frame(height: 60)
@@ -230,29 +233,16 @@ struct MatrixSectionHeader: View {
 struct CompletedListView: View {
     @ObservedObject var manager: TodoManager
     @Binding var itemToEdit: TodoItem?
-    
-    // 🆕 新增：接收排序参数
     let sortOption: SortOption
+    
+    @ObservedObject var lang = LanguageManager.shared
     
     var completedItems: [TodoItem] {
         let items = manager.items.filter { $0.isCompleted }
-        
-        // 🆕 新增：根据 sortOption 进行排序
         switch sortOption {
-        case .creationDate:
-            // "Created Time" -> 实际上用户可能更想看“最近完成的”，
-            // 但如果严格按字面意思就是创建时间。这里你可以灵活调整。
-            // 比如：如果选 CreationDate，我们还是按“完成时间”倒序排（符合直觉），
-            // 或者严格按 createdAt。这里暂按 CreationDate 排。
-            return items.sorted { $0.createdAt > $1.createdAt }
-            
-        case .deadline:
-            // 按截止日期排序
-            return items.sorted { $0.deadline < $1.deadline }
-            
-        case .title:
-            // 按标题排序
-            return items.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
+        case .creationDate: return items.sorted { $0.createdAt > $1.createdAt }
+        case .deadline: return items.sorted { $0.deadline < $1.deadline }
+        case .title: return items.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
         }
     }
     
@@ -262,9 +252,11 @@ struct CompletedListView: View {
                 Section(header: CompletedListHeader()) {
                     if completedItems.isEmpty {
                         VStack {
-                            EmptyStateView(message: "No completed quests yet!")
+                            Text(lang.localized("No completed quests yet!")) // 🌐 本地化
+                                .font(.custom(lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular", size: 20))
+                                .foregroundColor(GameTheme.brown.opacity(0.5))
+                                .padding(.top, 40)
                         }
-                        .padding(.top, 40)
                     } else {
                         VStack(spacing: 0) {
                             ForEach(Array(completedItems.enumerated()), id: \.element.id) { index, item in
@@ -282,7 +274,6 @@ struct CompletedListView: View {
     }
 }
 
-// 子视图：Completed 列表行
 struct CompletedTodoRow: View {
     let item: TodoItem
     @ObservedObject var manager: TodoManager
@@ -294,7 +285,6 @@ struct CompletedTodoRow: View {
             isCardStyle: false,
             showSeparator: true,
             onToggle: {
-                // 👇 优化：加上显式动画
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     manager.toggleStatus(for: item)
                 }
@@ -313,15 +303,21 @@ struct CompletedTodoRow: View {
     }
 }
 
-// 头部：Completed List Header
+// 🆕 头部：Completed List Header
 struct CompletedListHeader: View {
+    @ObservedObject var lang = LanguageManager.shared
+    
+    var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
+    var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
+    
     var body: some View {
         ZStack {
             Color(red: 0.2, green: 0.6, blue: 0.3)
-            Text("COMPLETED LOG")
-                .font(.custom("Luckiest Guy", size: 28))
+            Text(lang.localized("COMPLETED LOG")) // 🌐 本地化
+                .font(.custom(fontName, size: 28))
                 .foregroundColor(GameTheme.cream)
                 .shadow(color: Color.black.opacity(0.3), radius: 0, x: 2, y: 2)
+                .offset(y: yOffset)
                 .padding(.vertical, 15)
         }
         .frame(height: 60)
@@ -335,7 +331,6 @@ struct CompletedListHeader: View {
     }
 }
 
-// 辅助组件：Empty State
 struct EmptyStateView: View {
     let message: String
     var body: some View {

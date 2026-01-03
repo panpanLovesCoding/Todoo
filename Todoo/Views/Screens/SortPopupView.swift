@@ -4,15 +4,18 @@ struct SortPopupView: View {
     @Binding var isPresented: Bool
     @Binding var currentSort: SortOption
     
+    // 🆕 引入语言管理器
+    @ObservedObject var lang = LanguageManager.shared
+    
     @State private var tempSelectedOption: SortOption = .creationDate
     
     var body: some View {
         VStack(spacing: 20) {
             // 标题
-            Text("SORT BY")
+            Text(lang.localized("SORT BY")) // 🌐 本地化
                 .font(.custom("Luckiest Guy", size: 35))
                 .foregroundColor(GameTheme.pumpkin)
-                // 🆕 修正位置：大标题下移 5
+                // 修正位置
                 .offset(y: 5)
                 .shadow(color: .black, radius: 0, x: 1, y: 1)
                 .padding(.top, 10)
@@ -20,7 +23,7 @@ struct SortPopupView: View {
             VStack(spacing: 12) {
                 ForEach(SortOption.allCases, id: \.self) { option in
                     SortButton(
-                        title: option.rawValue,
+                        title: lang.localized(option.rawValue), // 🌐 本地化排序选项 (Created Time 等)
                         icon: iconFor(option),
                         isSelected: tempSelectedOption == option
                     ) {
@@ -36,9 +39,9 @@ struct SortPopupView: View {
             HStack(spacing: 20) {
                 // Cancel 按钮
                 Button(action: { withAnimation { isPresented = false } }) {
-                    Text("Cancel")
+                    Text(lang.localized("Cancel")) // 🌐 本地化
                         .font(.custom("Luckiest Guy", size: 20))
-                        // 🆕 修正位置：中号按钮下移 4
+                        // 修正位置
                         .offset(y: 4)
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
@@ -55,9 +58,9 @@ struct SortPopupView: View {
                         isPresented = false
                     }
                 }) {
-                    Text("Select")
+                    Text(lang.localized("Select")) // 🌐 本地化
                         .font(.custom("Luckiest Guy", size: 20))
-                        // 🆕 修正位置：中号按钮下移 4
+                        // 修正位置
                         .offset(y: 4)
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
@@ -108,7 +111,7 @@ struct SortButton: View {
                 
                 Text(title)
                     .font(.custom("Luckiest Guy", size: 18))
-                    // 🆕 修正位置：小号文字下移 3
+                    // 修正位置
                     .offset(y: 3)
                 
                 Spacer()

@@ -19,14 +19,18 @@ struct AddEditView: View {
     
     var isEditing: Bool { itemToEdit != nil }
     
+    // 🛠️ 字体逻辑
+    var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
+    var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
+    
     var body: some View {
         VStack(spacing: 20) {
             
-            // 标题保持卡通字体
-            Text(isEditing ? "EDIT QUEST" : "NEW QUEST")
-                .font(.custom("Luckiest Guy", size: 40))
+            // 标题
+            Text(lang.localized(isEditing ? "EDIT QUEST" : "NEW QUEST"))
+                .font(.custom(fontName, size: 40))
                 .foregroundColor(isEditing ? Color.blue : GameTheme.background)
-                .offset(y: 5)
+                .offset(y: yOffset)
                 .shadow(color: .black, radius: 0, x: 1, y: 1)
                 .padding(.top, 10)
             
@@ -34,12 +38,11 @@ struct AddEditView: View {
                 
                 // Name
                 VStack(alignment: .leading, spacing: 5) {
-                    // 🆕 修改：改回普通字体 (系统圆体)，并移除 offset
                     Text(lang.localized("Quest Name"))
                         .font(.system(.headline, design: .rounded).weight(.bold))
                         .foregroundColor(GameTheme.brown)
                     
-                    TextField("Enter quest name...", text: $title)
+                    TextField(lang.localized("Enter quest name..."), text: $title)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(12)
@@ -50,7 +53,6 @@ struct AddEditView: View {
                 
                 // Deadline
                 VStack(alignment: .leading, spacing: 5) {
-                    // 🆕 修改：改回普通字体 (系统圆体)，并移除 offset
                     Text(lang.localized("Deadline"))
                         .font(.system(.headline, design: .rounded).weight(.bold))
                         .foregroundColor(GameTheme.brown)
@@ -64,20 +66,21 @@ struct AddEditView: View {
                         .accentColor(GameTheme.brown)
                 }
                 
-                // Toggles
+                // Toggles - Urgent / Important
                 HStack(spacing: 12) {
-                    ToggleView(title: "Urgent", isOn: $isUrgent, icon: "flame.fill", color: GameTheme.red)
-                    ToggleView(title: "Important", isOn: $isImportant, icon: "star.fill", color: GameTheme.yellow)
+                    // 👇 修复：使用 localized 字符串，并且 ToggleView 内部现在会使用动态字体
+                    ToggleView(title: lang.localized("Urgent"), isOn: $isUrgent, icon: "flame.fill", color: GameTheme.red)
+                    ToggleView(title: lang.localized("Important"), isOn: $isImportant, icon: "star.fill", color: GameTheme.yellow)
                 }
             }
             .padding(.horizontal, 10)
             
-            // Buttons (保持卡通字体)
+            // Buttons
             HStack(spacing: 20) {
                 Button(action: closeView) {
                     Text(lang.localized("Cancel"))
-                        .font(.custom("Luckiest Guy", size: 20))
-                        .offset(y: 4)
+                        .font(.custom(fontName, size: 20))
+                        .offset(y: lang.language == "zh" ? 0 : 4) // 中号按钮偏移修正
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -88,8 +91,8 @@ struct AddEditView: View {
                 
                 Button(action: saveItem) {
                     Text(lang.localized("Save"))
-                        .font(.custom("Luckiest Guy", size: 20))
-                        .offset(y: 4)
+                        .font(.custom(fontName, size: 20))
+                        .offset(y: lang.language == "zh" ? 0 : 4) // 中号按钮偏移修正
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -126,17 +129,17 @@ struct AddEditView: View {
         }
         .alert(isPresented: $showingDeleteAlert) {
             Alert(
-                title: Text("Abandon Quest?"),
-                message: Text("Are you sure you want to abandon this quest? This cannot be undone."),
-                primaryButton: .destructive(Text("Abandon")) {
+                title: Text(lang.localized("Abandon Quest?")),
+                message: Text(lang.localized("ABANDON_WARNING")),
+                primaryButton: .destructive(Text(lang.localized("Abandon"))) {
                     deleteItem()
                 },
-                secondaryButton: .cancel()
+                secondaryButton: .cancel(Text(lang.localized("Cancel")))
             )
         }
     }
     
-    // MARK: - Actions
+    // Actions... (保持不变)
     func saveItem() {
         if let item = itemToEdit {
             manager.updateItem(item: item, title: title, deadline: deadline, isUrgent: isUrgent, isImportant: isImportant)
@@ -164,13 +167,19 @@ struct AddEditView: View {
     }
 }
 
-// 辅助组件 (ToggleView 里的字体可以保持卡通，或者如果你想让 Toggle 也是普通字体，也可以在这里改)
-// 目前 ToggleView 里的字体保持为 Luckiest Guy (Size 16)
+// 辅助组件：ToggleView
+// 🆕 修复：内部使用动态字体，确保中文显示 HappyZcool
 struct ToggleView: View {
     let title: String
     @Binding var isOn: Bool
     let icon: String
     let color: Color
+    
+    @ObservedObject var lang = LanguageManager.shared
+    
+    // 🛠️ 字体逻辑
+    var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
+    var yOffset: CGFloat { lang.language == "zh" ? 0 : 3 }
     
     var body: some View {
         Button(action: { isOn.toggle() }) {
@@ -178,8 +187,8 @@ struct ToggleView: View {
                 Image(systemName: isOn ? icon : "circle")
                     .foregroundColor(isOn ? color : GameTheme.brown.opacity(0.5))
                 Text(title)
-                    .font(.custom("Luckiest Guy", size: 16))
-                    .offset(y: 3)
+                    .font(.custom(fontName, size: 16)) // 使用动态字体
+                    .offset(y: yOffset) // 动态偏移
                     .foregroundColor(GameTheme.brown)
                     .fixedSize(horizontal: true, vertical: false)
             }

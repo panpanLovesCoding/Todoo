@@ -14,31 +14,63 @@ class LanguageManager: ObservableObject {
     }
     
     let en: [String: String] = [
-        "SETTINGS": "SETTINGS", // 之前已改为复数
+        "SETTINGS": "SETTINGS",
         
+        // 🆕 头部标题
+        "QUEST LOG": "QUEST LOG",
+        "COMPLETED LOG": "COMPLETED LOG",
+        
+        // 🆕 四象限 (Eisenhower Matrix)
+        "Do Now": "DO NOW",
+        "Plan": "PLAN",
+        "Delegate": "DELEGATE",
+        "Later": "LATER",
+        
+        // 🆕 新建任务界面
+        "NEW QUEST": "NEW QUEST",
+        "EDIT QUEST": "EDIT QUEST",
+        "Quest Name": "Quest Name",
+        "Enter quest name...": "Enter quest name...",
+        "Deadline": "Deadline",
+        "Urgent": "Urgent",
+        "Important": "Important",
+        "Save": "Save",
+        "Cancel": "Cancel",
+        "Abandon Quest": "Abandon Quest",
+        
+        // 🆕 排序
+        "SORT BY": "SORT BY",
+        "Select": "Select",
+        "Created Time": "Created Time",
+        "Due Date": "Due Date",
+        "Task Name": "Task Name",
+        
+        // 🆕 空状态与弹窗
+        "No active quests!": "No active quests!",
+        "No completed quests yet!": "No completed quests yet!",
+        "Empty": "Empty",
+        "Abandon Quest?": "Abandon Quest?",
+        "ABANDON_WARNING": "Are you sure you want to abandon this quest? This cannot be undone.",
+        "Abandon": "Abandon",
+        
+        // 其他通用
         "Music": "Music",
         "Sound": "Sound",
         "Notifications": "Notif",
         "Version": "Version",
-        
-        "Language": "Language",
         "Rate Us": "Rate Us",
         "OK": "OK",
         "Total": "Total",
-        "Important": "Important",
         "Done": "Done",
         "Tasks": "Tasks",
         "Matrix": "Matrix",
         "Add New": "Add New",
         "Delete All": "Reset Data",
-        
-        // 🆕 新增：删除确认弹窗文案
         "Confirm Delete": "Confirm Delete",
         "RESET_WARNING": "Are you sure you want to delete all data? This cannot be undone.",
-        "Cancel": "Cancel",
         "Delete": "Delete",
         
-        // Titles & Vibes ... (保持不变)
+        // Titles & Vibes
         "TITLE_ELITE_VANGUARD": "Elite Vanguard",
         "VIBE_ELITE_VANGUARD": "\"I don't just put out fires; I build fireproof houses.\"",
         "TITLE_CHAOS_SURFER": "Chaos Surfer",
@@ -67,29 +99,62 @@ class LanguageManager: ObservableObject {
     
     let zh: [String: String] = [
         "SETTINGS": "设 置",
+        
+        // 🆕 头部标题
+        "QUEST LOG": "任 务 日 志",
+        "COMPLETED LOG": "完 成 记 录",
+        
+        // 🆕 四象限
+        "Do Now": "马 上 做",
+        "Plan": "计 划 做",
+        "Delegate": "授 权 做",
+        "Later": "稍 后 做",
+        
+        // 🆕 新建任务界面
+        "NEW QUEST": "新 建 任 务",
+        "EDIT QUEST": "编 辑 任 务",
+        "Quest Name": "任务名称",
+        "Enter quest name...": "输入任务名称...",
+        "Deadline": "截止日期",
+        "Urgent": "紧 急",
+        "Important": "重 要",
+        "Save": "保 存",
+        "Cancel": "取 消",
+        "Abandon Quest": "放弃任务",
+        
+        // 🆕 排序
+        "SORT BY": "排 序",
+        "Select": "选 择",
+        "Created Time": "创 建 时 间",
+        "Due Date": "截 止 日 期",
+        "Task Name": "任 务 名 称",
+        
+        // 🆕 空状态与弹窗
+        "No active quests!": "暂无进行中的冒险！",
+        "No completed quests yet!": "还没有完成的任务！",
+        "Empty": "空",
+        "Abandon Quest?": "放弃任务？",
+        "ABANDON_WARNING": "确定要放弃这个任务吗？此操作无法撤销。",
+        "Abandon": "放 弃",
+        
+        // 其他通用
         "Music": "背 景 音",
         "Sound": "音 效",
         "Notifications": "提 醒",
         "Version": "版 本",
-        
-        "Language": "语 言",
         "Rate Us": "去 App Store 评分",
         "OK": "确 定",
         "Total": "待 办",
-        "Important": "重 要",
         "Done": "已 完 成",
         "Tasks": "任 务 列 表",
         "Matrix": "四 象 限",
         "Add New": "新 建",
         "Delete All": "重 置 数 据",
-        
-        // 🆕 新增：删除确认弹窗文案
         "Confirm Delete": "确认删除",
         "RESET_WARNING": "你确定要清空所有数据吗？此操作无法撤销。",
-        "Cancel": "取消",
-        "Delete": "删除",
+        "Delete": "删 除",
         
-        // Titles & Vibes ... (保持不变)
+        // Titles & Vibes (保持原样)
         "TITLE_ELITE_VANGUARD": "精英先锋",
         "VIBE_ELITE_VANGUARD": "“我不只负责救火，我还建造防火屋。”",
         "TITLE_CHAOS_SURFER": "混沌冲浪手",
