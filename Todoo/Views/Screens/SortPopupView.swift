@@ -4,7 +4,6 @@ struct SortPopupView: View {
     @Binding var isPresented: Bool
     @Binding var currentSort: SortOption
     
-    // 临时状态：用于记录用户在弹窗里选了什么，但还未确认
     @State private var tempSelectedOption: SortOption = .creationDate
     
     var body: some View {
@@ -13,6 +12,8 @@ struct SortPopupView: View {
             Text("SORT BY")
                 .font(.custom("Luckiest Guy", size: 35))
                 .foregroundColor(GameTheme.pumpkin)
+                // 🆕 修正位置：大标题下移 5
+                .offset(y: 5)
                 .shadow(color: .black, radius: 0, x: 1, y: 1)
                 .padding(.top, 10)
             
@@ -23,7 +24,6 @@ struct SortPopupView: View {
                         icon: iconFor(option),
                         isSelected: tempSelectedOption == option
                     ) {
-                        // 点击动作：只更新临时状态
                         withAnimation(.spring()) {
                             tempSelectedOption = option
                         }
@@ -32,21 +32,23 @@ struct SortPopupView: View {
             }
             .padding(.horizontal, 10)
             
-            // Buttons - 修改为与 New Quest 界面一致的布局 (HStack)
+            // Buttons
             HStack(spacing: 20) {
-                // Cancel 按钮 (左侧，红色)
+                // Cancel 按钮
                 Button(action: { withAnimation { isPresented = false } }) {
                     Text("Cancel")
-                        .font(.custom("Luckiest Guy", size: 20)) // [修改] 字体大小改为 20
+                        .font(.custom("Luckiest Guy", size: 20))
+                        // 🆕 修正位置：中号按钮下移 4
+                        .offset(y: 4)
                         .foregroundColor(.white)
-                        .padding(.vertical, 12) // [修改] 垂直内边距改为 12
+                        .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
                         .background(Color.red)
                         .cornerRadius(12)
                         .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
                 }
                 
-                // Select 按钮 (右侧，绿色)
+                // Select 按钮
                 Button(action: {
                     currentSort = tempSelectedOption
                     withAnimation {
@@ -54,11 +56,13 @@ struct SortPopupView: View {
                     }
                 }) {
                     Text("Select")
-                        .font(.custom("Luckiest Guy", size: 20)) // [修改] 字体大小改为 20
+                        .font(.custom("Luckiest Guy", size: 20))
+                        // 🆕 修正位置：中号按钮下移 4
+                        .offset(y: 4)
                         .foregroundColor(.white)
-                        .padding(.vertical, 12) // [修改] 垂直内边距改为 12
+                        .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
-                        .background(Color.green) // [修改] 使用与 New Quest 一致的绿色 (Color.green)
+                        .background(Color.green)
                         .cornerRadius(12)
                         .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
                 }
@@ -66,7 +70,7 @@ struct SortPopupView: View {
             .padding(.top, 10)
         }
         .padding(25)
-        .frame(width: 320) // [可选调整] 稍微加宽一点以适应横排按钮，或者保持 280 也可以
+        .frame(width: 320)
         .background(GameTheme.cream)
         .cornerRadius(25)
         .overlay(
@@ -74,7 +78,6 @@ struct SortPopupView: View {
                 .stroke(GameTheme.brown, lineWidth: 5)
         )
         .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 10)
-        // 初始化
         .onAppear {
             tempSelectedOption = currentSort
         }
@@ -105,6 +108,8 @@ struct SortButton: View {
                 
                 Text(title)
                     .font(.custom("Luckiest Guy", size: 18))
+                    // 🆕 修正位置：小号文字下移 3
+                    .offset(y: 3)
                 
                 Spacer()
                 

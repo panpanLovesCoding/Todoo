@@ -4,7 +4,6 @@ struct AddEditView: View {
     @ObservedObject var manager: TodoManager
     let itemToEdit: TodoItem?
     
-    // 绑定，用于关闭弹窗
     var isPresented: Binding<Bool>? = nil
     
     @Environment(\.dismiss) var dismiss
@@ -14,7 +13,6 @@ struct AddEditView: View {
     @State private var isUrgent = false
     @State private var isImportant = false
     
-    // 🆕 新增：控制删除确认弹窗的状态
     @State private var showingDeleteAlert = false
     
     @ObservedObject var lang = LanguageManager.shared
@@ -27,6 +25,8 @@ struct AddEditView: View {
             Text(isEditing ? "EDIT QUEST" : "NEW QUEST")
                 .font(.custom("Luckiest Guy", size: 40))
                 .foregroundColor(isEditing ? Color.blue : GameTheme.background)
+                // 🆕 修正位置：超大标题下移 5
+                .offset(y: 5)
                 .shadow(color: .black, radius: 0, x: 1, y: 1)
                 .padding(.top, 10)
             
@@ -36,6 +36,8 @@ struct AddEditView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(lang.localized("Quest Name"))
                         .font(.custom("Luckiest Guy", size: 18))
+                        // 🆕 修正位置：标签文字也稍微下移
+                        .offset(y: 2)
                         .foregroundColor(GameTheme.brown)
                     
                     TextField("Enter quest name...", text: $title)
@@ -51,6 +53,8 @@ struct AddEditView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(lang.localized("Deadline"))
                         .font(.custom("Luckiest Guy", size: 18))
+                        // 🆕 修正位置
+                        .offset(y: 2)
                         .foregroundColor(GameTheme.brown)
                     
                     DatePicker("", selection: $deadline, displayedComponents: .date)
@@ -75,6 +79,8 @@ struct AddEditView: View {
                 Button(action: closeView) {
                     Text(lang.localized("Cancel"))
                         .font(.custom("Luckiest Guy", size: 20))
+                        // 🆕 修正位置：中号按钮下移 4
+                        .offset(y: 4)
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -86,6 +92,8 @@ struct AddEditView: View {
                 Button(action: saveItem) {
                     Text(lang.localized("Save"))
                         .font(.custom("Luckiest Guy", size: 20))
+                        // 🆕 修正位置：中号按钮下移 4
+                        .offset(y: 4)
                         .foregroundColor(.white)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity)
@@ -98,7 +106,6 @@ struct AddEditView: View {
             .padding(.top, 10)
             
             if isEditing {
-                // 👇 修改：点击按钮不再直接删除，而是弹出确认框
                 Button(action: { showingDeleteAlert = true }) {
                     Label(lang.localized("Abandon Quest"), systemImage: "trash")
                         .font(.system(.subheadline, design: .rounded).weight(.bold))
@@ -121,15 +128,14 @@ struct AddEditView: View {
                 isImportant = item.isImportant
             }
         }
-        // 🆕 新增：删除确认弹窗
         .alert(isPresented: $showingDeleteAlert) {
             Alert(
-                title: Text("Abandon Quest?"), // 标题
-                message: Text("Are you sure you want to abandon this quest? This cannot be undone."), // 内容
-                primaryButton: .destructive(Text("Abandon")) { // 确认按钮 (红色)
+                title: Text("Abandon Quest?"),
+                message: Text("Are you sure you want to abandon this quest? This cannot be undone."),
+                primaryButton: .destructive(Text("Abandon")) {
                     deleteItem()
                 },
-                secondaryButton: .cancel() // 取消按钮
+                secondaryButton: .cancel()
             )
         }
     }
@@ -153,7 +159,6 @@ struct AddEditView: View {
     
     func closeView() {
         if let binding = isPresented {
-            // 👇 修复：加上 withAnimation，这样点击 Cancel/Save 关闭时才会有缩放消失的动画
             withAnimation(.spring()) {
                 binding.wrappedValue = false
             }
@@ -177,6 +182,8 @@ struct ToggleView: View {
                     .foregroundColor(isOn ? color : GameTheme.brown.opacity(0.5))
                 Text(title)
                     .font(.custom("Luckiest Guy", size: 16))
+                    // 🆕 修正位置：开关文字下移 3
+                    .offset(y: 3)
                     .foregroundColor(GameTheme.brown)
                     .fixedSize(horizontal: true, vertical: false)
             }

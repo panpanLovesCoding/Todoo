@@ -1,5 +1,5 @@
 import SwiftUI
-import UserNotifications // 🆕 引入这个框架，防止 UNUserNotificationCenter 报错
+import UserNotifications
 
 struct SettingsView: View {
     @Binding var isPresented: Bool
@@ -17,14 +17,11 @@ struct SettingsView: View {
     
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
     
-    // 🛠️ 字体逻辑
+    // 字体逻辑
     func getFontName() -> String {
-        // 中文使用站酷快乐体 (PostScript Name)
         if lang.language == "zh" {
             return "HappyZcool-2016"
-        }
-        // 英文使用 Luckiest Guy
-        else {
+        } else {
             return "LuckiestGuy-Regular"
         }
     }
@@ -32,6 +29,13 @@ struct SettingsView: View {
     // 物理外挂：获取阴影颜色
     func boldShadowColor(_ color: Color) -> Color {
         return lang.language == "zh" ? color : .clear
+    }
+    
+    // 🆕 辅助函数：获取垂直偏移量
+    // 如果是中文，通常不需要偏移；如果是 Luckiest Guy，向下偏移
+    func getTextOffset(small: Bool = false) -> CGFloat {
+        if lang.language == "zh" { return 0 }
+        return small ? 3 : 5 // 小字移3，大字移5
     }
     
     var body: some View {
@@ -50,7 +54,8 @@ struct SettingsView: View {
                         Text(lang.localized("SETTINGS"))
                             .font(.custom(getFontName(), size: 28))
                             .foregroundColor(GameTheme.brown)
-                            .offset(y: -5)
+                            // 🆕 修正位置：这里原本偏移了 -5，现在改为 2 (相当于下移了7)
+                            .offset(y: lang.language == "zh" ? -2 : 2)
                             .shadow(color: boldShadowColor(GameTheme.brown), radius: 0, x: 1, y: 1)
                     )
             }
@@ -84,7 +89,6 @@ struct SettingsView: View {
                     SoundToggleButton(icon: "speaker.wave.2.fill", label: "Sound", isOn: $soundEnabled)
                     
                     SoundToggleButton(icon: "bell.fill", label: "Notifications", isOn: $notificationsEnabled)
-                        // 🛠️ 修复核心：iOS 17+ 标准写法，使用 { oldValue, newValue in ... }
                         .onChange(of: notificationsEnabled) { oldValue, newValue in
                             if newValue {
                                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in }
@@ -101,6 +105,8 @@ struct SettingsView: View {
                             .font(.custom("LuckiestGuy-Regular", size: 18))
                             .frame(width: 80, height: 40)
                             .foregroundColor(GameTheme.brown)
+                            // 🆕 修正位置：英文 Luckiest Guy 下移 3
+                            .offset(y: 3)
                     }
                     .buttonStyle(CartoonButtonStyle(
                         color: lang.language == "en" ? GameTheme.orange : GameTheme.cream,
@@ -109,11 +115,11 @@ struct SettingsView: View {
                     
                     Button(action: { lang.language = "zh" }) {
                         Text("中文")
-                            // 确保这里用的是 "HappyZcool-2016"
                             .font(.custom("HappyZcool-2016", size: 18))
                             .frame(width: 80, height: 40)
                             .foregroundColor(GameTheme.brown)
                             .shadow(color: GameTheme.brown, radius: 0, x: 0.5, y: 0.5)
+                            // 中文不需要偏移
                     }
                     .buttonStyle(CartoonButtonStyle(
                         color: lang.language == "zh" ? GameTheme.orange : GameTheme.cream,
@@ -134,6 +140,8 @@ struct SettingsView: View {
                             Image(systemName: "star.fill").foregroundColor(.yellow)
                             Text(lang.localized("Rate Us"))
                                 .font(.custom(getFontName(), size: 20))
+                                // 🆕 修正位置：动态偏移
+                                .offset(y: getTextOffset(small: true))
                         }
                         .frame(maxWidth: .infinity)
                         .padding(12)
@@ -151,6 +159,8 @@ struct SettingsView: View {
                                 Image(systemName: "trash.fill")
                                 Text(lang.localized("Delete All"))
                                     .font(.custom(getFontName(), size: 18))
+                                    // 🆕 修正位置
+                                    .offset(y: getTextOffset(small: true))
                             }
                             .frame(maxWidth: .infinity)
                             .padding(10)
@@ -193,6 +203,8 @@ struct SettingsView: View {
                 Text(lang.localized("OK"))
                     .font(.custom(getFontName(), size: 24))
                     .foregroundColor(.white)
+                    // 🆕 修正位置：大按钮下移 5
+                    .offset(y: getTextOffset(small: false))
                     .padding(.vertical, 10)
                     .padding(.horizontal, 40)
                     .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
@@ -203,41 +215,32 @@ struct SettingsView: View {
     }
 }
 
-// 3D 卡通按钮样式
+// 3D 卡通按钮样式 (保持不变)
 struct CartoonButtonStyle: ButtonStyle {
     let color: Color
     var cornerRadius: CGFloat = 12
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            // 1. 顶层：颜色的涂层 (按键表面)
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .fill(color)
-                    // 👇 这里调节【边框】
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius)
-                            // lineWidth: 3 是边框粗细
-                            // GameTheme.brown.opacity(0.5) 是边框颜色和透明度
                             .stroke(Color.black.opacity(0.6), lineWidth: 3)
                     )
             )
-            // 2. 底层：3D 厚度阴影 (按键侧面)
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .fill(GameTheme.brown.opacity(0.4)) // 侧面阴影颜色
-                    // 👇 这里调节【厚度】
-                    // y: 4 表示按钮有多厚（阴影高度）
+                    .fill(GameTheme.brown.opacity(0.4))
                     .offset(y: configuration.isPressed ? 0 : 4)
             )
-            // 3. 整体按压动画
-            // y: 4 这里要和上面的厚度保持一致，按下时下沉多少
             .offset(y: configuration.isPressed ? 4 : 0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
-// 辅助组件
+// 辅助组件 (保持不变)
 struct SoundToggleButton: View {
     let icon: String
     let label: String
