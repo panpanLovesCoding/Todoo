@@ -8,6 +8,22 @@ struct SortPopupView: View {
     
     @State private var tempSelectedOption: SortOption = .creationDate
     
+    // 🛠️ 字体逻辑
+    func getFontName() -> String {
+        return lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular"
+    }
+    
+    // 🛠️ 偏移逻辑
+    func getTextOffset(size: CGFloat) -> CGFloat {
+        if lang.language == "zh" { return 0 }
+        return size > 30 ? 5 : 4
+    }
+    
+    // 🛠️ 阴影逻辑 (统一风格)
+    func boldShadowColor(_ color: Color) -> Color {
+        return lang.language == "zh" ? color : .clear
+    }
+    
     var body: some View {
         VStack(spacing: 20) {
             // 标题
@@ -34,37 +50,45 @@ struct SortPopupView: View {
             .padding(.horizontal, 10)
             
             // Buttons
-            HStack(spacing: 20) {
-                // Cancel
+            HStack(spacing: 15) {
+                // Cancel 按钮 (红色卡通风格)
                 Button(action: { withAnimation { isPresented = false } }) {
-                    Text(lang.localized("Cancel"))
-                        .font(.custom(getFontName(), size: 20))
-                        .offset(y: getTextOffset(size: 20))
-                        .foregroundColor(.white)
-                        .padding(.vertical, 12)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.red)
-                        .cornerRadius(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
+                    HStack {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 20, weight: .bold))
+                        Text(lang.localized("Cancel"))
+                            .font(.custom(getFontName(), size: 20))
+                            .offset(y: getTextOffset(size: 20))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .foregroundColor(.white)
+                    // 文字白色阴影
+                    .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                 }
+                .buttonStyle(CartoonButtonStyle(color: Color(red: 0.85, green: 0.3, blue: 0.3), cornerRadius: 12))
                 
-                // Select
+                // Select 按钮 (绿色卡通风格)
                 Button(action: {
                     currentSort = tempSelectedOption
                     withAnimation {
                         isPresented = false
                     }
                 }) {
-                    Text(lang.localized("Select"))
-                        .font(.custom(getFontName(), size: 20))
-                        .offset(y: getTextOffset(size: 20))
-                        .foregroundColor(.white)
-                        .padding(.vertical, 12)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.green)
-                        .cornerRadius(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
+                    HStack {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 20, weight: .bold))
+                        Text(lang.localized("Select"))
+                            .font(.custom(getFontName(), size: 20))
+                            .offset(y: getTextOffset(size: 20))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .foregroundColor(.white)
+                    // 文字白色阴影
+                    .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                 }
+                .buttonStyle(CartoonButtonStyle(color: GameTheme.green, cornerRadius: 12))
             }
             .padding(.top, 10)
         }
@@ -77,18 +101,11 @@ struct SortPopupView: View {
                 .stroke(GameTheme.brown, lineWidth: 5)
         )
         .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 10)
+        // 强制浅色模式
+        .environment(\.colorScheme, .light)
         .onAppear {
             tempSelectedOption = currentSort
         }
-    }
-    
-    func getFontName() -> String {
-        return lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular"
-    }
-    
-    func getTextOffset(size: CGFloat) -> CGFloat {
-        if lang.language == "zh" { return 0 }
-        return size > 30 ? 5 : 4
     }
     
     func iconFor(_ option: SortOption) -> String {
@@ -100,6 +117,7 @@ struct SortPopupView: View {
     }
 }
 
+// 辅助组件：SortButton (列表项)
 struct SortButton: View {
     let title: String
     let icon: String

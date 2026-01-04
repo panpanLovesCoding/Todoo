@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		260F419A2F09EFA600B32FBE /* CartoonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260F41992F09EFA600B32FBE /* CartoonButton.swift */; };
 		264711E12F071EE600A0169F /* TodooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711E02F071EE600A0169F /* TodooApp.swift */; };
 		264711E32F071EE600A0169F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711E22F071EE600A0169F /* ContentView.swift */; };
 		264711E52F071EE700A0169F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 264711E42F071EE700A0169F /* Assets.xcassets */; };
@@ -17,7 +18,6 @@
 		264711FA2F071F7D00A0169F /* GameComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711F92F071F7D00A0169F /* GameComponents.swift */; };
 		264711FD2F071F9100A0169F /* AddEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711FC2F071F9100A0169F /* AddEditView.swift */; };
 		264711FF2F071FA000A0169F /* TabScreens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711FE2F071FA000A0169F /* TabScreens.swift */; };
-		264712012F0724F000A0169F /* CartoonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264712002F0724F000A0169F /* CartoonButton.swift */; };
 		264712072F07467D00A0169F /* LuckiestGuy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */; };
 		264712092F074B7C00A0169F /* LanguageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264712082F074B7C00A0169F /* LanguageManager.swift */; };
 		2647120B2F074BCB00A0169F /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120A2F074BCB00A0169F /* TopBarView.swift */; };
@@ -27,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		260F41992F09EFA600B32FBE /* CartoonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartoonButton.swift; sourceTree = "<group>"; };
 		264711DD2F071EE600A0169F /* Todoo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		264711E02F071EE600A0169F /* TodooApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodooApp.swift; sourceTree = "<group>"; };
 		264711E22F071EE600A0169F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -141,6 +142,7 @@
 			children = (
 				264711F92F071F7D00A0169F /* GameComponents.swift */,
 				2647120A2F074BCB00A0169F /* TopBarView.swift */,
+				260F41992F09EFA600B32FBE /* CartoonButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -235,11 +237,11 @@
 				264711FA2F071F7D00A0169F /* GameComponents.swift in Sources */,
 				264711F32F071F5000A0169F /* TodoItem.swift in Sources */,
 				264711FF2F071FA000A0169F /* TabScreens.swift in Sources */,
-				264712012F0724F000A0169F /* CartoonButton.swift in Sources */,
 				264711E12F071EE600A0169F /* TodooApp.swift in Sources */,
 				2647120B2F074BCB00A0169F /* TopBarView.swift in Sources */,
 				2647120D2F074BD700A0169F /* SettingsView.swift in Sources */,
 				264711FD2F071F9100A0169F /* AddEditView.swift in Sources */,
+				260F419A2F09EFA600B32FBE /* CartoonButton.swift in Sources */,
 				264712092F074B7C00A0169F /* LanguageManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

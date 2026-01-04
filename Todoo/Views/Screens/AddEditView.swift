@@ -19,9 +19,14 @@ struct AddEditView: View {
     
     var isEditing: Bool { itemToEdit != nil }
     
-    // 🛠️ 字体与偏移
+    // 字体与偏移
     var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
     var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
+    
+    // 🛠️ 阴影逻辑 (统一风格)
+    func boldShadowColor(_ color: Color) -> Color {
+        return lang.language == "zh" ? color : .clear
+    }
     
     var body: some View {
         VStack(spacing: 20) {
@@ -48,7 +53,8 @@ struct AddEditView: View {
                         .cornerRadius(12)
                         .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown.opacity(0.3), lineWidth: 2))
                         .font(.system(.body, design: .rounded).weight(.bold))
-                        .foregroundColor(GameTheme.brown)
+                        .foregroundColor(.black)
+                        .accentColor(GameTheme.brown)
                 }
                 
                 // Deadline (普通字体)
@@ -64,6 +70,7 @@ struct AddEditView: View {
                         .cornerRadius(12)
                         .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown.opacity(0.3), lineWidth: 2))
                         .accentColor(GameTheme.brown)
+                        .colorScheme(.light)
                 }
                 
                 // Toggles (特殊字体 + 中文)
@@ -75,31 +82,42 @@ struct AddEditView: View {
             .padding(.horizontal, 10)
             
             // Buttons
-            HStack(spacing: 20) {
+            HStack(spacing: 15) {
+                // Cancel 按钮 (红色卡通风格)
                 Button(action: closeView) {
-                    Text(lang.localized("Cancel"))
-                        .font(.custom(fontName, size: 20))
-                        .offset(y: lang.language == "zh" ? 0 : 4) // 中号偏移
-                        .foregroundColor(.white)
-                        .padding(.vertical, 12)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.red)
-                        .cornerRadius(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
+                    HStack {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 20, weight: .bold))
+                        Text(lang.localized("Cancel"))
+                            .font(.custom(fontName, size: 20))
+                            .offset(y: lang.language == "zh" ? 0 : 4)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .foregroundColor(.white)
+                    // 文字白色阴影
+                    .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                 }
+                .buttonStyle(CartoonButtonStyle(color: Color(red: 0.85, green: 0.3, blue: 0.3), cornerRadius: 12))
                 
+                // Save 按钮 (绿色卡通风格)
                 Button(action: saveItem) {
-                    Text(lang.localized("Save"))
-                        .font(.custom(fontName, size: 20))
-                        .offset(y: lang.language == "zh" ? 0 : 4) // 中号偏移
-                        .foregroundColor(.white)
-                        .padding(.vertical, 12)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.green)
-                        .cornerRadius(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown, lineWidth: 3))
+                    HStack {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 20, weight: .bold))
+                        Text(lang.localized("Save"))
+                            .font(.custom(fontName, size: 20))
+                            .offset(y: lang.language == "zh" ? 0 : 4)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .foregroundColor(.white)
+                    // 文字白色阴影
+                    .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                 }
+                .buttonStyle(CartoonButtonStyle(color: GameTheme.green, cornerRadius: 12))
                 .disabled(title.isEmpty)
+                .opacity(title.isEmpty ? 0.6 : 1.0) // 禁用时变淡
             }
             .padding(.top, 10)
             
@@ -118,6 +136,7 @@ struct AddEditView: View {
         .cornerRadius(25)
         .overlay(RoundedRectangle(cornerRadius: 25).stroke(GameTheme.brown, lineWidth: 5))
         .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 10)
+        .environment(\.colorScheme, .light)
         .onAppear {
             if let item = itemToEdit {
                 title = item.title
@@ -138,7 +157,6 @@ struct AddEditView: View {
         }
     }
     
-    // Actions... (保持不变)
     func saveItem() {
         if let item = itemToEdit {
             manager.updateItem(item: item, title: title, deadline: deadline, isUrgent: isUrgent, isImportant: isImportant)
@@ -166,7 +184,7 @@ struct AddEditView: View {
     }
 }
 
-// 辅助组件：ToggleView (内部也应用动态字体)
+// 辅助组件：ToggleView
 struct ToggleView: View {
     let title: String
     @Binding var isOn: Bool
@@ -184,8 +202,8 @@ struct ToggleView: View {
                 Image(systemName: isOn ? icon : "circle")
                     .foregroundColor(isOn ? color : GameTheme.brown.opacity(0.5))
                 Text(title)
-                    .font(.custom(fontName, size: 16)) // 动态字体
-                    .offset(y: yOffset) // 动态偏移
+                    .font(.custom(fontName, size: 16))
+                    .offset(y: yOffset)
                     .foregroundColor(GameTheme.brown)
                     .fixedSize(horizontal: true, vertical: false)
             }
