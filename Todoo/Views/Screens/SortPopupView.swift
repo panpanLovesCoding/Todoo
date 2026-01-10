@@ -43,7 +43,7 @@ struct SortPopupView: View {
                         isSelected: tempSelectedOption == option
                     ) {
                         // ✨ 1. 播放机械点击音效
-                        SoundManager.shared.playSound(sound: "mechanical_click_sound_1", type: "mp3")
+                        SoundManager.shared.playSound(sound: "mechanical_click_sound_2", type: "mp3", volume: 1.5)
                         
                         // 2.原本的选中逻辑
                         withAnimation(.spring()) {

@@ -15,7 +15,7 @@ struct ToggleView: View {
     var body: some View {
         Button(action: {
             // ✨ 1. 播放机械音效 2
-            SoundManager.shared.playSound(sound: "mechanical_click_sound_2", type: "mp3")
+            SoundManager.shared.playSound(sound: "mechanical_click_sound_1", type: "mp3", volume: 1)
             
             // 2. 原有的切换动画逻辑
             withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
