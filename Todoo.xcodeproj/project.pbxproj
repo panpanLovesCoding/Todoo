@@ -26,6 +26,9 @@
 		2647120D2F074BD700A0169F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120C2F074BD700A0169F /* SettingsView.swift */; };
 		2647120F2F07937F00A0169F /* SortPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647120E2F07937F00A0169F /* SortPopupView.swift */; };
 		264712112F087AAC00A0169F /* ZhanKuKuaiLeTi2016XiuDingBan-1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 264712102F087AAC00A0169F /* ZhanKuKuaiLeTi2016XiuDingBan-1.ttf */; };
+		2692EA282F13093500E7937C /* mechanical_click_sound_3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2692EA272F13093500E7937C /* mechanical_click_sound_3.mp3 */; };
+		2692EA292F13093500E7937C /* cute_pop_sound_2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2692EA262F13093500E7937C /* cute_pop_sound_2.mp3 */; };
+		2692EA2A2F13093500E7937C /* cute_pop_sound_1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2692EA252F13093500E7937C /* cute_pop_sound_1.mp3 */; };
 		26D738802F12B23F005996B8 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D7387F2F12B236005996B8 /* SoundManager.swift */; };
 		26D738862F12B907005996B8 /* cute_click_sound_1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 26D738852F12B907005996B8 /* cute_click_sound_1.mp3 */; };
 		26D738882F12E97C005996B8 /* mechanical_click_sound_1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 26D738872F12E97C005996B8 /* mechanical_click_sound_1.mp3 */; };
@@ -54,6 +57,9 @@
 		2647120C2F074BD700A0169F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2647120E2F07937F00A0169F /* SortPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortPopupView.swift; sourceTree = "<group>"; };
 		264712102F087AAC00A0169F /* ZhanKuKuaiLeTi2016XiuDingBan-1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ZhanKuKuaiLeTi2016XiuDingBan-1.ttf"; sourceTree = "<group>"; };
+		2692EA252F13093500E7937C /* cute_pop_sound_1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cute_pop_sound_1.mp3; sourceTree = "<group>"; };
+		2692EA262F13093500E7937C /* cute_pop_sound_2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cute_pop_sound_2.mp3; sourceTree = "<group>"; };
+		2692EA272F13093500E7937C /* mechanical_click_sound_3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = mechanical_click_sound_3.mp3; sourceTree = "<group>"; };
 		26D7387F2F12B236005996B8 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		26D738852F12B907005996B8 /* cute_click_sound_1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cute_click_sound_1.mp3; sourceTree = "<group>"; };
 		26D738872F12E97C005996B8 /* mechanical_click_sound_1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = mechanical_click_sound_1.mp3; sourceTree = "<group>"; };
@@ -100,7 +106,10 @@
 				264711E42F071EE700A0169F /* Assets.xcassets */,
 				26D738872F12E97C005996B8 /* mechanical_click_sound_1.mp3 */,
 				26D738892F12EDF8005996B8 /* mechanical_click_sound_2.mp3 */,
+				2692EA272F13093500E7937C /* mechanical_click_sound_3.mp3 */,
 				26D738852F12B907005996B8 /* cute_click_sound_1.mp3 */,
+				2692EA252F13093500E7937C /* cute_pop_sound_1.mp3 */,
+				2692EA262F13093500E7937C /* cute_pop_sound_2.mp3 */,
 				264711E62F071EE700A0169F /* Preview Content */,
 			);
 			path = Todoo;
@@ -233,6 +242,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				264711E82F071EE700A0169F /* Preview Assets.xcassets in Resources */,
+				2692EA282F13093500E7937C /* mechanical_click_sound_3.mp3 in Resources */,
+				2692EA292F13093500E7937C /* cute_pop_sound_2.mp3 in Resources */,
+				2692EA2A2F13093500E7937C /* cute_pop_sound_1.mp3 in Resources */,
 				264711E52F071EE700A0169F /* Assets.xcassets in Resources */,
 				264712072F07467D00A0169F /* LuckiestGuy-Regular.ttf in Resources */,
 				26D7388A2F12EDF8005996B8 /* mechanical_click_sound_2.mp3 in Resources */,
