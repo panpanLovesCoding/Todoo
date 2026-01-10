@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - 1. 通用面板样式 (保持不变)
+// MARK: - 1. 通用面板样式
 struct GamePanelStyle: ViewModifier {
     var color: Color = GameTheme.cream
     var cornerRadius: CGFloat = GameTheme.cornerRadius
@@ -18,7 +18,7 @@ struct GamePanelStyle: ViewModifier {
     }
 }
 
-// MARK: - 2. 3D 按钮样式 (保持不变)
+// MARK: - 2. 3D 按钮样式 (已更新慢速动画)
 struct GameButtonStyle: ButtonStyle {
     var color: Color = GameTheme.yellow
     
@@ -30,11 +30,20 @@ struct GameButtonStyle: ButtonStyle {
             .padding(.horizontal, 24)
             .background(
                 ZStack {
+                    // 阴影底座
                     RoundedRectangle(cornerRadius: 12)
                         .fill(color.opacity(0.6))
                         .offset(y: 6)
+                    
+                    // 按钮本体
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(configuration.isPressed ? color.opacity(0.8) : color)
+                        .fill(color)
+                        // 变暗层
+                        .overlay(
+                            Color.black
+                                .opacity(configuration.isPressed ? 0.3 : 0)
+                                .cornerRadius(12)
+                        )
                 }
             )
             .overlay(
@@ -42,42 +51,38 @@ struct GameButtonStyle: ButtonStyle {
                     .stroke(GameTheme.brown, lineWidth: 3)
             )
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            // 🆕 核心修改：时长加长到 0.4秒，使用 easeOut
+            .animation(.easeOut(duration: 0.4), value: configuration.isPressed)
     }
 }
 
-// MARK: - 3. 任务卡片组件 (更新逻辑)
+// MARK: - 3. 任务卡片组件 (保持不变)
 struct TodoCard: View {
     let item: TodoItem
     var isCardStyle: Bool = true
     var showSeparator: Bool = true
     let onToggle: () -> Void
     
-    // 状态
     @State private var justChecked = false
     @State private var isUnchecking = false
     
-    // 判断是否是今天
     var isDueToday: Bool {
         Calendar.current.isDateInToday(item.deadline)
     }
     
-    // 🆕 新增：判断是否过期 (截止日期在今天之前)
     var isOverdue: Bool {
-        // 比较 deadline 和 当前时间(Date())，粒度为“天”
-        // orderedAscending 意味着 deadline < today (即过去)
         Calendar.current.compare(item.deadline, to: Date(), toGranularity: .day) == .orderedAscending
     }
     
-    // 🆕 辅助函数：获取日期颜色
     func getDateColor() -> Color {
         if item.isCompleted {
-            return GameTheme.brown // 已完成：保持棕色
+            return GameTheme.brown
         } else if isOverdue {
-            return Color.gray      // 已过期：显示灰色
+            return Color.gray
         } else if isDueToday {
-            return GameTheme.red   // 今天：显示红色
+            return GameTheme.red
         } else {
-            return GameTheme.brown // 未来：显示棕色
+            return GameTheme.brown
         }
     }
     
@@ -87,13 +92,11 @@ struct TodoCard: View {
                 // 复选框
                 Button(action: handleToggle) {
                     ZStack {
-                        // 白方块背景
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color.white)
                             .frame(width: 32, height: 32)
                             .overlay(RoundedRectangle(cornerRadius: 8).stroke(GameTheme.brown, lineWidth: 3))
                         
-                        // 绿勾
                         if (item.isCompleted || justChecked) && !isUnchecking {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 20, weight: .bold))
@@ -128,23 +131,20 @@ struct TodoCard: View {
                     }
 
                     HStack {
-                        // 🆕 应用颜色逻辑
                         Label("Due: \(item.deadline.formatted(date: .abbreviated, time: .omitted))", systemImage: "calendar")
-                            .foregroundColor(getDateColor()) // 使用上面的函数
+                            .foregroundColor(getDateColor())
                         
                         Spacer()
                         if item.isUrgent { Text("🔥 Urgent") }
                         if item.isImportant { Text("⭐ Important") }
                     }
                     .font(.system(size: 11, design: .rounded).weight(.bold))
-                    // 这里原本是统一设置颜色，现在 label 颜色会覆盖，右边的 urgent/important 继承这里的棕色
                     .foregroundColor(GameTheme.brown)
                 }
                 Spacer()
             }
             .padding(12)
             
-            // 底部分割线
             if !isCardStyle && showSeparator {
                 Divider()
                     .background(GameTheme.brown.opacity(0.5))
@@ -159,7 +159,6 @@ struct TodoCard: View {
         .shadow(color: isCardStyle ? .black.opacity(0.3) : .clear, radius: 2, x: 2, y: 4)
     }
     
-    // 逻辑处理函数 (保持不变)
     func handleToggle() {
         if !item.isCompleted {
             withAnimation(.spring()) {

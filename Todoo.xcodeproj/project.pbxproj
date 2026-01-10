@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		260F419A2F09EFA600B32FBE /* CartoonButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260F41992F09EFA600B32FBE /* CartoonButton.swift */; };
+		260F419C2F09F82000B32FBE /* SortButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260F419B2F09F82000B32FBE /* SortButton.swift */; };
+		260F419E2F09F88200B32FBE /* ToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260F419D2F09F88200B32FBE /* ToggleView.swift */; };
 		264711E12F071EE600A0169F /* TodooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711E02F071EE600A0169F /* TodooApp.swift */; };
 		264711E32F071EE600A0169F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264711E22F071EE600A0169F /* ContentView.swift */; };
 		264711E52F071EE700A0169F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 264711E42F071EE700A0169F /* Assets.xcassets */; };
@@ -28,6 +30,8 @@
 
 /* Begin PBXFileReference section */
 		260F41992F09EFA600B32FBE /* CartoonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartoonButton.swift; sourceTree = "<group>"; };
+		260F419B2F09F82000B32FBE /* SortButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortButton.swift; sourceTree = "<group>"; };
+		260F419D2F09F88200B32FBE /* ToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleView.swift; sourceTree = "<group>"; };
 		264711DD2F071EE600A0169F /* Todoo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		264711E02F071EE600A0169F /* TodooApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodooApp.swift; sourceTree = "<group>"; };
 		264711E22F071EE600A0169F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -39,7 +43,6 @@
 		264711F92F071F7D00A0169F /* GameComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameComponents.swift; sourceTree = "<group>"; };
 		264711FC2F071F9100A0169F /* AddEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditView.swift; sourceTree = "<group>"; };
 		264711FE2F071FA000A0169F /* TabScreens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabScreens.swift; sourceTree = "<group>"; };
-		264712002F0724F000A0169F /* CartoonButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartoonButton.swift; sourceTree = "<group>"; };
 		264712042F07436600A0169F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		264712062F07467D00A0169F /* LuckiestGuy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LuckiestGuy-Regular.ttf"; sourceTree = "<group>"; };
 		264712082F074B7C00A0169F /* LanguageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageManager.swift; sourceTree = "<group>"; };
@@ -63,7 +66,6 @@
 		264711D42F071EE600A0169F = {
 			isa = PBXGroup;
 			children = (
-				264712002F0724F000A0169F /* CartoonButton.swift */,
 				264711DF2F071EE600A0169F /* Todoo */,
 				264711DE2F071EE600A0169F /* Products */,
 			);
@@ -143,6 +145,8 @@
 				264711F92F071F7D00A0169F /* GameComponents.swift */,
 				2647120A2F074BCB00A0169F /* TopBarView.swift */,
 				260F41992F09EFA600B32FBE /* CartoonButton.swift */,
+				260F419B2F09F82000B32FBE /* SortButton.swift */,
+				260F419D2F09F88200B32FBE /* ToggleView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -186,7 +190,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					264711DC2F071EE600A0169F = {
 						CreatedOnToolsVersion = 15.4;
@@ -237,11 +241,13 @@
 				264711FA2F071F7D00A0169F /* GameComponents.swift in Sources */,
 				264711F32F071F5000A0169F /* TodoItem.swift in Sources */,
 				264711FF2F071FA000A0169F /* TabScreens.swift in Sources */,
+				260F419C2F09F82000B32FBE /* SortButton.swift in Sources */,
 				264711E12F071EE600A0169F /* TodooApp.swift in Sources */,
 				2647120B2F074BCB00A0169F /* TopBarView.swift in Sources */,
 				2647120D2F074BD700A0169F /* SettingsView.swift in Sources */,
 				264711FD2F071F9100A0169F /* AddEditView.swift in Sources */,
 				260F419A2F09EFA600B32FBE /* CartoonButton.swift in Sources */,
+				260F419E2F09F88200B32FBE /* ToggleView.swift in Sources */,
 				264712092F074B7C00A0169F /* LanguageManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -307,6 +313,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -363,6 +370,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -376,6 +384,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Todoo/Preview Content\"";
+				DEVELOPMENT_TEAM = 89744MMR9J;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Todoo/Info.plist;
@@ -384,6 +393,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -405,6 +415,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Todoo/Preview Content\"";
+				DEVELOPMENT_TEAM = 89744MMR9J;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Todoo/Info.plist;
@@ -413,6 +424,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

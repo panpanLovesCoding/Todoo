@@ -23,7 +23,7 @@ struct AddEditView: View {
     var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
     var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
     
-    // 🛠️ 阴影逻辑 (统一风格)
+    // 阴影逻辑
     func boldShadowColor(_ color: Color) -> Color {
         return lang.language == "zh" ? color : .clear
     }
@@ -41,7 +41,7 @@ struct AddEditView: View {
             
             VStack(alignment: .leading, spacing: 15) {
                 
-                // Name (普通字体)
+                // Name
                 VStack(alignment: .leading, spacing: 5) {
                     Text(lang.localized("Quest Name"))
                         .font(.system(.headline, design: .rounded).weight(.bold))
@@ -57,7 +57,7 @@ struct AddEditView: View {
                         .accentColor(GameTheme.brown)
                 }
                 
-                // Deadline (普通字体)
+                // Deadline
                 VStack(alignment: .leading, spacing: 5) {
                     Text(lang.localized("Deadline"))
                         .font(.system(.headline, design: .rounded).weight(.bold))
@@ -73,7 +73,7 @@ struct AddEditView: View {
                         .colorScheme(.light)
                 }
                 
-                // Toggles (特殊字体 + 中文)
+                // Toggles (现在会引用独立的 ToggleView.swift)
                 HStack(spacing: 12) {
                     ToggleView(title: lang.localized("Urgent"), isOn: $isUrgent, icon: "flame.fill", color: GameTheme.red)
                     ToggleView(title: lang.localized("Important"), isOn: $isImportant, icon: "star.fill", color: GameTheme.yellow)
@@ -83,7 +83,7 @@ struct AddEditView: View {
             
             // Buttons
             HStack(spacing: 15) {
-                // Cancel 按钮 (红色卡通风格)
+                // Cancel 按钮
                 Button(action: closeView) {
                     HStack {
                         Image(systemName: "xmark")
@@ -95,12 +95,11 @@ struct AddEditView: View {
                     .frame(maxWidth: .infinity)
                     .padding(12)
                     .foregroundColor(.white)
-                    // 文字白色阴影
                     .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                 }
                 .buttonStyle(CartoonButtonStyle(color: Color(red: 0.85, green: 0.3, blue: 0.3), cornerRadius: 12))
                 
-                // Save 按钮 (绿色卡通风格)
+                // Save 按钮
                 Button(action: saveItem) {
                     HStack {
                         Image(systemName: "checkmark")
@@ -112,12 +111,11 @@ struct AddEditView: View {
                     .frame(maxWidth: .infinity)
                     .padding(12)
                     .foregroundColor(.white)
-                    // 文字白色阴影
                     .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                 }
                 .buttonStyle(CartoonButtonStyle(color: GameTheme.green, cornerRadius: 12))
                 .disabled(title.isEmpty)
-                .opacity(title.isEmpty ? 0.6 : 1.0) // 禁用时变淡
+                .opacity(title.isEmpty ? 0.6 : 1.0)
             }
             .padding(.top, 10)
             
@@ -180,38 +178,6 @@ struct AddEditView: View {
             }
         } else {
             dismiss()
-        }
-    }
-}
-
-// 辅助组件：ToggleView
-struct ToggleView: View {
-    let title: String
-    @Binding var isOn: Bool
-    let icon: String
-    let color: Color
-    
-    @ObservedObject var lang = LanguageManager.shared
-    
-    var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
-    var yOffset: CGFloat { lang.language == "zh" ? 0 : 3 }
-    
-    var body: some View {
-        Button(action: { isOn.toggle() }) {
-            HStack {
-                Image(systemName: isOn ? icon : "circle")
-                    .foregroundColor(isOn ? color : GameTheme.brown.opacity(0.5))
-                Text(title)
-                    .font(.custom(fontName, size: 16))
-                    .offset(y: yOffset)
-                    .foregroundColor(GameTheme.brown)
-                    .fixedSize(horizontal: true, vertical: false)
-            }
-            .padding(10)
-            .frame(maxWidth: .infinity)
-            .background(Color.white)
-            .cornerRadius(10)
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(isOn ? color : GameTheme.brown.opacity(0.2), lineWidth: 2))
         }
     }
 }

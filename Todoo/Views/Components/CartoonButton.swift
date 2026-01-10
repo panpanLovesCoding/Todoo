@@ -7,9 +7,17 @@ struct CartoonButtonStyle: ButtonStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
+            // 扩大点击热区，防止点不到
+            .contentShape(Rectangle())
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .fill(color)
+                    // 按下时的变暗层 (0.3 透明度)
+                    .overlay(
+                        Color.black
+                            .opacity(configuration.isPressed ? 0.3 : 0)
+                            .cornerRadius(cornerRadius)
+                    )
                     .overlay(
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .stroke(GameTheme.brown.opacity(0.5), lineWidth: 3)
@@ -21,6 +29,7 @@ struct CartoonButtonStyle: ButtonStyle {
                     .offset(y: configuration.isPressed ? 0 : 4)
             )
             .offset(y: configuration.isPressed ? 4 : 0)
-            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            // 0.4秒 慢速回弹动画
+            .animation(.easeOut(duration: 0.4), value: configuration.isPressed)
     }
 }
