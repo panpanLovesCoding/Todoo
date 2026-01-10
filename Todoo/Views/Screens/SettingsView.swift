@@ -110,14 +110,14 @@ struct SettingsView: View {
                             .foregroundColor(GameTheme.brown)
                             .offset(y: 3)
                     }
+                    // ✨ 修改这里：关闭样式自带的音效
                     .buttonStyle(CartoonButtonStyle(
                         color: lang.language == "en" ? GameTheme.orange : GameTheme.cream,
-                        cornerRadius: 8
+                        cornerRadius: 8,
+                        enableSound: false // 🚫 关掉默认声音
                     ))
                     
-                    // 中文 按钮
                     Button(action: {
-                        // ✨ 2. 播放可爱的气泡音效 1
                         SoundManager.shared.playSound(sound: "cute_pop_sound_1", type: "mp3")
                         lang.language = "zh"
                     }) {
@@ -127,9 +127,11 @@ struct SettingsView: View {
                             .foregroundColor(GameTheme.brown)
                             .shadow(color: GameTheme.brown, radius: 0, x: 0.5, y: 0.5)
                     }
+                    // ✨ 修改这里
                     .buttonStyle(CartoonButtonStyle(
                         color: lang.language == "zh" ? GameTheme.orange : GameTheme.cream,
-                        cornerRadius: 8
+                        cornerRadius: 8,
+                        enableSound: false // 🚫 关掉默认声音
                     ))
                 }
                 
@@ -219,7 +221,6 @@ struct SettingsView: View {
 }
 
 // 辅助组件
-// 辅助组件
 struct SoundToggleButton: View {
     let icon: String
     let label: String
@@ -242,9 +243,11 @@ struct SoundToggleButton: View {
             }
             .frame(width: 60, height: 60)
         }
+        // ✨ 修改这里
         .buttonStyle(CartoonButtonStyle(
             color: isOn ? GameTheme.yellow : Color.gray.opacity(0.3),
-            cornerRadius: 12
+            cornerRadius: 12,
+            enableSound: false // 🚫 关掉默认声音，因为我们上面手动放了 pop_sound_2
         ))
     }
 }
