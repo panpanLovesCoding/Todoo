@@ -42,6 +42,11 @@ struct SortPopupView: View {
                         icon: iconFor(option),
                         isSelected: tempSelectedOption == option
                     ) {
+                        // ✨ 1. 播放机械点击音效
+                        // 注意：因为你的文件后缀是大写的 .MP3，这里保险起见指定 type 为 "MP3"
+                        SoundManager.shared.playSound(sound: "mechanical_click_sound_1", type: "MP3")
+                        
+                        // 2.原本的选中逻辑
                         withAnimation(.spring()) {
                             tempSelectedOption = option
                         }
