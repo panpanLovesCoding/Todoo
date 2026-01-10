@@ -98,7 +98,12 @@ struct SettingsView: View {
                 
                 // 语言选择
                 HStack {
-                    Button(action: { lang.language = "en" }) {
+                    // ENG 按钮
+                    Button(action: {
+                        // ✨ 1. 播放可爱的气泡音效 1
+                        SoundManager.shared.playSound(sound: "cute_pop_sound_1", type: "mp3")
+                        lang.language = "en"
+                    }) {
                         Text("ENG")
                             .font(.custom("LuckiestGuy-Regular", size: 18))
                             .frame(width: 80, height: 40)
@@ -110,7 +115,12 @@ struct SettingsView: View {
                         cornerRadius: 8
                     ))
                     
-                    Button(action: { lang.language = "zh" }) {
+                    // 中文 按钮
+                    Button(action: {
+                        // ✨ 2. 播放可爱的气泡音效 1
+                        SoundManager.shared.playSound(sound: "cute_pop_sound_1", type: "mp3")
+                        lang.language = "zh"
+                    }) {
                         Text("中文")
                             .font(.custom("HappyZcool-2016", size: 18))
                             .frame(width: 80, height: 40)
@@ -209,13 +219,22 @@ struct SettingsView: View {
 }
 
 // 辅助组件
+// 辅助组件
 struct SoundToggleButton: View {
     let icon: String
     let label: String
     @Binding var isOn: Bool
     
     var body: some View {
-        Button(action: { isOn.toggle() }) {
+        Button(action: {
+            // ✨ 1. 播放指定的可爱气泡音效
+            SoundManager.shared.playSound(sound: "cute_pop_sound_2", type: "mp3", volume : 1.5)
+            
+            // 2. 切换开关状态 (加上一点弹簧动画会让颜色切换更生动)
+            withAnimation(.spring()) {
+                isOn.toggle()
+            }
+        }) {
             VStack {
                 Image(systemName: icon)
                     .font(.title)
