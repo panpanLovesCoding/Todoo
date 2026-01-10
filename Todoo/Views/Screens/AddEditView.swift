@@ -71,30 +71,35 @@ struct AddEditView: View {
                     Text(lang.localized("Deadline"))
                         .font(.system(.headline, design: .rounded).weight(.bold))
                         .foregroundColor(GameTheme.brown)
-
+                    
                     ZStack(alignment: .leading) {
-                        // ✨ 修改开始：将原本的单纯 Text 改为 HStack 加入图标
-                        // 1. 视觉层：显示图标 + 完整的月份
-                        HStack(spacing: 8) { // spacing 控制图标和文字的间距
+                        // 1. 视觉层：灰色的“胶囊”按钮，外面留白
+                        HStack(spacing: 8) {
                             Image(systemName: "calendar")
-                                // 你也可以取消下面这行的注释，把图标改成主题棕色
-                                // .foregroundColor(GameTheme.brown)
                             Text(formattedDateString)
                         }
-                        // 将字体和颜色应用到整个 HStack
                         .font(.system(.body, design: .rounded).weight(.bold))
-                        .foregroundColor(.black)
-                        .padding()
-                        // ✨ 修改结束
-
-                        // 2. 交互层：透明且被放大的 DatePicker (保持不变)
+                        .foregroundColor(GameTheme.brown)
+                        // Step A: 灰色框内部的空间 (内边距)
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 12)
+                        // Step B: 灰色背景 (只包裹住加了内边距的内容)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color(red: 0.96, green: 0.96, blue: 0.96)) // 很淡的灰色
+                        )
+                        // Step C: 灰色框和外部棕色边框之间的白色空隙 (外边距)
+                        // 这一步非常重要，正是它阻止了灰色填满整个窗口
+                        .padding(8)
+                        
+                        // 2. 交互层：透明且被放大的 DatePicker
                         DatePicker("", selection: $deadline, displayedComponents: .date)
                             .labelsHidden()
                             .colorMultiply(.clear)
                             .scaleEffect(x: 5, y: 1.5)
                             .contentShape(Rectangle())
                     }
-                    .background(Color.white)
+                    .background(Color.white) // 最底层的白色背景
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
@@ -205,15 +210,15 @@ struct AddEditView: View {
     }
     
     func closeView() {
-            // ✨ 新增：加了 0.15 秒延迟，让按钮动画和声音飞一会儿
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                if let binding = isPresented {
-                    withAnimation(.spring()) {
-                        binding.wrappedValue = false
-                    }
-                } else {
-                    dismiss()
+        // ✨ 新增：加了 0.15 秒延迟，让按钮动画和声音飞一会儿
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            if let binding = isPresented {
+                withAnimation(.spring()) {
+                    binding.wrappedValue = false
                 }
+            } else {
+                dismiss()
             }
         }
+    }
 }
