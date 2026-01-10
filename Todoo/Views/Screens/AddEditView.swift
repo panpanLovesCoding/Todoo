@@ -33,10 +33,10 @@ struct AddEditView: View {
             
             // 标题
             Text(lang.localized(isEditing ? "EDIT QUEST" : "NEW QUEST"))
-                .font(.custom(fontName, size: 40))
+                .font(.custom(fontName, size: 45))
                 .foregroundColor(isEditing ? Color.blue : GameTheme.background)
                 .offset(y: yOffset)
-                .shadow(color: .black, radius: 0, x: 1, y: 1)
+                .shadow(color: .black, radius: 0, x: 2, y: 4)
                 .padding(.top, 10)
             
             VStack(alignment: .leading, spacing: 15) {
@@ -113,7 +113,7 @@ struct AddEditView: View {
                     .foregroundColor(.white)
                     .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                 }
-                .buttonStyle(CartoonButtonStyle(color: GameTheme.green, cornerRadius: 12))
+                .buttonStyle(CartoonButtonStyle(color: GameTheme.emerald, cornerRadius: 12))
                 .disabled(title.isEmpty)
                 .opacity(title.isEmpty ? 0.6 : 1.0)
             }

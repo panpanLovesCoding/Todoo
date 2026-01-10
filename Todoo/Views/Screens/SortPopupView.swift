@@ -28,10 +28,10 @@ struct SortPopupView: View {
         VStack(spacing: 20) {
             // 标题
             Text(lang.localized("SORT BY"))
-                .font(.custom(getFontName(), size: 35))
+                .font(.custom(getFontName(), size: 40))
                 .foregroundColor(GameTheme.pumpkin)
                 .offset(y: getTextOffset(size: 35))
-                .shadow(color: .black, radius: 0, x: 1, y: 1)
+                .shadow(color: .black, radius: 0, x: 2, y: 3)
                 .padding(.top, 10)
             
             VStack(spacing: 12) {
@@ -87,7 +87,7 @@ struct SortPopupView: View {
                     .foregroundColor(.white)
                     .shadow(color: boldShadowColor(.white), radius: 0, x: 1, y: 1)
                 }
-                .buttonStyle(CartoonButtonStyle(color: GameTheme.green, cornerRadius: 12))
+                .buttonStyle(CartoonButtonStyle(color: GameTheme.emerald, cornerRadius: 12))
             }
             .padding(.top, 10)
         }
