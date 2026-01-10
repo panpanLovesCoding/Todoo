@@ -188,7 +188,7 @@ struct SettingsView: View {
             
             // 3. 底部 OK 按钮
             Button(action: {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     withAnimation(.spring()) {
                         isPresented = false
                     }

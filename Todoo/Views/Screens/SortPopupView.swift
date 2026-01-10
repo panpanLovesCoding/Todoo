@@ -53,7 +53,13 @@ struct SortPopupView: View {
             // Buttons
             HStack(spacing: 15) {
                 // Cancel 按钮 (红色卡通风格)
-                Button(action: { withAnimation { isPresented = false } }) {
+                Button(action: {
+                    // ✨ 修改前：withAnimation { isPresented = false }
+                    // ✨ 修改后：
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation { isPresented = false }
+                    }
+                }) {
                     HStack {
                         Image(systemName: "xmark")
                             .font(.system(size: 20, weight: .bold))
@@ -70,9 +76,13 @@ struct SortPopupView: View {
                 
                 // Select 按钮 (绿色卡通风格)
                 Button(action: {
-                    currentSort = tempSelectedOption
-                    withAnimation {
-                        isPresented = false
+                    currentSort = tempSelectedOption // 这一步还是立即执行（更新数据）
+                    
+                    // ✨ 关闭页面的动作加延迟
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation {
+                            isPresented = false
+                        }
                     }
                 }) {
                     HStack {

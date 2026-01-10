@@ -172,12 +172,15 @@ struct AddEditView: View {
     }
     
     func closeView() {
-        if let binding = isPresented {
-            withAnimation(.spring()) {
-                binding.wrappedValue = false
+            // ✨ 新增：加了 0.15 秒延迟，让按钮动画和声音飞一会儿
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                if let binding = isPresented {
+                    withAnimation(.spring()) {
+                        binding.wrappedValue = false
+                    }
+                } else {
+                    dismiss()
+                }
             }
-        } else {
-            dismiss()
         }
-    }
 }
