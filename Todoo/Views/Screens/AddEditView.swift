@@ -128,7 +128,11 @@ struct AddEditView: View {
                 .padding(.top, 5)
             }
         }
-        .padding(25)
+        // ✨ 修改这里：拆分 padding，把底部(bottom)从 25 改成 35
+        .padding(.horizontal, 25) // 左右保持 25
+        .padding(.top, 25)        // 顶部保持 25 (加上内部的 padding 视觉上是 35)
+        .padding(.bottom, 35)     // 底部增加到 43，这样看起来就和上面一样宽敞了！
+        
         .frame(maxWidth: 340)
         .background(GameTheme.cream)
         .cornerRadius(25)
