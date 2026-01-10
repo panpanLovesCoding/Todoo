@@ -101,7 +101,9 @@ struct SortPopupView: View {
             }
             .padding(.top, 10)
         }
-        .padding(25)
+        .padding(.horizontal, 25) // 左右保持 25
+        .padding(.top, 25)        // 顶部保持 25
+        .padding(.bottom, 30)
         .frame(width: 320)
         .background(GameTheme.cream)
         .cornerRadius(25)
