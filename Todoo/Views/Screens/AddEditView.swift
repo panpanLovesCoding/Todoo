@@ -19,6 +19,15 @@ struct AddEditView: View {
     
     var isEditing: Bool { itemToEdit != nil }
     
+    // 自定义日期格式化
+    var formattedDateString: String {
+        let formatter = DateFormatter()
+        // 英文环境下显示完整月份 (MMMM)，如 January 10, 2026
+        // 中文环境下保持标准年月日
+        formatter.dateFormat = lang.language == "zh" ? "yyyy年M月d日" : "MMMM d, yyyy"
+        return formatter.string(from: deadline)
+    }
+    
     // 字体与偏移
     var fontName: String { lang.language == "zh" ? "HappyZcool-2016" : "LuckiestGuy-Regular" }
     var yOffset: CGFloat { lang.language == "zh" ? 0 : 5 }
@@ -62,15 +71,35 @@ struct AddEditView: View {
                     Text(lang.localized("Deadline"))
                         .font(.system(.headline, design: .rounded).weight(.bold))
                         .foregroundColor(GameTheme.brown)
-                    
-                    DatePicker("", selection: $deadline, displayedComponents: .date)
-                        .labelsHidden()
-                        .padding(10)
-                        .background(Color.white)
-                        .cornerRadius(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(GameTheme.brown.opacity(0.3), lineWidth: 2))
-                        .accentColor(GameTheme.brown)
-                        .colorScheme(.light)
+
+                    ZStack(alignment: .leading) {
+                        // ✨ 修改开始：将原本的单纯 Text 改为 HStack 加入图标
+                        // 1. 视觉层：显示图标 + 完整的月份
+                        HStack(spacing: 8) { // spacing 控制图标和文字的间距
+                            Image(systemName: "calendar")
+                                // 你也可以取消下面这行的注释，把图标改成主题棕色
+                                // .foregroundColor(GameTheme.brown)
+                            Text(formattedDateString)
+                        }
+                        // 将字体和颜色应用到整个 HStack
+                        .font(.system(.body, design: .rounded).weight(.bold))
+                        .foregroundColor(.black)
+                        .padding()
+                        // ✨ 修改结束
+
+                        // 2. 交互层：透明且被放大的 DatePicker (保持不变)
+                        DatePicker("", selection: $deadline, displayedComponents: .date)
+                            .labelsHidden()
+                            .colorMultiply(.clear)
+                            .scaleEffect(x: 5, y: 1.5)
+                            .contentShape(Rectangle())
+                    }
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(GameTheme.brown.opacity(0.3), lineWidth: 2)
+                    )
                 }
                 
                 // Toggles (现在会引用独立的 ToggleView.swift)
