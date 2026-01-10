@@ -21,14 +21,17 @@ struct SortButton: View {
                 
                 Spacer()
                 
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(GameTheme.green)
-                        .font(.title3)
-                }
+                // ✨ 核心修改：使用 opacity 而不是 if 判断
+                // 这样对勾永远占位，宽度永远保持一致，界面就不会跳动了！
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(GameTheme.green)
+                    .font(.title3)
+                    .opacity(isSelected ? 1 : 0) // 选中显示，不选中透明
             }
             .foregroundColor(isSelected ? GameTheme.brown : GameTheme.brown.opacity(0.6))
-            .padding(12)
+            // 增加一点高度限制，防止不同语言字体行高导致的微小垂直抖动
+            .frame(height: 50)
+            .padding(.horizontal, 12)
             .background(Color.white)
             .cornerRadius(12)
             .overlay(
