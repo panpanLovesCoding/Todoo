@@ -39,14 +39,21 @@ struct TopBarView: View {
                     
                     // 1. Add Button
                     TopBarButton(icon: "plus", color: GameTheme.green) {
+                        // ✨ 1. 播放指定的可爱气泡音效
+                        SoundManager.shared.playSound(sound: "cassette_click_sound_1", type: "mp3", volume : 0.5)
+                        
                         // 👇 确保这里有 withAnimation
-                            withAnimation(.spring()) {
-                                showAddSheet = true
-                            }
+                        withAnimation(.spring()) {
+                            showAddSheet = true
+                        }
+                        
                     }
                     
                     // 2. Sort Button (👇 修改：改为点击触发 showSortPopup)
                     Button(action: {
+                        // ✨ 1. 播放指定的可爱气泡音效
+                        SoundManager.shared.playSound(sound: "cassette_click_sound_1", type: "mp3", volume : 0.5)
+                        
                         withAnimation {
                             showSortPopup = true
                         }
@@ -68,6 +75,9 @@ struct TopBarView: View {
                     
                     // 3. Settings Button
                     TopBarButton(icon: "gearshape.fill", color: GameTheme.blue) {
+                        // ✨ 1. 播放指定的可爱气泡音效
+                        SoundManager.shared.playSound(sound: "cassette_click_sound_1", type: "mp3", volume : 0.5)
+                        
                         // 👇 修复：必须加上 withAnimation，否则ContentView里的 transition 不会触发
                         withAnimation(.spring()) {
                             showSettings = true

@@ -101,7 +101,7 @@ struct SettingsView: View {
                     // ENG 按钮
                     Button(action: {
                         // ✨ 1. 播放可爱的气泡音效 1
-                        SoundManager.shared.playSound(sound: "cute_pop_sound_1", type: "mp3")
+                        SoundManager.shared.playSound(sound: "mechanical_click_sound_4", type: "mp3", volume: 2)
                         lang.language = "en"
                     }) {
                         Text("ENG")
@@ -118,7 +118,7 @@ struct SettingsView: View {
                     ))
                     
                     Button(action: {
-                        SoundManager.shared.playSound(sound: "cute_pop_sound_1", type: "mp3")
+                        SoundManager.shared.playSound(sound: "mechanical_click_sound_4", type: "mp3", volume: 2)
                         lang.language = "zh"
                     }) {
                         Text("中文")
