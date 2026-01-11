@@ -39,7 +39,6 @@ struct AddEditView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            
             // 标题
             Text(lang.localized(isEditing ? "EDIT QUEST" : "NEW QUEST"))
                 .font(.custom(fontName, size: 45))
@@ -174,6 +173,10 @@ struct AddEditView: View {
         .shadow(color: .black.opacity(0.4), radius: 10, x: 0, y: 10)
         .environment(\.colorScheme, .light)
         .onAppear {
+            // ✨ 1. 界面弹开时播放磁带音效
+            // (假设你的音效文件后缀是 mp3，如果是其他格式请修改 type)
+            SoundManager.shared.playSound(sound: "cassette_click_sound_1", type: "mp3", volume: 0.7)
+            
             if let item = itemToEdit {
                 title = item.title
                 deadline = item.deadline
