@@ -38,7 +38,7 @@ struct GameButtonStyle: ButtonStyle {
                     // 按钮本体
                     RoundedRectangle(cornerRadius: 12)
                         .fill(color)
-                        // 变暗层
+                    // 变暗层
                         .overlay(
                             Color.black
                                 .opacity(configuration.isPressed ? 0.3 : 0)
@@ -51,7 +51,7 @@ struct GameButtonStyle: ButtonStyle {
                     .stroke(GameTheme.brown, lineWidth: 3)
             )
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-            // 🆕 核心修改：时长加长到 0.4秒，使用 easeOut
+        // 🆕 核心修改：时长加长到 0.4秒，使用 easeOut
             .animation(.easeOut(duration: 0.4), value: configuration.isPressed)
     }
 }
@@ -125,11 +125,11 @@ struct TodoCard: View {
                     }
                     .font(.system(size: 11, design: .rounded).weight(.medium))
                     .foregroundColor(GameTheme.brown.opacity(0.7))
-
+                    
                     if isCardStyle {
                         Divider().background(GameTheme.brown.opacity(0.3))
                     }
-
+                    
                     HStack {
                         Label("Due: \(item.deadline.formatted(date: .abbreviated, time: .omitted))", systemImage: "calendar")
                             .foregroundColor(getDateColor())
@@ -161,6 +161,15 @@ struct TodoCard: View {
     
     func handleToggle() {
         if !item.isCompleted {
+            // 1. 先播放完成时的 Click 音效
+            SoundManager.shared.playSound(sound: "complete_click_sound_1", type: "mp3")
+            
+            // ✨ 2. 延迟 0.5 秒后，紧接着播放 Swoosh 音效
+            // 这样能形成 "咔哒-嗖" 的连贯听感
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                SoundManager.shared.playSound(sound: "swoosh_sound_1", type: "mp3", volume: 1.5)
+            }
+            
             withAnimation(.spring()) {
                 justChecked = true
             }
@@ -169,6 +178,7 @@ struct TodoCard: View {
                 justChecked = false
             }
         } else {
+            // 取消完成时的逻辑（如果需要也可以加声音）
             withAnimation(.spring()) {
                 isUnchecking = true
             }
